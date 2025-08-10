@@ -1,6 +1,6 @@
 module Models
 
-export Bus, Line, Generator, Fault, Load
+export Bus, Line, Generator, Fault, Load, Shunt
 
 
 mutable struct Bus{T<:Real}
@@ -50,6 +50,10 @@ mutable struct Load{T<:Real}
     q::Vector{T}
     i_d::Vector{T}
     i_q::Vector{T}
+end
+
+mutable struct Shunt{}
+    bus::Vector{Int32}
 end
 
 end
