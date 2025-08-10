@@ -1,0 +1,17 @@
+# Compiled files
+*.ji
+
+# REPL history
+.julia_history
+
+# VSCode / Editor files
+.vscode/
+.idea/
+
+# Data files
+/data/raw/*
+/data/processed/*
+!/data/*.md   # allow readme notes
+
+# Outputs
+/results/*
