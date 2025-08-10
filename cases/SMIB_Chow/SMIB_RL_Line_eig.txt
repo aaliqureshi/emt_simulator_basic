@@ -1,0 +1,33 @@
+ANDES 1.9.1.post59+gc7e7304d
+Copyright (C) 2015-2022 Hantao Cui
+
+ANDES comes with ABSOLUTELY NO WARRANTY
+Case file: /Users/aali27/Work/repos/andes/andes/cases/SMIB_Chow/SMIB_RL_Line.xlsx
+Report time: 03/27/2025 04:08:30 PM
+
+Power flow converged in 4 iterations.
+Flat-start: No
+
+
+EIGENVALUE ANALYSIS REPORT                                    
+
+Positives                          0
+Zeros                              1
+Negatives                          4
+
+STATISTICS
+                     Most Associated              Real             Imag.      Damped Freq.         Frequency       Damping [%]
+
+#1                    omega GENCLS 1         -0.071429            9.4226            1.4997            1.4997           0.75803
+#2                    omega GENCLS 1         -0.071429           -9.4226            1.4997            1.4997           0.75803
+#3                    omega GENCLS 2          -0.33333                 0                 0                 0                 0
+#4*                   delta GENCLS 2       -4.2289e-17                 0                 0                 0                 0
+
+EIGENVALUE DATA
+                                  #1                #2                #3               #4*
+
+delta GENCLS 1                   0.5               0.5                 0                 0
+delta GENCLS 2                     0                 0                 0           0.99997
+omega GENCLS 1               0.50001           0.50001                 0                 0
+omega GENCLS 2                     0                 0                 1                 0
+

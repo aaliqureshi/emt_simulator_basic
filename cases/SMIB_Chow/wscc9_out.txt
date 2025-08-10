@@ -1,0 +1,78 @@
+ANDES 1.9.1.post62.dev0+g85ed9db4
+Copyright (C) 2015-2022 Hantao Cui
+
+ANDES comes with ABSOLUTELY NO WARRANTY
+Case file: /Users/aali27/Work/repos/andes/andes/cases/wscc9/wscc9.xlsx
+Report time: 11/14/2024 06:21:50 PM
+
+Power flow converged in 4 iterations.
+Flat-start: No
+
+Statistics:
+Buses                              9
+Generators                         3
+Committed Gens                     3
+Loads                              3
+Shunts                             0
+Lines                              9
+Transformers                       0
+Areas                              1
+
+EXTENDED SUMMARY:
+                              P (pu)            Q (pu)
+
+Generation                    3.2031            1.7169
+Load                            3.15              1.15
+
+BUS DATA:
+                            Bus Name            Vm(pu)          Va(rad.)
+
+1                               Bus1              1.04       -3.9328e-16
+2                              Bus 2             1.025           0.17054
+3                              Bus 3             1.025          0.094217
+4                              Bus 4           0.99482         -0.040271
+5                              Bus 5           0.95664         -0.066269
+6                              Bus 6            0.9655          -0.06294
+7                              Bus 7           0.99862          0.070845
+8                              Bus 8           0.98185          0.026116
+9                              Bus 9            1.0049          0.045839
+
+LINE DATA:
+                           Line Name     Fr. Bus (idx)      To Bus (idx)       P From (pu)       Q From (pu)         P To (pu)         Q To (pu)
+
+Line_0                        Line_0                 5                 4          -0.43274           -0.4687           0.43719           0.49894
+Line_1                        Line_1                 6                 4          -0.28333          -0.25263           0.28596           0.26685
+Line_2                        Line_2                 7                 5           0.84065           0.14897          -0.81726         -0.031295
+Line_3                        Line_3                 9                 6           0.63267           0.11869          -0.61667         -0.047373
+Line_4                        Line_4                 7                 8           0.78935           0.19124          -0.78373          -0.15314
+Line_5                        Line_5                 8                 9          -0.21627          -0.19686           0.21733            0.2058
+Line_6                        Line_6                 4                 1          -0.72315          -0.76579           0.72315           0.83036
+Line_7                        Line_7                 2                 7              1.63           0.51398             -1.63          -0.34021
+Line_8                        Line_8                 9                 3             -0.85           -0.3245              0.85           0.37254
+
+OTHER ALGEBRAIC VARIABLES:
+                                    
+
+q PV 2                       0.51398
+q PV 3                       0.37254
+q Slack 1                    0.83036
+p Slack 1                    0.72315
+idd Line 0                   0.51883
+idd Line 1                   0.27959
+idd Line 2                 -0.089214
+idd Line 3                 -0.089142
+idd Line 4                  -0.13507
+idd Line 5                   0.19468
+idd Line 6                   0.79842
+idd Line 7                  -0.22429
+idd Line 8                   0.28382
+iqq Line 0                  -0.41892
+iqq Line 1                  -0.27642
+iqq Line 2                   0.85026
+iqq Line 3                   0.63435
+iqq Line 4                   0.80202
+iqq Line 5                  -0.22543
+iqq Line 6                  -0.69533
+iqq Line 7                    1.6523
+iqq Line 8                  -0.85978
+

@@ -1,0 +1,941 @@
+ANDES 1.9.1.post64.dev0+g786372d9
+Copyright (C) 2015-2022 Hantao Cui
+
+ANDES comes with ABSOLUTELY NO WARRANTY
+Case file: /Users/aali27/Work/repos/andes/andes/cases/ieee14/ieee14_solar.xlsx
+Report time: 11/16/2024 08:59:03 PM
+
+Power flow converged in 4 iterations.
+Flat-start: No
+
+
+EIGENVALUE ANALYSIS REPORT                                    
+
+Positives                          0
+Zeros                              8
+Negatives                         73
+
+STATISTICS
+                     Most Associated              Real             Imag.      Damped Freq.         Frequency       Damping [%]
+
+#1                     s0_y REECA1 1               -50                 0                 0                 0                 0
+#2                     S1_y REECA1 1               -50                 0                 0                 0                 0
+#3                    WO_x BusFreq 1               -50                 0                 0                 0                 0
+#4                    WO_x BusFreq 2               -50                 0                 0                 0                 0
+#5                    WO_x BusFreq 3               -50                 0                 0                 0                 0
+#6                    WO_x BusFreq 4               -10                 0                 0                 0                 0
+#7                     S2_y REGCA1 1               -10                 0                 0                 0                 0
+#8                     L_y BusFreq 1               -50                 0                 0                 0                 0
+#9                     L_y BusFreq 2               -50                 0                 0                 0                 0
+#10                    L_y BusFreq 3               -50                 0                 0                 0                 0
+#11                    L_y BusFreq 4               -50                 0                 0                 0                 0
+#12                  LAW2_y ESST3A 4           -79.929                 0                 0                 0                 0
+#13                  LAW2_y ESST3A 3           -77.845                 0                 0                 0                 0
+#14                  LAW2_y ESST3A 2           -77.091                 0                 0                 0                 0
+#15                     LL_x EXST1 1            -50.17            35.591            5.6645            9.7899            81.561
+#16                     LL_x EXST1 1            -50.17           -35.591            5.6645            9.7899            81.561
+#17                     e2q GENROU 4           -42.168                 0                 0                 0                 0
+#18                     e2q GENROU 2           -56.301                 0                 0                 0                 0
+#19                     e2q GENROU 1           -50.747                 0                 0                 0                 0
+#20                    s4_y REECA1 1           -49.349                 0                 0                 0                 0
+#21                    LG_y ESST3A 2           -49.843                 0                 0                 0                 0
+#22                    LG_y ESST3A 4           -49.986                 0                 0                 0                 0
+#23                    LG_y ESST3A 3           -50.021                 0                 0                 0                 0
+#24                     e2d GENROU 2           -35.714                 0                 0                 0                 0
+#25                     e2d GENROU 1           -34.335                 0                 0                 0                 0
+#26                     e2d GENROU 3           -27.509                 0                 0                 0                 0
+#27                     LG_y EXST1 1               -50                 0                 0                 0                 0
+#28                     e2d GENROU 3           -22.132            1.6687           0.26559            3.5325            99.717
+#29                     e2d GENROU 3           -22.132           -1.6687           0.26559            3.5325            99.717
+#30                    LAG_y TGOV1 4            -19.12                 0                 0                 0                 0
+#31                    LAG_y TGOV1 1           -18.647                 0                 0                 0                 0
+#32                   omega GENROU 1           -2.0835            7.5529            1.2021             1.247            26.592
+#33                   omega GENROU 1           -2.0835           -7.5529            1.2021             1.247            26.592
+#34                   omega GENROU 4           -1.6794            6.7345            1.0718            1.1046            24.196
+#35                   omega GENROU 4           -1.6794           -6.7345            1.0718            1.1046            24.196
+#36                     e1d GENROU 2           -13.997                 0                 0                 0                 0
+#37                     e1d GENROU 4           -6.3054                 0                 0                 0                 0
+#38                    LAG_y TGOV1 3           -8.5855                 0                 0                 0                 0
+#39                  LAW1_y ESST3A 4            -9.145                 0                 0                 0                 0
+#40                    S1_y REGCA1 1           -10.354           0.19151          0.030479            1.6482            99.983
+#41                    S1_y REGCA1 1           -10.354          -0.19151          0.030479            1.6482            99.983
+#42                  LAW1_y ESST3A 4           -9.7727           0.27699          0.044085             1.556             99.96
+#43                  LAW1_y ESST3A 4           -9.7727          -0.27699          0.044085             1.556             99.96
+#44                  LAW1_y ESST3A 2           -10.048                 0                 0                 0                 0
+#45                   omega GENROU 1          -0.78516           0.72183           0.11488           0.16975            73.617
+#46                   omega GENROU 1          -0.78516          -0.72183           0.11488           0.16975            73.617
+#47                     e1q GENROU 4          -0.55602           0.55028           0.08758            0.1245            71.076
+#48                     e1q GENROU 4          -0.55602          -0.55028           0.08758            0.1245            71.076
+#49                     WF_x EXST1 1          -0.66073                 0                 0                 0                 0
+#50                     e1q GENROU 4          -0.35655            0.2355          0.037482          0.068007            83.441
+#51                     e1q GENROU 4          -0.35655           -0.2355          0.037482          0.068007            83.441
+#52                     e1q GENROU 1           -0.2722           0.20484          0.032601          0.054218            79.903
+#53                     e1q GENROU 1           -0.2722          -0.20484          0.032601          0.054218            79.903
+#54                     LL_x TGOV1 4          -0.47185                 0                 0                 0                 0
+#55                     LL_x TGOV1 3           -0.4743                 0                 0                 0                 0
+#56                    S0_y REGCA1 1               -10                 0                 0                 0                 0
+#57*                    e1q GENROU 2        1.5954e-15                 0                 0                 0                 0
+#58*                  delta GENROU 1        3.2154e-14                 0                 0                 0                 0
+#59                     LL_x TGOV1 2          -0.47619                 0                 0                 0                 0
+#60                    s6_y REPCA1 1               -50                 0                 0                 0                 0
+#61                    s5_y REECA1 1               -50                 0                 0                 0                 0
+#62                    LAG_y TGOV1 2               -10                 0                 0                 0                 0
+#63                    s3_x REPCA1 1                -1                 0                 0                 0                 0
+#64*                  delta GENROU 2                 0                 0                 0                 0                 0
+#65*                  omega GENROU 2                 0                 0                 0                 0                 0
+#66*                 PIQ_xi REECA1 1             2e-09                 0                 0                 0                 0
+#67                 pfilt_y REECA1 1               -50                 0                 0                 0                 0
+#68*                 PIV_xi REECA1 1             2e-09                 0                 0                 0                 0
+#69                    s0_y REPCA1 1               -50                 0                 0                 0                 0
+#70                    s1_y REPCA1 1               -50                 0                 0                 0                 0
+#71*                  s2_xi REPCA1 1                 0                 0                 0                 0                 0
+#72                    s4_y REPCA1 1               -50                 0                 0                 0                 0
+#73*                  s5_xi REPCA1 1                 0                 0                 0                 0                 0
+
+EIGENVALUE DATA
+                                  #1                #2                #3                #4                #5                #6                #7
+
+delta GENROU 1                     0                 0                 0                 0                 0                 0                 0
+delta GENROU 2                     0                 0                 0                 0                 0                 0                 0
+delta GENROU 3                     0                 0                 0                 0                 0                 0                 0
+delta GENROU 4                     0                 0                 0                 0                 0                 0                 0
+omega GENROU 1                     0                 0                 0                 0                 0                 0                 0
+omega GENROU 2                     0                 0                 0                 0                 0                 0                 0
+omega GENROU 3                     0                 0                 0                 0                 0                 0                 0
+omega GENROU 4                     0                 0                 0                 0                 0                 0                 0
+e1q GENROU 1                       0                 0                 0                 0                 0                 0                 0
+e1q GENROU 2                       0                 0                 0                 0                 0                 0                 0
+e1q GENROU 3                       0                 0                 0                 0                 0                 0                 0
+e1q GENROU 4                       0                 0                 0                 0                 0                 0                 0
+e1d GENROU 1                       0                 0                 0                 0                 0                 0                 0
+e1d GENROU 2                       0                 0                 0                 0                 0                 0                 0
+e1d GENROU 3                       0                 0                 0                 0                 0                 0                 0
+e1d GENROU 4                       0                 0                 0                 0                 0                 0                 0
+e2d GENROU 1                       0                 0                 0                 0                 0                 0                 0
+e2d GENROU 2                       0                 0                 0                 0                 0                 0                 0
+e2d GENROU 3                       0                 0                 0                 0                 0                 0                 0
+e2d GENROU 4                       0                 0                 0                 0                 0                 0                 0
+e2q GENROU 1                       0                 0                 0                 0                 0                 0                 0
+e2q GENROU 2                       0                 0                 0                 0                 0                 0                 0
+e2q GENROU 3                       0                 0                 0                 0                 0                 0                 0
+e2q GENROU 4                       0                 0                 0                 0                 0                 0                 0
+LAG_y TGOV1 1                      0                 0                 0                 0                 0                 0                 0
+LAG_y TGOV1 2                      0                 0                 0                 0                 0                 0                 0
+LAG_y TGOV1 3                      0                 0                 0                 0                 0                 0                 0
+LAG_y TGOV1 4                      0                 0                 0                 0                 0                 0                 0
+LL_x TGOV1 1                       0                 0                 0                 0                 0                 0                 0
+LL_x TGOV1 2                       0                 0                 0                 0                 0                 0                 0
+LL_x TGOV1 3                       0                 0                 0                 0                 0                 0                 0
+LL_x TGOV1 4                       0                 0                 0                 0                 0                 0                 0
+LG_y EXST1 1                       0                 0                 0                 0                 0                 0                 0
+LL_x EXST1 1                       0                 0                 0                 0                 0                 0                 0
+LR_y EXST1 1                       0                 0                 0                 0                 0                 0                 0
+WF_x EXST1 1                       0                 0                 0                 0                 0                 0                 0
+LG_y ESST3A 2                      0                 0                 0                 0                 0                 0                 0
+LG_y ESST3A 3                      0                 0                 0                 0                 0                 0                 0
+LG_y ESST3A 4                      0                 0                 0                 0                 0                 0                 0
+LL_x ESST3A 2                      0                 0                 0                 0                 0                 0                 0
+LL_x ESST3A 3                      0                 0                 0                 0                 0                 0                 0
+LL_x ESST3A 4                      0                 0                 0                 0                 0                 0                 0
+LAW1_y ESST3A 2                    0                 0                 0                 0                 0                 0                 0
+LAW1_y ESST3A 3                    0                 0                 0                 0                 0                 0                 0
+LAW1_y ESST3A 4                    0                 0                 0                 0                 0                 0                 0
+LAW2_y ESST3A 2                    0                 0                 0                 0                 0                 0                 0
+LAW2_y ESST3A 3                    0                 0                 0                 0                 0                 0                 0
+LAW2_y ESST3A 4                    0                 0                 0                 0                 0                 0                 0
+L_y BusFreq 1                      0                 0                 0                 0                 0                 0                 0
+L_y BusFreq 2                      0                 0                 0                 0                 0                 0                 0
+L_y BusFreq 3                      0                 0                 0                 0                 0                 0                 0
+L_y BusFreq 4                      0                 0                 0                 0                 0                 0                 0
+WO_x BusFreq 1                     0                 0            0.6761                 0                 0                 0                 0
+WO_x BusFreq 2                     0                 0                 0           0.97352                 0                 0                 0
+WO_x BusFreq 3                     0                 0                 0                 0           0.98253                 0                 0
+WO_x BusFreq 4                     0                 0                 0                 0                 0           0.77283                 0
+S1_y REGCA1 1                      0                 0                 0                 0                 0                 0                 0
+S2_y REGCA1 1                      0                 0                 0                 0                 0                 0           0.86683
+S0_y REGCA1 1                      0                 0                 0                 0                 0                 0                 0
+s0_y REECA1 1                      1                 0                 0                 0                 0                 0                 0
+S1_y REECA1 1                      0                 1                 0                 0                 0                 0                 0
+PIQ_xi REECA1 1                    0                 0                 0                 0                 0                 0                 0
+s4_y REECA1 1                      0                 0                 0                 0                 0                 0                 0
+pfilt_y REECA1 1                   0                 0                 0                 0                 0                 0                 0
+s5_y REECA1 1                      0                 0                 0                 0                 0                 0                 0
+PIV_xi REECA1 1                    0                 0                 0                 0                 0                 0                 0
+s0_y REPCA1 1                      0                 0                 0                 0                 0                 0                 0
+s1_y REPCA1 1                      0                 0                 0                 0                 0                 0                 0
+s2_xi REPCA1 1                     0                 0                 0                 0                 0                 0                 0
+s3_x REPCA1 1                      0                 0                 0                 0                 0                 0                 0
+s4_y REPCA1 1                      0                 0                 0                 0                 0                 0                 0
+s5_xi REPCA1 1                     0                 0                 0                 0                 0                 0                 0
+s6_y REPCA1 1                      0                 0                 0                 0                 0                 0                 0
+
+PARTICIPATION FACTORS [1/11]
+                                  #8                #9               #10               #11               #12               #13               #14
+
+delta GENROU 1                     0                 0                 0                 0                 0                 0                 0
+delta GENROU 2                     0                 0                 0                 0                 0                 0                 0
+delta GENROU 3                     0                 0                 0                 0                 0                 0                 0
+delta GENROU 4                     0                 0                 0                 0                 0                 0                 0
+omega GENROU 1                     0                 0                 0                 0                 0                 0                 0
+omega GENROU 2                     0                 0                 0                 0                 0                 0                 0
+omega GENROU 3                     0                 0                 0                 0                 0                 0                 0
+omega GENROU 4                     0                 0                 0                 0                 0                 0                 0
+e1q GENROU 1                       0                 0                 0                 0                 0                 0             6e-05
+e1q GENROU 2                       0                 0                 0                 0                 0                 0                 0
+e1q GENROU 3                       0                 0                 0                 0                 0           0.00018                 0
+e1q GENROU 4                       0                 0                 0                 0             8e-05                 0                 0
+e1d GENROU 1                       0                 0                 0                 0                 0                 0                 0
+e1d GENROU 2                       0                 0                 0                 0                 0                 0                 0
+e1d GENROU 3                       0                 0                 0                 0                 0                 0                 0
+e1d GENROU 4                       0                 0                 0                 0                 0                 0                 0
+e2d GENROU 1                       0                 0                 0                 0                 0             1e-05           0.00022
+e2d GENROU 2                       0                 0                 0                 0                 0                 0                 0
+e2d GENROU 3                       0                 0                 0                 0                 0            0.0001                 0
+e2d GENROU 4                       0                 0                 0                 0           0.00019                 0                 0
+e2q GENROU 1                       0                 0                 0                 0             1e-05             5e-05             2e-05
+e2q GENROU 2                       0                 0                 0                 0                 0                 0                 0
+e2q GENROU 3                       0                 0                 0                 0                 0                 0                 0
+e2q GENROU 4                       0                 0                 0                 0                 0                 0                 0
+LAG_y TGOV1 1                      0                 0                 0                 0                 0                 0                 0
+LAG_y TGOV1 2                      0                 0                 0                 0                 0                 0                 0
+LAG_y TGOV1 3                      0                 0                 0                 0                 0                 0                 0
+LAG_y TGOV1 4                      0                 0                 0                 0                 0                 0                 0
+LL_x TGOV1 1                       0                 0                 0                 0                 0                 0                 0
+LL_x TGOV1 2                       0                 0                 0                 0                 0                 0                 0
+LL_x TGOV1 3                       0                 0                 0                 0                 0                 0                 0
+LL_x TGOV1 4                       0                 0                 0                 0                 0                 0                 0
+LG_y EXST1 1                       0                 0                 0                 0                 0                 0                 0
+LL_x EXST1 1                       0                 0                 0                 0                 0                 0                 0
+LR_y EXST1 1                       0                 0                 0                 0                 0                 0                 0
+WF_x EXST1 1                       0                 0                 0                 0                 0                 0                 0
+LG_y ESST3A 2                      0                 0                 0                 0                 0                 0             8e-05
+LG_y ESST3A 3                      0                 0                 0                 0                 0            0.0003                 0
+LG_y ESST3A 4                      0                 0                 0                 0           0.00011                 0                 0
+LL_x ESST3A 2                      0                 0                 0                 0                 0                 0                 0
+LL_x ESST3A 3                      0                 0                 0                 0                 0                 0                 0
+LL_x ESST3A 4                      0                 0                 0                 0                 0                 0                 0
+LAW1_y ESST3A 2                    0                 0                 0                 0                 0                 0             2e-05
+LAW1_y ESST3A 3                    0                 0                 0                 0                 0             6e-05                 0
+LAW1_y ESST3A 4                    0                 0                 0                 0             9e-05                 0                 0
+LAW2_y ESST3A 2                    0                 0                 0                 0                 0             1e-05           0.76492
+LAW2_y ESST3A 3                    0                 0                 0                 0                 0           0.60944             1e-05
+LAW2_y ESST3A 4                    0                 0                 0                 0           0.60909                 0                 0
+L_y BusFreq 1                      1                 0                 0                 0                 0                 0                 0
+L_y BusFreq 2                      0           0.64592                 0                 0                 0                 0                 0
+L_y BusFreq 3                      0                 0           0.64592                 0                 0                 0                 0
+L_y BusFreq 4                      0                 0                 0            0.6761                 0                 0                 0
+WO_x BusFreq 1                     0                 0                 0                 0                 0                 0                 0
+WO_x BusFreq 2                     0                 0                 0                 0                 0                 0                 0
+WO_x BusFreq 3                     0                 0                 0                 0                 0                 0                 0
+WO_x BusFreq 4                     0                 0                 0                 0                 0                 0                 0
+S1_y REGCA1 1                      0                 0                 0                 0                 0                 0                 0
+S2_y REGCA1 1                      0                 0                 0                 0                 0                 0                 0
+S0_y REGCA1 1                      0                 0                 0                 0                 0                 0                 0
+s0_y REECA1 1                      0                 0                 0                 0                 0                 0                 0
+S1_y REECA1 1                      0                 0                 0                 0                 0                 0                 0
+PIQ_xi REECA1 1                    0                 0                 0                 0                 0                 0                 0
+s4_y REECA1 1                      0                 0                 0                 0                 0                 0                 0
+pfilt_y REECA1 1                   0                 0                 0                 0                 0                 0                 0
+s5_y REECA1 1                      0                 0                 0                 0                 0                 0                 0
+PIV_xi REECA1 1                    0                 0                 0                 0                 0                 0                 0
+s0_y REPCA1 1                      0                 0                 0                 0                 0                 0                 0
+s1_y REPCA1 1                      0                 0                 0                 0                 0                 0                 0
+s2_xi REPCA1 1                     0                 0                 0                 0                 0                 0                 0
+s3_x REPCA1 1                      0                 0                 0                 0                 0                 0                 0
+s4_y REPCA1 1                      0                 0                 0                 0                 0                 0                 0
+s5_xi REPCA1 1                     0                 0                 0                 0                 0                 0                 0
+s6_y REPCA1 1                      0                 0                 0                 0                 0                 0                 0
+
+PARTICIPATION FACTORS [2/11]
+                                 #15               #16               #17               #18               #19               #20               #21
+
+delta GENROU 1                     0                 0           0.00016                 0           0.00402           0.00132            0.0001
+delta GENROU 2                     0                 0                 0                 0                 0                 0                 0
+delta GENROU 3                     0                 0           0.00679                 0           0.00125           0.00046             1e-05
+delta GENROU 4                     0                 0           0.00785                 0           0.00103           0.00047             1e-05
+omega GENROU 1                     0                 0           0.00015                 0           0.00396            0.0013            0.0001
+omega GENROU 2                     0                 0                 0                 0                 0                 0                 0
+omega GENROU 3                     0                 0           0.00675                 0           0.00124           0.00046             1e-05
+omega GENROU 4                     0                 0           0.00769                 0           0.00102           0.00046             1e-05
+e1q GENROU 1                       0                 0             3e-05                 0           0.00339           0.00295           0.00199
+e1q GENROU 2                       0                 0                 0                 0                 0                 0                 0
+e1q GENROU 3                       0                 0                 0                 0           0.00042           0.00027            0.0001
+e1q GENROU 4                       0                 0             7e-05                 0             5e-05             8e-05             2e-05
+e1d GENROU 1                       0                 0             4e-05                 0            0.0115           0.00394           0.00021
+e1d GENROU 2                       0                 0                 0            0.0199                 0                 0                 0
+e1d GENROU 3                       0                 0           0.00727                 0           0.00011             3e-05             2e-05
+e1d GENROU 4                       0                 0           0.02505                 0            0.0012           0.00072             2e-05
+e2d GENROU 1                       0                 0           0.00417                 0           0.00942           0.00928           0.00769
+e2d GENROU 2                       0                 0                 0                 0                 0                 0                 0
+e2d GENROU 3                       0                 0           0.00235                 0           0.00494            0.0023             5e-05
+e2d GENROU 4                       0                 0           0.00691                 0           0.00622           0.00517            0.0001
+e2q GENROU 1                       0                 0           0.00176                 0           0.46601           0.16983           0.02983
+e2q GENROU 2                       0                 0                 0            1.0132                 0                 0                 0
+e2q GENROU 3                       0                 0           0.37261                 0           0.07414           0.03514           0.00285
+e2q GENROU 4                       0                 0           0.56543                 0           0.07945           0.04497           0.00183
+LAG_y TGOV1 1                      0                 0             1e-05                 0             9e-05             3e-05                 0
+LAG_y TGOV1 2                      0                 0                 0                 0                 0                 0                 0
+LAG_y TGOV1 3                      0                 0             6e-05                 0             1e-05                 0                 0
+LAG_y TGOV1 4                      0                 0           0.00013                 0             1e-05                 0                 0
+LL_x TGOV1 1                       0                 0                 0                 0                 0                 0                 0
+LL_x TGOV1 2                       0                 0                 0                 0                 0                 0                 0
+LL_x TGOV1 3                       0                 0                 0                 0                 0                 0                 0
+LL_x TGOV1 4                       0                 0                 0                 0                 0                 0                 0
+LG_y EXST1 1                       0                 0                 0                 0                 0                 0                 0
+LL_x EXST1 1                 0.33593           0.33593                 0                 0                 0                 0                 0
+LR_y EXST1 1                 0.33593           0.33593                 0                 0                 0                 0                 0
+WF_x EXST1 1                 0.00456           0.00456                 0                 0                 0                 0                 0
+LG_y ESST3A 2                      0                 0             9e-05                 0           0.16997           0.16725           0.46838
+LG_y ESST3A 3                      0                 0             1e-05                 0           0.01531           0.01054           0.01728
+LG_y ESST3A 4                      0                 0           0.00019                 0           0.00143           0.00235           0.00261
+LL_x ESST3A 2                      0                 0                 0                 0             2e-05             1e-05             1e-05
+LL_x ESST3A 3                      0                 0                 0                 0                 0                 0                 0
+LL_x ESST3A 4                      0                 0                 0                 0                 0                 0                 0
+LAW1_y ESST3A 2                    0                 0             1e-05                 0           0.00198           0.00176           0.00118
+LAW1_y ESST3A 3                    0                 0                 0                 0           0.00014             9e-05             3e-05
+LAW1_y ESST3A 4                    0                 0             9e-05                 0             5e-05             8e-05             2e-05
+LAW2_y ESST3A 2                    0                 0             2e-05                 0           0.00489           0.00399           0.00275
+LAW2_y ESST3A 3                    0                 0                 0                 0           0.00048           0.00027           0.00011
+LAW2_y ESST3A 4                    0                 0             6e-05                 0             6e-05             8e-05             2e-05
+L_y BusFreq 1                      0                 0                 0                 0                 0                 0                 0
+L_y BusFreq 2                      0                 0                 0                 0                 0                 0                 0
+L_y BusFreq 3                      0                 0                 0                 0                 0                 0                 0
+L_y BusFreq 4                      0                 0                 0                 0                 0                 0                 0
+WO_x BusFreq 1                     0                 0                 0                 0                 0                 0                 0
+WO_x BusFreq 2                     0                 0                 0                 0                 0                 0                 0
+WO_x BusFreq 3                     0                 0                 0                 0                 0                 0                 0
+WO_x BusFreq 4                     0                 0                 0                 0                 0                 0                 0
+S1_y REGCA1 1                      0                 0             7e-05                 0           0.00151           0.00739           0.00125
+S2_y REGCA1 1                      0                 0                 0                 0                 0                 0                 0
+S0_y REGCA1 1                      0                 0           0.00018                 0             2e-05                 0                 0
+s0_y REECA1 1                      0                 0                 0                 0                 0                 0                 0
+S1_y REECA1 1                      0                 0                 0                 0                 0                 0                 0
+PIQ_xi REECA1 1                    0                 0                 0                 0                 0                 0                 0
+s4_y REECA1 1                      0                 0           0.00034                 0           0.09841           0.53186           0.37664
+pfilt_y REECA1 1                   0                 0                 0                 0                 0                 0                 0
+s5_y REECA1 1                      0                 0                 0                 0                 0                 0                 0
+PIV_xi REECA1 1                    0                 0                 0                 0                 0                 0                 0
+s0_y REPCA1 1                      0                 0                 0                 0                 0                 0                 0
+s1_y REPCA1 1                      0                 0                 0                 0                 0                 0                 0
+s2_xi REPCA1 1                     0                 0                 0                 0                 0                 0                 0
+s3_x REPCA1 1                      0                 0                 0                 0                 0                 0                 0
+s4_y REPCA1 1                      0                 0                 0                 0                 0                 0                 0
+s5_xi REPCA1 1                     0                 0                 0                 0                 0                 0                 0
+s6_y REPCA1 1                      0                 0                 0                 0                 0                 0                 0
+
+PARTICIPATION FACTORS [3/11]
+                                 #22               #23               #24               #25               #26               #27               #28
+
+delta GENROU 1                     0             1e-05                 0           0.02474           0.00084                 0           0.00802
+delta GENROU 2                     0                 0                 0                 0                 0                 0                 0
+delta GENROU 3                     0             1e-05                 0           0.00397           0.00651                 0           0.00232
+delta GENROU 4                     0                 0                 0           0.00276           0.00229                 0           0.00576
+omega GENROU 1                     0             1e-05                 0           0.02361           0.00075                 0           0.00611
+omega GENROU 2                     0                 0                 0                 0                 0                 0                 0
+omega GENROU 3                     0             1e-05                 0           0.00393           0.00639                 0           0.00225
+omega GENROU 4                     0                 0                 0           0.00266            0.0021                 0           0.00462
+e1q GENROU 1                       0             3e-05                 0           0.00418            0.0001                 0            0.0153
+e1q GENROU 2                       0                 0                 0                 0                 0                 0                 0
+e1q GENROU 3                       0           0.00045                 0           0.00016           0.00107                 0           0.01135
+e1q GENROU 4                 0.00027                 0                 0           0.00013           0.00212                 0            0.0081
+e1d GENROU 1                   1e-05             1e-05                 0           0.00427           0.00153                 0           0.10013
+e1d GENROU 2                       0                 0                 0                 0                 0                 0                 0
+e1d GENROU 3                       0             1e-05                 0           0.01404           0.00268                 0           0.09937
+e1d GENROU 4                   1e-05                 0                 0           0.01201            0.0053                 0            0.0986
+e2d GENROU 1                   2e-05           0.00014                 0           0.51078           0.02086                 0           0.20674
+e2d GENROU 2                       0                 0           0.96173                 0                 0                 0                 0
+e2d GENROU 3                       0           0.00109                 0           0.06576           0.53809                 0           0.56761
+e2d GENROU 4                 0.00213             1e-05                 0           0.14574           0.37815                 0           0.27362
+e2q GENROU 1                   6e-05           0.00015                 0           0.04609           0.00172                 0            0.1259
+e2q GENROU 2                       0                 0                 0                 0                 0                 0                 0
+e2q GENROU 3                   3e-05           0.00034                 0            0.1244           0.01958                 0           0.21823
+e2q GENROU 4                 0.00016             1e-05                 0           0.05685            0.0045                 0           0.19698
+LAG_y TGOV1 1                      0                 0                 0           0.00233           0.00027                 0           0.01677
+LAG_y TGOV1 2                      0                 0                 0                 0                 0                 0                 0
+LAG_y TGOV1 3                      0                 0                 0             6e-05           0.00019                 0           0.00014
+LAG_y TGOV1 4                      0                 0                 0           0.00011            0.0003                 0           0.00507
+LL_x TGOV1 1                       0                 0                 0             1e-05                 0                 0             3e-05
+LL_x TGOV1 2                       0                 0                 0                 0                 0                 0                 0
+LL_x TGOV1 3                       0                 0                 0                 0                 0                 0                 0
+LL_x TGOV1 4                       0                 0                 0                 0                 0                 0             2e-05
+LG_y EXST1 1                       0                 0                 0                 0                 0           0.65748                 0
+LL_x EXST1 1                       0                 0                 0                 0                 0                 0                 0
+LR_y EXST1 1                       0                 0                 0                 0                 0                 0                 0
+WF_x EXST1 1                       0                 0                 0                 0                 0                 0                 0
+LG_y ESST3A 2                0.01016           0.05706                 0           0.00542                 0                 0           0.00951
+LG_y ESST3A 3                 0.0001           0.58177                 0           0.00018           0.00081                 0           0.00462
+LG_y ESST3A 4                0.39286           0.00098                 0           0.00013           0.00088                 0           0.00239
+LL_x ESST3A 2                      0                 0                 0             2e-05                 0                 0           0.00018
+LL_x ESST3A 3                      0                 0                 0                 0             1e-05                 0           0.00012
+LL_x ESST3A 4                      0                 0                 0                 0             3e-05                 0           0.00014
+LAW1_y ESST3A 2                    0             2e-05                 0           0.00222                 0                 0            0.0138
+LAW1_y ESST3A 3                    0           0.00015                 0             6e-05           0.00051                 0           0.00519
+LAW1_y ESST3A 4              0.00026                 0                 0           0.00016           0.00217                 0            0.0105
+LAW2_y ESST3A 2                1e-05             4e-05                 0           0.00201                 0                 0            0.0049
+LAW2_y ESST3A 3                    0           0.00049                 0             7e-05           0.00041                 0           0.00262
+LAW2_y ESST3A 4              0.00027                 0                 0             7e-05           0.00058                 0           0.00177
+L_y BusFreq 1                      0                 0                 0                 0                 0                 0                 0
+L_y BusFreq 2                      0                 0                 0                 0                 0                 0                 0
+L_y BusFreq 3                      0                 0                 0                 0                 0                 0                 0
+L_y BusFreq 4                      0                 0                 0                 0                 0                 0                 0
+WO_x BusFreq 1                     0                 0                 0                 0                 0                 0                 0
+WO_x BusFreq 2                     0                 0                 0                 0                 0                 0                 0
+WO_x BusFreq 3                     0                 0                 0                 0                 0                 0                 0
+WO_x BusFreq 4                     0                 0                 0                 0                 0                 0                 0
+S1_y REGCA1 1                      0                 0                 0            0.0006             9e-05                 0           0.00682
+S2_y REGCA1 1                      0                 0                 0                 0                 0                 0                 0
+S0_y REGCA1 1                      0                 0                 0           0.00095             5e-05                 0           0.06423
+s0_y REECA1 1                      0                 0                 0                 0                 0                 0                 0
+S1_y REECA1 1                      0                 0                 0                 0                 0                 0                 0
+PIQ_xi REECA1 1                    0                 0                 0                 0                 0                 0                 0
+s4_y REECA1 1                0.00032           0.00187                 0           0.00111             8e-05                 0           0.00357
+pfilt_y REECA1 1                   0                 0                 0                 0                 0                 0                 0
+s5_y REECA1 1                      0                 0                 0                 0                 0                 0                 0
+PIV_xi REECA1 1                    0                 0                 0                 0                 0                 0                 0
+s0_y REPCA1 1                      0                 0                 0                 0                 0                 0                 0
+s1_y REPCA1 1                      0                 0                 0                 0                 0                 0                 0
+s2_xi REPCA1 1                     0                 0                 0                 0                 0                 0                 0
+s3_x REPCA1 1                      0                 0                 0                 0                 0                 0                 0
+s4_y REPCA1 1                      0                 0                 0                 0                 0                 0                 0
+s5_xi REPCA1 1                     0                 0                 0                 0                 0                 0                 0
+s6_y REPCA1 1                      0                 0                 0                 0                 0                 0                 0
+
+PARTICIPATION FACTORS [4/11]
+                                 #29               #30               #31               #32               #33               #34               #35
+
+delta GENROU 1               0.00802           0.00065           0.00699           0.37165           0.37165           0.01236           0.01236
+delta GENROU 2                     0                 0                 0                 0                 0                 0                 0
+delta GENROU 3               0.00232             1e-05           0.00023            0.1504            0.1504           0.22719           0.22719
+delta GENROU 4               0.00576           0.00461           0.00111           0.05557           0.05557           0.33654           0.33654
+omega GENROU 1               0.00611           0.00173           0.08369           0.41126           0.41126           0.01371           0.01371
+omega GENROU 2                     0                 0                 0                 0                 0                 0                 0
+omega GENROU 3               0.00225             1e-05           0.00022           0.16644           0.16644           0.25361           0.25361
+omega GENROU 4               0.00462           0.04572           0.00415            0.0603            0.0603           0.36591           0.36591
+e1q GENROU 1                  0.0153           0.00011           0.00293            0.0118            0.0118           0.00028           0.00028
+e1q GENROU 2                       0                 0                 0                 0                 0                 0                 0
+e1q GENROU 3                 0.01135           0.00023           0.00089           0.00182           0.00182           0.00393           0.00393
+e1q GENROU 4                  0.0081           0.00025           0.00069           0.00026           0.00026           0.00342           0.00342
+e1d GENROU 1                 0.10013           0.00028            0.0033            0.0137            0.0137           0.00021           0.00021
+e1d GENROU 2                       0                 0                 0                 0                 0                 0                 0
+e1d GENROU 3                 0.09937            0.0002           0.00549           0.03429           0.03429           0.03232           0.03232
+e1d GENROU 4                  0.0986           0.00659           0.00273           0.01466           0.01466           0.05881           0.05881
+e2d GENROU 1                 0.20674           0.00128           0.04734           0.09958           0.09958           0.00326           0.00326
+e2d GENROU 2                       0                 0                 0                 0                 0                 0                 0
+e2d GENROU 3                 0.56761           0.00756           0.01297           0.00479           0.00479           0.01578           0.01578
+e2d GENROU 4                 0.27362           0.00191           0.01045           0.00056           0.00056           0.01256           0.01256
+e2q GENROU 1                  0.1259           0.00072           0.00223           0.01091           0.01091           0.00014           0.00014
+e2q GENROU 2                       0                 0                 0                 0                 0                 0                 0
+e2q GENROU 3                 0.21823             3e-05           0.00304           0.02862           0.02862           0.02487           0.02487
+e2q GENROU 4                 0.19698           0.00348           0.00225           0.01625           0.01625           0.06128           0.06128
+LAG_y TGOV1 1                0.01677           0.04488           0.91545           0.02217           0.02217           0.00073           0.00073
+LAG_y TGOV1 2                      0                 0                 0                 0                 0                 0                 0
+LAG_y TGOV1 3                0.00014                 0             3e-05           0.01308           0.01308           0.02086           0.02086
+LAG_y TGOV1 4                0.00507           0.47369           0.01817            0.0013            0.0013           0.00784           0.00784
+LL_x TGOV1 1                   3e-05             3e-05           0.00101           0.00192           0.00192             8e-05             8e-05
+LL_x TGOV1 2                       0                 0                 0                 0                 0                 0                 0
+LL_x TGOV1 3                       0                 0                 0           0.00097           0.00097           0.00192           0.00192
+LL_x TGOV1 4                   2e-05           0.00098             6e-05           0.00034           0.00034           0.00263           0.00263
+LG_y EXST1 1                       0                 0                 0                 0                 0                 0                 0
+LL_x EXST1 1                       0                 0                 0                 0                 0                 0                 0
+LR_y EXST1 1                       0                 0                 0                 0                 0                 0                 0
+WF_x EXST1 1                       0                 0                 0                 0                 0                 0                 0
+LG_y ESST3A 2                0.00951             4e-05           0.00104           0.00046           0.00046             4e-05             4e-05
+LG_y ESST3A 3                0.00462             7e-05           0.00027             7e-05             7e-05             4e-05             4e-05
+LG_y ESST3A 4                0.00239             6e-05           0.00015             1e-05             1e-05             4e-05             4e-05
+LL_x ESST3A 2                0.00018                 0             3e-05           0.00012           0.00012             1e-05             1e-05
+LL_x ESST3A 3                0.00012                 0             1e-05             3e-05             3e-05             2e-05             2e-05
+LL_x ESST3A 4                0.00014             1e-05             1e-05             1e-05             1e-05             4e-05             4e-05
+LAW1_y ESST3A 2               0.0138             9e-05            0.0024            0.0013            0.0013            0.0001            0.0001
+LAW1_y ESST3A 3              0.00519           0.00011           0.00048           0.00015           0.00015            0.0001            0.0001
+LAW1_y ESST3A 4               0.0105           0.00041           0.00104             9e-05             9e-05           0.00038           0.00038
+LAW2_y ESST3A 2               0.0049             2e-05           0.00057            0.0003            0.0003             2e-05             2e-05
+LAW2_y ESST3A 3              0.00262             4e-05           0.00016             5e-05             5e-05             3e-05             3e-05
+LAW2_y ESST3A 4              0.00177             5e-05           0.00012             1e-05             1e-05             4e-05             4e-05
+L_y BusFreq 1                      0                 0                 0                 0                 0                 0                 0
+L_y BusFreq 2                      0                 0                 0                 0                 0                 0                 0
+L_y BusFreq 3                      0                 0                 0                 0                 0                 0                 0
+L_y BusFreq 4                      0                 0                 0                 0                 0                 0                 0
+WO_x BusFreq 1                     0                 0                 0                 0                 0                 0                 0
+WO_x BusFreq 2                     0                 0                 0                 0                 0                 0                 0
+WO_x BusFreq 3                     0                 0                 0                 0                 0                 0                 0
+WO_x BusFreq 4                     0                 0                 0                 0                 0                 0                 0
+S1_y REGCA1 1                0.00682           0.00023           0.00099           0.00023           0.00023             2e-05             2e-05
+S2_y REGCA1 1                      0                 0                 0                 0                 0                 0                 0
+S0_y REGCA1 1                0.06423           0.00027           0.00416           0.00042           0.00042           0.00012           0.00012
+s0_y REECA1 1                      0                 0                 0                 0                 0                 0                 0
+S1_y REECA1 1                      0                 0                 0                 0                 0                 0                 0
+PIQ_xi REECA1 1                    0                 0                 0                 0                 0                 0                 0
+s4_y REECA1 1                0.00357             8e-05           0.00032             6e-05             6e-05             1e-05             1e-05
+pfilt_y REECA1 1                   0                 0                 0                 0                 0                 0                 0
+s5_y REECA1 1                      0                 0                 0                 0                 0                 0                 0
+PIV_xi REECA1 1                    0                 0                 0                 0                 0                 0                 0
+s0_y REPCA1 1                      0                 0                 0                 0                 0                 0                 0
+s1_y REPCA1 1                      0                 0                 0                 0                 0                 0                 0
+s2_xi REPCA1 1                     0                 0                 0                 0                 0                 0                 0
+s3_x REPCA1 1                      0                 0                 0                 0                 0                 0                 0
+s4_y REPCA1 1                      0                 0                 0                 0                 0                 0                 0
+s5_xi REPCA1 1                     0                 0                 0                 0                 0                 0                 0
+s6_y REPCA1 1                      0                 0                 0                 0                 0                 0                 0
+
+PARTICIPATION FACTORS [5/11]
+                                 #36               #37               #38               #39               #40               #41               #42
+
+delta GENROU 1                     0           0.04368           0.00246             0.029           0.04079           0.04079           0.00886
+delta GENROU 2                     0                 0                 0                 0                 0                 0                 0
+delta GENROU 3                     0           0.00588           0.04188           0.00052           0.01522           0.01522            0.0052
+delta GENROU 4                     0           0.00855           0.02119           0.04589            0.0052            0.0052           0.02249
+omega GENROU 1                     0           0.05831           0.00318           0.03744           0.05268           0.05268           0.01143
+omega GENROU 2                     0                 0                 0                 0                 0                 0                 0
+omega GENROU 3                     0           0.00936            0.1572           0.00363           0.00495           0.00495           0.00253
+omega GENROU 4                     0            0.0107            0.0259           0.05598           0.00635           0.00635           0.02742
+e1q GENROU 1                       0           0.00271           0.00069           0.00731           0.02548           0.02548           0.01734
+e1q GENROU 2                       0                 0                 0                 0                 0                 0                 0
+e1q GENROU 3                       0           0.00634           0.03205           0.06639            0.0041            0.0041           0.00867
+e1q GENROU 4                       0            0.0122           0.00034           0.05583           0.00271           0.00271           0.01381
+e1d GENROU 1                       0           0.10261           0.01681           0.06878           0.46644           0.46644            0.1296
+e1d GENROU 2                  1.0198                 0                 0                 0                 0                 0                 0
+e1d GENROU 3                       0           0.26945           0.41564           0.03622           0.37961           0.37961            0.0982
+e1d GENROU 4                       0           0.43439           0.14323           0.27883           0.01923           0.01923           0.15683
+e2d GENROU 1                       0           0.00208           0.00083           0.00438           0.01991           0.01991            0.0158
+e2d GENROU 2                       0                 0                 0                 0                 0                 0                 0
+e2d GENROU 3                       0           0.00321           0.02035             0.013            0.0058            0.0058           0.00169
+e2d GENROU 4                       0            0.0066           0.00238           0.04841           0.00039           0.00039           0.00207
+e2q GENROU 1                       0           0.03284           0.00029           0.00406           0.01774           0.01774           0.00681
+e2q GENROU 2                 0.01977                 0                 0                 0                 0                 0                 0
+e2q GENROU 3                       0            0.0646           0.04387           0.00365           0.01258           0.01258            0.0057
+e2q GENROU 4                       0            0.1249            0.0161           0.02021           0.00066           0.00066           0.01002
+LAG_y TGOV1 1                      0           0.00584           0.00047           0.00616           0.01105           0.01105           0.00212
+LAG_y TGOV1 2                      0                 0                 0                 0                 0                 0                 0
+LAG_y TGOV1 3                      0           0.00594           0.69988           0.04445            0.2756            0.2756           0.17711
+LAG_y TGOV1 4                      0           0.00043           0.00153           0.00368           0.00053           0.00053           0.00204
+LL_x TGOV1 1                       0           0.00068             2e-05           0.00025            0.0003            0.0003             7e-05
+LL_x TGOV1 2                       0                 0                 0                 0                 0                 0                 0
+LL_x TGOV1 3                       0           0.00028            0.0064           0.00021           0.00048           0.00048           0.00031
+LL_x TGOV1 4                       0           0.00015           0.00023           0.00045             4e-05             4e-05            0.0002
+LG_y EXST1 1                       0                 0                 0                 0                 0                 0                 0
+LL_x EXST1 1                       0                 0                 0                 0                 0                 0                 0
+LR_y EXST1 1                       0                 0                 0                 0                 0                 0                 0
+WF_x EXST1 1                       0                 0                 0                 0                 0                 0                 0
+LG_y ESST3A 2                      0           0.00021           0.00011           0.00121           0.00502           0.00502           0.00319
+LG_y ESST3A 3                      0           0.00034           0.00284           0.00735           0.00053           0.00053           0.00106
+LG_y ESST3A 4                      0           0.00048             5e-05           0.00494           0.00027           0.00027           0.00121
+LL_x ESST3A 2                      0             9e-05             2e-05           0.00022           0.00067           0.00067           0.00049
+LL_x ESST3A 3                      0           0.00021           0.00083           0.00186            0.0001            0.0001           0.00023
+LL_x ESST3A 4                      0           0.00062             3e-05           0.00268           0.00011           0.00011           0.00056
+LAW1_y ESST3A 2                    0           0.00156           0.00208           0.03667           0.31458           0.31458           0.22776
+LAW1_y ESST3A 3                    0           0.00197           0.04094           0.17287            0.0255            0.0255           0.05863
+LAW1_y ESST3A 4                    0           0.01089           0.00276           0.45495           0.05066           0.05066           0.26075
+LAW2_y ESST3A 2                    0           0.00013             7e-05           0.00074           0.00302           0.00302           0.00193
+LAW2_y ESST3A 3                    0           0.00023           0.00192           0.00495           0.00035           0.00035           0.00071
+LAW2_y ESST3A 4                    0           0.00043             4e-05           0.00437           0.00023           0.00023           0.00106
+L_y BusFreq 1                      0                 0                 0                 0                 0                 0                 0
+L_y BusFreq 2                      0                 0                 0                 0                 0                 0                 0
+L_y BusFreq 3                      0                 0                 0                 0                 0                 0                 0
+L_y BusFreq 4                      0                 0                 0                 0                 0                 0                 0
+WO_x BusFreq 1                     0                 0                 0                 0                 0                 0                 0
+WO_x BusFreq 2                     0                 0                 0                 0                 0                 0                 0
+WO_x BusFreq 3                     0                 0                 0                 0                 0                 0                 0
+WO_x BusFreq 4                     0                 0                 0                 0                 0                 0                 0
+S1_y REGCA1 1                      0           0.01495           0.00576           0.06392           0.61774           0.61774           0.09574
+S2_y REGCA1 1                      0                 0                 0                 0                 0                 0                 0
+S0_y REGCA1 1                      0           0.04688           0.01103           0.20991           0.34859           0.34859           0.18025
+s0_y REECA1 1                      0                 0                 0                 0                 0                 0                 0
+S1_y REECA1 1                      0                 0                 0                 0                 0                 0                 0
+PIQ_xi REECA1 1                    0                 0                 0                 0                 0                 0                 0
+s4_y REECA1 1                      0           0.00151           0.00023           0.00159           0.00747           0.00747           0.00102
+pfilt_y REECA1 1                   0                 0                 0                 0                 0                 0                 0
+s5_y REECA1 1                      0                 0                 0                 0                 0                 0                 0
+PIV_xi REECA1 1                    0                 0                 0                 0                 0                 0                 0
+s0_y REPCA1 1                      0                 0                 0                 0                 0                 0                 0
+s1_y REPCA1 1                      0                 0                 0                 0                 0                 0                 0
+s2_xi REPCA1 1                     0                 0                 0                 0                 0                 0                 0
+s3_x REPCA1 1                      0                 0                 0                 0                 0                 0                 0
+s4_y REPCA1 1                      0                 0                 0                 0                 0                 0                 0
+s5_xi REPCA1 1                     0                 0                 0                 0                 0                 0                 0
+s6_y REPCA1 1                      0                 0                 0                 0                 0                 0                 0
+
+PARTICIPATION FACTORS [6/11]
+                                 #43               #44               #45               #46               #47               #48               #49
+
+delta GENROU 1               0.00886           0.02615            0.0288            0.0288           0.02692           0.02692                 0
+delta GENROU 2                     0                 0                 0                 0                 0                 0                 0
+delta GENROU 3                0.0052           0.00253           0.01387           0.01387           0.01046           0.01046                 0
+delta GENROU 4               0.02249           0.01018           0.01547           0.01547           0.01675           0.01675                 0
+omega GENROU 1               0.01143           0.03374           0.25193           0.25193           0.02707           0.02707                 0
+omega GENROU 2                     0                 0                 0                 0                 0                 0                 0
+omega GENROU 3               0.00253           0.00013           0.17716           0.17716           0.01611           0.01611                 0
+omega GENROU 4               0.02742           0.01242           0.14098           0.14098           0.02799           0.02799                 0
+e1q GENROU 1                 0.01734           0.00662           0.01436           0.01436           0.16269           0.16269                 0
+e1q GENROU 2                       0                 0                 0                 0                 0                 0                 0
+e1q GENROU 3                 0.00867            0.0025           0.01582           0.01582           0.23435           0.23435                 0
+e1q GENROU 4                 0.01381           0.00049           0.02396           0.02396           0.26162           0.26162                 0
+e1d GENROU 1                  0.1296           0.19039           0.00094           0.00094           0.00073           0.00073                 0
+e1d GENROU 2                       0                 0                 0                 0                 0                 0                 0
+e1d GENROU 3                  0.0982           0.35489           0.00083           0.00083           0.00047           0.00047                 0
+e1d GENROU 4                 0.15683           0.04527           0.00119           0.00119           0.00029           0.00029                 0
+e2d GENROU 1                  0.0158           0.00399           0.00143           0.00143           0.00361           0.00361                 0
+e2d GENROU 2                       0                 0                 0                 0                 0                 0                 0
+e2d GENROU 3                 0.00169           0.00183             5e-05             5e-05           0.00327           0.00327                 0
+e2d GENROU 4                 0.00207           0.00021           0.00037           0.00037           0.00448           0.00448                 0
+e2q GENROU 1                 0.00681           0.00775           0.00053           0.00053           0.00178           0.00178                 0
+e2q GENROU 2                       0                 0                 0                 0                 0                 0                 0
+e2q GENROU 3                  0.0057           0.01409           0.00063           0.00063            0.0008            0.0008                 0
+e2q GENROU 4                 0.01002           0.00201           0.00112           0.00112           0.00093           0.00093                 0
+LAG_y TGOV1 1                0.00212           0.00664           0.01348           0.01348           0.00188           0.00188                 0
+LAG_y TGOV1 2                      0                 0                 0                 0                 0                 0                 0
+LAG_y TGOV1 3                0.17711           0.50142           0.01894           0.01894           0.00218           0.00218                 0
+LAG_y TGOV1 4                0.00204           0.00098           0.00302           0.00302           0.00078           0.00078                 0
+LL_x TGOV1 1                   7e-05            0.0002           0.11476           0.11476            0.0243            0.0243                 0
+LL_x TGOV1 2                       0                 0                 0                 0                 0                 0                 0
+LL_x TGOV1 3                 0.00031           0.00011           0.11782           0.11782           0.02088           0.02088                 0
+LL_x TGOV1 4                  0.0002             9e-05           0.07802           0.07802           0.03053           0.03053                 0
+LG_y EXST1 1                       0                 0                 0                 0                 0                 0                 0
+LL_x EXST1 1                       0                 0                 0                 0                 0                 0           0.00304
+LR_y EXST1 1                       0                 0                 0                 0                 0                 0           0.00304
+WF_x EXST1 1                       0                 0                 0                 0                 0                 0           0.95307
+LG_y ESST3A 2                0.00319           0.00124           0.00011           0.00011           0.00157           0.00157                 0
+LG_y ESST3A 3                0.00106           0.00034            0.0001            0.0001            0.0014            0.0014                 0
+LG_y ESST3A 4                0.00121             5e-05             9e-05             9e-05           0.00117           0.00117                 0
+LL_x ESST3A 2                0.00049           0.00018           0.00258           0.00258           0.05378           0.05378                 0
+LL_x ESST3A 3                0.00023             7e-05           0.00332           0.00332           0.06709           0.06709                 0
+LL_x ESST3A 4                0.00056             2e-05           0.00618           0.00618           0.12036           0.12036                 0
+LAW1_y ESST3A 2              0.22776           0.65793           0.00039           0.00039           0.00522           0.00522                 0
+LAW1_y ESST3A 3              0.05863           0.14004           0.00027           0.00027           0.00359           0.00359                 0
+LAW1_y ESST3A 4              0.26075           0.07652           0.00093           0.00093           0.01175           0.01175                 0
+LAW2_y ESST3A 2              0.00193           0.00075             7e-05             7e-05           0.00103           0.00103                 0
+LAW2_y ESST3A 3              0.00071           0.00023             8e-05             8e-05           0.00101           0.00101                 0
+LAW2_y ESST3A 4              0.00106             4e-05             9e-05             9e-05           0.00111           0.00111                 0
+L_y BusFreq 1                      0                 0                 0                 0                 0                 0                 0
+L_y BusFreq 2                      0                 0                 0                 0                 0                 0                 0
+L_y BusFreq 3                      0                 0                 0                 0                 0                 0                 0
+L_y BusFreq 4                      0                 0                 0                 0                 0                 0                 0
+WO_x BusFreq 1                     0                 0                 0                 0                 0                 0                 0
+WO_x BusFreq 2                     0                 0                 0                 0                 0                 0                 0
+WO_x BusFreq 3                     0                 0                 0                 0                 0                 0                 0
+WO_x BusFreq 4                     0                 0                 0                 0                 0                 0                 0
+S1_y REGCA1 1                0.09574           0.24715             8e-05             8e-05           0.00052           0.00052                 0
+S2_y REGCA1 1                      0                 0                 0                 0                 0                 0                 0
+S0_y REGCA1 1                0.18025           0.24791           0.00023           0.00023           0.00091           0.00091                 0
+s0_y REECA1 1                      0                 0                 0                 0                 0                 0                 0
+S1_y REECA1 1                      0                 0                 0                 0                 0                 0                 0
+PIQ_xi REECA1 1                    0                 0                 0                 0                 0                 0                 0
+s4_y REECA1 1                0.00102           0.00035             2e-05             2e-05           0.00012           0.00012                 0
+pfilt_y REECA1 1                   0                 0                 0                 0                 0                 0                 0
+s5_y REECA1 1                      0                 0                 0                 0                 0                 0                 0
+PIV_xi REECA1 1                    0                 0                 0                 0                 0                 0                 0
+s0_y REPCA1 1                      0                 0                 0                 0                 0                 0                 0
+s1_y REPCA1 1                      0                 0                 0                 0                 0                 0                 0
+s2_xi REPCA1 1                     0                 0                 0                 0                 0                 0                 0
+s3_x REPCA1 1                      0                 0                 0                 0                 0                 0                 0
+s4_y REPCA1 1                      0                 0                 0                 0                 0                 0                 0
+s5_xi REPCA1 1                     0                 0                 0                 0                 0                 0                 0
+s6_y REPCA1 1                      0                 0                 0                 0                 0                 0                 0
+
+PARTICIPATION FACTORS [7/11]
+                                 #50               #51               #52               #53               #54               #55               #56
+
+delta GENROU 1               0.00209           0.00209           0.01465           0.01465           0.00062           0.00228                 0
+delta GENROU 2                     0                 0                 0                 0                 0                 0                 0
+delta GENROU 3               0.00627           0.00627           0.00634           0.00634           0.00257           0.00158                 0
+delta GENROU 4               0.00371           0.00371           0.00424           0.00424           0.00599           0.00011                 0
+omega GENROU 1               0.00033           0.00033           0.00177           0.00177                 0                 0                 0
+omega GENROU 2                     0                 0                 0                 0                 0                 0                 0
+omega GENROU 3               0.00125           0.00125           0.00097           0.00097             1e-05                 0                 0
+omega GENROU 4               0.00076           0.00076           0.00066           0.00066             2e-05                 0                 0
+e1q GENROU 1                 0.04689           0.04689           0.37115           0.37115           0.00041           0.00845                 0
+e1q GENROU 2                       0                 0                 0                 0                 0                 0                 0
+e1q GENROU 3                 0.29786           0.29786           0.22127           0.22127           0.00459           0.00545                 0
+e1q GENROU 4                 0.36501           0.36501            0.0378            0.0378           0.00493                 0                 0
+e1d GENROU 1                 0.00055           0.00055           0.00328           0.00328                 0                 0                 0
+e1d GENROU 2                       0                 0                 0                 0                 0                 0                 0
+e1d GENROU 3                 0.00233           0.00233           0.00136           0.00136             1e-05             2e-05                 0
+e1d GENROU 4                 0.00197           0.00197           0.00017           0.00017             8e-05             1e-05                 0
+e2d GENROU 1                 0.00076           0.00076           0.00646           0.00646                 0             1e-05                 0
+e2d GENROU 2                       0                 0                 0                 0                 0                 0                 0
+e2d GENROU 3                 0.00214           0.00214           0.00166           0.00166                 0                 0                 0
+e2d GENROU 4                 0.00271           0.00271            0.0003            0.0003                 0                 0                 0
+e2q GENROU 1                 0.00034           0.00034           0.00204           0.00204                 0                 0                 0
+e2q GENROU 2                       0                 0                 0                 0                 0                 0                 0
+e2q GENROU 3                 0.00117           0.00117            0.0007            0.0007             1e-05             2e-05                 0
+e2q GENROU 4                 0.00137           0.00137           0.00013           0.00013             9e-05             1e-05                 0
+LAG_y TGOV1 1                  5e-05             5e-05           0.00025           0.00025             1e-05             5e-05                 0
+LAG_y TGOV1 2                      0                 0                 0                 0                 0                 0                 0
+LAG_y TGOV1 3                0.00033           0.00033           0.00026           0.00026           0.00013             8e-05                 0
+LAG_y TGOV1 4                  4e-05             4e-05             4e-05             4e-05             6e-05                 0                 0
+LL_x TGOV1 1                 0.00129           0.00129            0.0058            0.0058           0.02891           0.24655                 0
+LL_x TGOV1 2                       0                 0                 0                 0                 0                 0                 0
+LL_x TGOV1 3                 0.00704           0.00704           0.00453           0.00453           0.21155           0.29929                 0
+LL_x TGOV1 4                 0.00361           0.00361           0.00263           0.00263           0.42634           0.01787                 0
+LG_y EXST1 1                       0                 0                 0                 0                 0                 0                 0
+LL_x EXST1 1                       0                 0                 0                 0                 0                 0                 0
+LR_y EXST1 1                       0                 0                 0                 0                 0                 0                 0
+WF_x EXST1 1                       0                 0                 0                 0                 0                 0                 0
+LG_y ESST3A 2                0.00022           0.00022           0.00131           0.00131                 0                 0                 0
+LG_y ESST3A 3                0.00083           0.00083           0.00064           0.00064             1e-05             1e-05                 0
+LG_y ESST3A 4                0.00076           0.00076             8e-05             8e-05             1e-05                 0                 0
+LL_x ESST3A 2                0.01775           0.01775           0.12713           0.12713             9e-05           0.00049                 0
+LL_x ESST3A 3                 0.0953            0.0953           0.08669           0.08669           0.00151            0.0022                 0
+LL_x ESST3A 4                0.18838           0.18838            0.0247            0.0247           0.00397             1e-05                 0
+LAW1_y ESST3A 2              0.00071           0.00071           0.00425           0.00425                 0             1e-05                 0
+LAW1_y ESST3A 3              0.00209           0.00209            0.0016            0.0016             2e-05             4e-05                 0
+LAW1_y ESST3A 4              0.00754           0.00754           0.00083           0.00083           0.00012                 0                 0
+LAW2_y ESST3A 2              0.00014           0.00014           0.00086           0.00086                 0                 0                 0
+LAW2_y ESST3A 3               0.0006            0.0006           0.00046           0.00046             1e-05             1e-05                 0
+LAW2_y ESST3A 4              0.00073           0.00073             8e-05             8e-05             1e-05                 0                 0
+L_y BusFreq 1                      0                 0                 0                 0                 0                 0                 0
+L_y BusFreq 2                      0                 0                 0                 0                 0                 0                 0
+L_y BusFreq 3                      0                 0                 0                 0                 0                 0                 0
+L_y BusFreq 4                      0                 0                 0                 0                 0                 0                 0
+WO_x BusFreq 1                     0                 0                 0                 0                 0                 0                 0
+WO_x BusFreq 2                     0                 0                 0                 0                 0                 0                 0
+WO_x BusFreq 3                     0                 0                 0                 0                 0                 0                 0
+WO_x BusFreq 4                     0                 0                 0                 0                 0                 0                 0
+S1_y REGCA1 1                      0                 0             1e-05             1e-05                 0                 0           0.12332
+S2_y REGCA1 1                      0                 0                 0                 0                 0                 0                 0
+S0_y REGCA1 1                  1e-05             1e-05             2e-05             2e-05                 0                 0             1.147
+s0_y REECA1 1                      0                 0                 0                 0                 0                 0                 0
+S1_y REECA1 1                      0                 0                 0                 0                 0                 0                 0
+PIQ_xi REECA1 1                    0                 0                 0                 0                 0                 0                 0
+s4_y REECA1 1                      0                 0                 0                 0                 0                 0                 0
+pfilt_y REECA1 1                   0                 0                 0                 0                 0                 0                 0
+s5_y REECA1 1                      0                 0                 0                 0                 0                 0                 0
+PIV_xi REECA1 1                    0                 0                 0                 0                 0                 0                 0
+s0_y REPCA1 1                      0                 0                 0                 0                 0                 0                 0
+s1_y REPCA1 1                      0                 0                 0                 0                 0                 0                 0
+s2_xi REPCA1 1                     0                 0                 0                 0                 0                 0                 0
+s3_x REPCA1 1                      0                 0                 0                 0                 0                 0                 0
+s4_y REPCA1 1                      0                 0                 0                 0                 0                 0                 0
+s5_xi REPCA1 1                     0                 0                 0                 0                 0                 0                 0
+s6_y REPCA1 1                      0                 0                 0                 0                 0                 0                 0
+
+PARTICIPATION FACTORS [8/11]
+                                #57*              #58*               #59               #60               #61               #62               #63
+
+delta GENROU 1               0.08897           0.43357                 0                 0                 0                 0                 0
+delta GENROU 2                     0                 0                 0                 0                 0                 0                 0
+delta GENROU 3                0.0069           0.33807                 0                 0                 0                 0                 0
+delta GENROU 4               0.01906           0.30517                 0                 0                 0                 0                 0
+omega GENROU 1                     0                 0                 0                 0                 0                 0                 0
+omega GENROU 2                     0                 0                 0                 0                 0                 0                 0
+omega GENROU 3                     0                 0                 0                 0                 0                 0                 0
+omega GENROU 4                     0                 0                 0                 0                 0                 0                 0
+e1q GENROU 1                       0                 0                 0                 0                 0                 0                 0
+e1q GENROU 2                  1.0768           0.07682                 0                 0                 0                 0                 0
+e1q GENROU 3                       0                 0                 0                 0                 0                 0                 0
+e1q GENROU 4                       0                 0                 0                 0                 0                 0                 0
+e1d GENROU 1                       0                 0                 0                 0                 0                 0                 0
+e1d GENROU 2                       0                 0                 0                 0                 0                 0                 0
+e1d GENROU 3                       0                 0                 0                 0                 0                 0                 0
+e1d GENROU 4                       0                 0                 0                 0                 0                 0                 0
+e2d GENROU 1                       0                 0                 0                 0                 0                 0                 0
+e2d GENROU 2                       0                 0                 0                 0                 0                 0                 0
+e2d GENROU 3                       0                 0                 0                 0                 0                 0                 0
+e2d GENROU 4                       0                 0                 0                 0                 0                 0                 0
+e2q GENROU 1                       0                 0                 0                 0                 0                 0                 0
+e2q GENROU 2                       0                 0                 0                 0                 0                 0                 0
+e2q GENROU 3                       0                 0                 0                 0                 0                 0                 0
+e2q GENROU 4                       0                 0                 0                 0                 0                 0                 0
+LAG_y TGOV1 1                      0                 0                 0                 0                 0                 0                 0
+LAG_y TGOV1 2                      0                 0                 0                 0                 0           0.90793                 0
+LAG_y TGOV1 3                      0                 0                 0                 0                 0                 0                 0
+LAG_y TGOV1 4                      0                 0                 0                 0                 0                 0                 0
+LL_x TGOV1 1                       0                 0                 0                 0                 0                 0                 0
+LL_x TGOV1 2                       0                 0           0.81551                 0                 0                 0                 0
+LL_x TGOV1 3                       0                 0                 0                 0                 0                 0                 0
+LL_x TGOV1 4                       0                 0                 0                 0                 0                 0                 0
+LG_y EXST1 1                       0                 0                 0                 0                 0                 0                 0
+LL_x EXST1 1                       0                 0                 0                 0                 0                 0                 0
+LR_y EXST1 1                       0                 0                 0                 0                 0                 0                 0
+WF_x EXST1 1                       0                 0                 0                 0                 0                 0                 0
+LG_y ESST3A 2                      0                 0                 0                 0                 0                 0                 0
+LG_y ESST3A 3                      0                 0                 0                 0                 0                 0                 0
+LG_y ESST3A 4                      0                 0                 0                 0                 0                 0                 0
+LL_x ESST3A 2                      0                 0                 0                 0                 0                 0                 0
+LL_x ESST3A 3                      0                 0                 0                 0                 0                 0                 0
+LL_x ESST3A 4                      0                 0                 0                 0                 0                 0                 0
+LAW1_y ESST3A 2                    0                 0                 0                 0                 0                 0                 0
+LAW1_y ESST3A 3                    0                 0                 0                 0                 0                 0                 0
+LAW1_y ESST3A 4                    0                 0                 0                 0                 0                 0                 0
+LAW2_y ESST3A 2                    0                 0                 0                 0                 0                 0                 0
+LAW2_y ESST3A 3                    0                 0                 0                 0                 0                 0                 0
+LAW2_y ESST3A 4                    0                 0                 0                 0                 0                 0                 0
+L_y BusFreq 1                      0                 0                 0                 0                 0                 0                 0
+L_y BusFreq 2                      0                 0                 0                 0                 0                 0                 0
+L_y BusFreq 3                      0                 0                 0                 0                 0                 0                 0
+L_y BusFreq 4                      0                 0                 0                 0                 0                 0                 0
+WO_x BusFreq 1                     0                 0                 0                 0                 0                 0                 0
+WO_x BusFreq 2                     0                 0                 0                 0                 0                 0                 0
+WO_x BusFreq 3                     0                 0                 0                 0                 0                 0                 0
+WO_x BusFreq 4                     0                 0                 0                 0                 0                 0                 0
+S1_y REGCA1 1                      0                 0                 0                 0                 0                 0                 0
+S2_y REGCA1 1                      0                 0                 0                 0                 0                 0                 0
+S0_y REGCA1 1                      0                 0                 0                 0                 0                 0                 0
+s0_y REECA1 1                      0                 0                 0                 0                 0                 0                 0
+S1_y REECA1 1                      0                 0                 0                 0                 0                 0                 0
+PIQ_xi REECA1 1                    0                 0                 0                 0                 0                 0                 0
+s4_y REECA1 1                      0                 0                 0                 0                 0                 0                 0
+pfilt_y REECA1 1                   0                 0                 0                 0                 0                 0                 0
+s5_y REECA1 1                      0                 0                 0                 0                 1                 0                 0
+PIV_xi REECA1 1                    0                 0                 0                 0                 0                 0                 0
+s0_y REPCA1 1                      0                 0                 0                 0                 0                 0                 0
+s1_y REPCA1 1                      0                 0                 0                 0                 0                 0                 0
+s2_xi REPCA1 1                     0                 0                 0                 0                 0                 0                 0
+s3_x REPCA1 1                      0                 0                 0                 0                 0                 0                 1
+s4_y REPCA1 1                      0                 0                 0                 0                 0                 0                 0
+s5_xi REPCA1 1                     0                 0                 0                 0                 0                 0                 0
+s6_y REPCA1 1                      0                 0                 0                 1                 0                 0                 0
+
+PARTICIPATION FACTORS [9/11]
+                                #64*              #65*              #66*               #67              #68*               #69               #70
+
+delta GENROU 1                     0                 0                 0                 0                 0                 0                 0
+delta GENROU 2                     1                 0                 0                 0                 0                 0                 0
+delta GENROU 3                     0                 0                 0                 0                 0                 0                 0
+delta GENROU 4                     0                 0                 0                 0                 0                 0                 0
+omega GENROU 1                     0                 0                 0                 0                 0                 0                 0
+omega GENROU 2                     0                 1                 0                 0                 0                 0                 0
+omega GENROU 3                     0                 0                 0                 0                 0                 0                 0
+omega GENROU 4                     0                 0                 0                 0                 0                 0                 0
+e1q GENROU 1                       0                 0                 0                 0                 0                 0                 0
+e1q GENROU 2                       0                 0                 0                 0                 0                 0                 0
+e1q GENROU 3                       0                 0                 0                 0                 0                 0                 0
+e1q GENROU 4                       0                 0                 0                 0                 0                 0                 0
+e1d GENROU 1                       0                 0                 0                 0                 0                 0                 0
+e1d GENROU 2                       0                 0                 0                 0                 0                 0                 0
+e1d GENROU 3                       0                 0                 0                 0                 0                 0                 0
+e1d GENROU 4                       0                 0                 0                 0                 0                 0                 0
+e2d GENROU 1                       0                 0                 0                 0                 0                 0                 0
+e2d GENROU 2                       0                 0                 0                 0                 0                 0                 0
+e2d GENROU 3                       0                 0                 0                 0                 0                 0                 0
+e2d GENROU 4                       0                 0                 0                 0                 0                 0                 0
+e2q GENROU 1                       0                 0                 0                 0                 0                 0                 0
+e2q GENROU 2                       0                 0                 0                 0                 0                 0                 0
+e2q GENROU 3                       0                 0                 0                 0                 0                 0                 0
+e2q GENROU 4                       0                 0                 0                 0                 0                 0                 0
+LAG_y TGOV1 1                      0                 0                 0                 0                 0                 0                 0
+LAG_y TGOV1 2                      0                 0                 0                 0                 0                 0                 0
+LAG_y TGOV1 3                      0                 0                 0                 0                 0                 0                 0
+LAG_y TGOV1 4                      0                 0                 0                 0                 0                 0                 0
+LL_x TGOV1 1                       0                 0                 0                 0                 0                 0                 0
+LL_x TGOV1 2                       0                 0                 0                 0                 0                 0                 0
+LL_x TGOV1 3                       0                 0                 0                 0                 0                 0                 0
+LL_x TGOV1 4                       0                 0                 0                 0                 0                 0                 0
+LG_y EXST1 1                       0                 0                 0                 0                 0                 0                 0
+LL_x EXST1 1                       0                 0                 0                 0                 0                 0                 0
+LR_y EXST1 1                       0                 0                 0                 0                 0                 0                 0
+WF_x EXST1 1                       0                 0                 0                 0                 0                 0                 0
+LG_y ESST3A 2                      0                 0                 0                 0                 0                 0                 0
+LG_y ESST3A 3                      0                 0                 0                 0                 0                 0                 0
+LG_y ESST3A 4                      0                 0                 0                 0                 0                 0                 0
+LL_x ESST3A 2                      0                 0                 0                 0                 0                 0                 0
+LL_x ESST3A 3                      0                 0                 0                 0                 0                 0                 0
+LL_x ESST3A 4                      0                 0                 0                 0                 0                 0                 0
+LAW1_y ESST3A 2                    0                 0                 0                 0                 0                 0                 0
+LAW1_y ESST3A 3                    0                 0                 0                 0                 0                 0                 0
+LAW1_y ESST3A 4                    0                 0                 0                 0                 0                 0                 0
+LAW2_y ESST3A 2                    0                 0                 0                 0                 0                 0                 0
+LAW2_y ESST3A 3                    0                 0                 0                 0                 0                 0                 0
+LAW2_y ESST3A 4                    0                 0                 0                 0                 0                 0                 0
+L_y BusFreq 1                      0                 0                 0                 0                 0                 0                 0
+L_y BusFreq 2                      0                 0                 0                 0                 0                 0                 0
+L_y BusFreq 3                      0                 0                 0                 0                 0                 0                 0
+L_y BusFreq 4                      0                 0                 0                 0                 0                 0                 0
+WO_x BusFreq 1                     0                 0                 0                 0                 0                 0                 0
+WO_x BusFreq 2                     0                 0                 0                 0                 0                 0                 0
+WO_x BusFreq 3                     0                 0                 0                 0                 0                 0                 0
+WO_x BusFreq 4                     0                 0                 0                 0                 0                 0                 0
+S1_y REGCA1 1                      0                 0                 0                 0                 0                 0                 0
+S2_y REGCA1 1                      0                 0                 0                 0                 0                 0                 0
+S0_y REGCA1 1                      0                 0                 0                 0                 0                 0                 0
+s0_y REECA1 1                      0                 0                 0                 0                 0                 0                 0
+S1_y REECA1 1                      0                 0                 0                 0                 0                 0                 0
+PIQ_xi REECA1 1                    0                 0                 1                 0                 0                 0                 0
+s4_y REECA1 1                      0                 0                 0                 0                 0                 0                 0
+pfilt_y REECA1 1                   0                 0                 0                 1                 0                 0                 0
+s5_y REECA1 1                      0                 0                 0                 0                 0                 0                 0
+PIV_xi REECA1 1                    0                 0                 0                 0                 1                 0                 0
+s0_y REPCA1 1                      0                 0                 0                 0                 0                 1                 0
+s1_y REPCA1 1                      0                 0                 0                 0                 0                 0                 1
+s2_xi REPCA1 1                     0                 0                 0                 0                 0                 0                 0
+s3_x REPCA1 1                      0                 0                 0                 0                 0                 0                 0
+s4_y REPCA1 1                      0                 0                 0                 0                 0                 0                 0
+s5_xi REPCA1 1                     0                 0                 0                 0                 0                 0                 0
+s6_y REPCA1 1                      0                 0                 0                 0                 0                 0                 0
+
+PARTICIPATION FACTORS [10/11]
+                                #71*               #72              #73*
+
+delta GENROU 1                     0                 0                 0
+delta GENROU 2                     0                 0                 0
+delta GENROU 3                     0                 0                 0
+delta GENROU 4                     0                 0                 0
+omega GENROU 1                     0                 0                 0
+omega GENROU 2                     0                 0                 0
+omega GENROU 3                     0                 0                 0
+omega GENROU 4                     0                 0                 0
+e1q GENROU 1                       0                 0                 0
+e1q GENROU 2                       0                 0                 0
+e1q GENROU 3                       0                 0                 0
+e1q GENROU 4                       0                 0                 0
+e1d GENROU 1                       0                 0                 0
+e1d GENROU 2                       0                 0                 0
+e1d GENROU 3                       0                 0                 0
+e1d GENROU 4                       0                 0                 0
+e2d GENROU 1                       0                 0                 0
+e2d GENROU 2                       0                 0                 0
+e2d GENROU 3                       0                 0                 0
+e2d GENROU 4                       0                 0                 0
+e2q GENROU 1                       0                 0                 0
+e2q GENROU 2                       0                 0                 0
+e2q GENROU 3                       0                 0                 0
+e2q GENROU 4                       0                 0                 0
+LAG_y TGOV1 1                      0                 0                 0
+LAG_y TGOV1 2                      0                 0                 0
+LAG_y TGOV1 3                      0                 0                 0
+LAG_y TGOV1 4                      0                 0                 0
+LL_x TGOV1 1                       0                 0                 0
+LL_x TGOV1 2                       0                 0                 0
+LL_x TGOV1 3                       0                 0                 0
+LL_x TGOV1 4                       0                 0                 0
+LG_y EXST1 1                       0                 0                 0
+LL_x EXST1 1                       0                 0                 0
+LR_y EXST1 1                       0                 0                 0
+WF_x EXST1 1                       0                 0                 0
+LG_y ESST3A 2                      0                 0                 0
+LG_y ESST3A 3                      0                 0                 0
+LG_y ESST3A 4                      0                 0                 0
+LL_x ESST3A 2                      0                 0                 0
+LL_x ESST3A 3                      0                 0                 0
+LL_x ESST3A 4                      0                 0                 0
+LAW1_y ESST3A 2                    0                 0                 0
+LAW1_y ESST3A 3                    0                 0                 0
+LAW1_y ESST3A 4                    0                 0                 0
+LAW2_y ESST3A 2                    0                 0                 0
+LAW2_y ESST3A 3                    0                 0                 0
+LAW2_y ESST3A 4                    0                 0                 0
+L_y BusFreq 1                      0                 0                 0
+L_y BusFreq 2                      0                 0                 0
+L_y BusFreq 3                      0                 0                 0
+L_y BusFreq 4                      0                 0                 0
+WO_x BusFreq 1                     0                 0                 0
+WO_x BusFreq 2                     0                 0                 0
+WO_x BusFreq 3                     0                 0                 0
+WO_x BusFreq 4                     0                 0                 0
+S1_y REGCA1 1                      0                 0                 0
+S2_y REGCA1 1                      0                 0                 0
+S0_y REGCA1 1                      0                 0                 0
+s0_y REECA1 1                      0                 0                 0
+S1_y REECA1 1                      0                 0                 0
+PIQ_xi REECA1 1                    0                 0                 0
+s4_y REECA1 1                      0                 0                 0
+pfilt_y REECA1 1                   0                 0                 0
+s5_y REECA1 1                      0                 0                 0
+PIV_xi REECA1 1                    0                 0                 0
+s0_y REPCA1 1                      0                 0                 0
+s1_y REPCA1 1                      0                 0                 0
+s2_xi REPCA1 1                     1                 0                 0
+s3_x REPCA1 1                      0                 0                 0
+s4_y REPCA1 1                      0                 1                 0
+s5_xi REPCA1 1                     0                 0                 1
+s6_y REPCA1 1                      0                 0                 0
+

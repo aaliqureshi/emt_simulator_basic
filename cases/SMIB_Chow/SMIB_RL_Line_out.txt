@@ -1,0 +1,46 @@
+ANDES 1.9.1.post59+gc7e7304d
+Copyright (C) 2015-2022 Hantao Cui
+
+ANDES comes with ABSOLUTELY NO WARRANTY
+Case file: /Users/aali27/Work/repos/andes/andes/cases/SMIB_Chow/SMIB_RL_Line.xlsx
+Report time: 03/27/2025 04:07:51 PM
+
+Power flow converged in 4 iterations.
+Flat-start: No
+
+Statistics:
+Buses                              3
+Generators                         2
+Committed Gens                     2
+Loads                              1
+Shunts                             0
+Lines                              2
+Transformers                       0
+Areas                              1
+
+EXTENDED SUMMARY:
+                              P (pu)            Q (pu)
+
+Generation                  0.029913           0.29913
+Load                               0                 0
+
+BUS DATA:
+                            Bus Name            Vm(pu)          Va(rad.)
+
+1                                  1              1.03           0.31948
+2                                  2                 1        3.3499e-16
+3                                  3            1.0044           0.18429
+
+LINE DATA:
+                           Line Name     Fr. Bus (idx)      To Bus (idx)       P From (pu)       Q From (pu)         P To (pu)         Q To (pu)
+
+Line_1                        Line 1                 1                 3             0.944           0.14416          -0.93111         -0.015225
+Line_2                        Line 2                 2                 3          -0.91409           0.15497           0.93111          0.015225
+
+OTHER ALGEBRAIC VARIABLES:
+                                    
+
+q PV 1                       0.14416
+q Slack 1                    0.15497
+p Slack 1                   -0.91409
+
