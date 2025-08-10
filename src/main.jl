@@ -19,10 +19,10 @@ fault = Fault(Int32(3), 1e10, 1e10, zeros(1), zeros(1))
 # Instantiate Load struct (5 fields)
 load = Load(Int32[], Float64[], Float64[], Float64[], Float64[])
 
-shunt = Shunt(Int32[2])
+slack = Slack(Int32[2])
 
 
-models = (bus=bus, line=line, generator=generator, fault=fault, load=load, shunt=shunt)
+models = (bus=bus, line=line, generator=generator, fault=fault, load=load, slack=slack)
 
 function phasor2DP!(bus::Bus)
     vdq = @. bus.v * exp(1im * bus.theta)
@@ -53,8 +53,8 @@ idx_fault_d = idx_line_q[end]+1 : idx_line_q[end]+n_fault
 idx_fault_q = idx_fault_d[end]+1 : idx_fault_d[end]+n_fault
 idx_stator_d = idx_fault_q[end]+1 : idx_fault_q[end]+n_gen
 idx_stator_q = idx_stator_d[end]+1 : idx_stator_d[end]+n_gen
-idx_balance_d = idx_stator_q[end]+1 : idx_stator_q[end]+n_bus - length(shunt.bus)
-idx_balance_q = idx_balance_d[end]+1 : idx_balance_d[end]+n_bus - length(shunt.bus)
+idx_balance_d = idx_stator_q[end]+1 : idx_stator_q[end]+n_bus - length(slack.bus)
+idx_balance_q = idx_balance_d[end]+1 : idx_balance_d[end]+n_bus - length(slack.bus)
 
 address = Dict(
     "swing_delta" => idx_swing_delta,
@@ -105,9 +105,9 @@ function swing_equation!(du, u, address::Dict, models :: NamedTuple)
 
 
     # Test
-    non_shunt_bus = setdiff(bus.idx, shunt.bus)
-    bus_vd[non_shunt_bus] .= bd
-    bus_vq[non_shunt_bus] .= bq
+    non_slack_buses = setdiff(bus.idx, slack.bus)
+    bus_vd[non_slack_buses] .= bd
+    bus_vq[non_slack_buses] .= bq
 
 
     du[address["swing_delta"]] = @. Ω * (gen_omega - one(T))
@@ -147,9 +147,9 @@ function line_equation!(du, u, address::Dict, models :: NamedTuple)
     bq = u[address["balance_q"]]
 
 
-    non_shunt_bus = setdiff(bus.idx, shunt.bus)
-    bus_vd[non_shunt_bus] .= bd
-    bus_vq[non_shunt_bus] .= bq
+    non_slack_buses = setdiff(bus.idx, slack.bus)
+    bus_vd[non_slack_buses] .= bd
+    bus_vq[non_slack_buses] .= bq
 
 
     du[address["line_d"]] = @. ((bus_vd[line.bus1_idx] - bus_vd[line.bus2_idx] - line.R * line_id) / line.X) + (Ω * line_iq)
@@ -187,9 +187,9 @@ function fault_equation!(du, u, address::Dict, models :: NamedTuple)
     bq = u[address["balance_q"]]
 
 
-    non_shunt_bus = setdiff(bus.idx, shunt.bus)
-    bus_vd[non_shunt_bus] .= bd
-    bus_vq[non_shunt_bus] .= bq
+    non_slack_buses = setdiff(bus.idx, slack.bus)
+    bus_vd[non_slack_buses] .= bd
+    bus_vq[non_slack_buses] .= bq
 
 
     du[address["fault_d"][1]] = (bus_vd[fault.bus] - (fault.r_s * fault_id[1])) / fault.l_s + (Ω * fault_iq[1])
@@ -226,9 +226,9 @@ function stator_equation!(du, u, address::Dict, models :: NamedTuple)
     bq = u[address["balance_q"]]
 
 
-    non_shunt_bus = setdiff(bus.idx, shunt.bus)
-    bus_vd[non_shunt_bus] .= bd
-    bus_vq[non_shunt_bus] .= bq
+    non_slack_buses = setdiff(bus.idx, slack.bus)
+    bus_vd[non_slack_buses] .= bd
+    bus_vq[non_slack_buses] .= bq
 
 
     du[address["stator_d"]] = @. generator.e_q_prime - gen_id * generator.x_d_prime - bus_vd[generator.bus] * cos(gen_delta) - bus_vq[generator.bus] * sin(gen_delta)
@@ -264,9 +264,9 @@ function balance_equation!(du, u, address::Dict, models :: NamedTuple)
     bq = u[address["balance_q"]]
 
 
-    non_shunt_bus = setdiff(bus.idx, shunt.bus)
-    bus_vd[non_shunt_bus] .= bd
-    bus_vq[non_shunt_bus] .= bq
+    non_slack_buses = setdiff(bus.idx, slack.bus)
+    bus_vd[non_slack_buses] .= bd
+    bus_vq[non_slack_buses] .= bq
 
 
     real_power = zeros(T, length(bus.idx))
