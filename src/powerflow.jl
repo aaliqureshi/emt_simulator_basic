@@ -50,43 +50,10 @@ address = Dict(
 )
 
 
-function line_equation!(du, u, address::Dict, models :: NamedTuple)
-    T = eltype(u)
-    Ω = T(2*pi*60)
-
-    bus = models.bus
-    line = models.line
-
-    line_id = u[address["line_d"]]
-    line_iq = u[address["line_q"]]
-
-    # make working copies with the right eltype
-    bus_v = Vector{T}(bus.v)  # converts Float64 -> T safely
-    bus_theta = Vector{T}(bus.theta)
-
-    bus_vd = Vector{T}(bus.vd)
-    bus_vq = Vector{T}(bus.vq)
-
-
-    # bus_vd[vd_update_buses] .= u[address["balance_d"]]
-    # bus_vq[vq_update_buses] .= u[address["balance_q"]]
-
-    bus_v[vd_update_buses] .= u[address["balance_q"]]
-    bus_theta[vq_update_buses] .= u[address["balance_d"]]
-
-    # bus_theta[generator.bus] = @. asin(bus_vq[generator.bus] ./ bus_v[generator.bus])
-    # bus_vd[generator.bus] = @. bus_v[generator.bus] * cos(bus_theta[generator.bus])
-
-    bus_vd = @. bus_v * cos(bus_theta)
-    bus_vq = @. bus_v * sin(bus_theta)
-
-
-    du[address["line_d"]] = @. ((bus_vd[line.bus1_idx] - bus_vd[line.bus2_idx] - line.R * line_id) / line.X) + (Ω * line_iq)
-    du[address["line_q"]] = @. ((bus_vq[line.bus1_idx] - bus_vq[line.bus2_idx] - line.R * line_iq) / line.X) - (Ω * line_id)
-end
 
 function power_balance!(du, u, address::Dict, models :: NamedTuple)
     T = eltype(u)
+    Ω = T(2*pi*60)
 
     bus = models.bus
     line = models.line
@@ -105,17 +72,11 @@ function power_balance!(du, u, address::Dict, models :: NamedTuple)
     bus_vq = Vector{T}(bus.vq)
 
 
-    # bus_vd[vd_update_buses] .= u[address["balance_d"]]
-    # bus_vq[vq_update_buses] .= u[address["balance_q"]]
-
     bus_v[vd_update_buses] .= u[address["balance_q"]]
     bus_theta[vq_update_buses] .= u[address["balance_d"]]
 
     bus_vd = @. bus_v * cos(bus_theta)
     bus_vq = @. bus_v * sin(bus_theta)
-
-    # bus_theta[generator.bus] = @. asin(bus_vq[generator.bus] ./ bus_v[generator.bus])
-    # bus_vd[generator.bus] = @. bus_v[generator.bus] * cos(bus_theta[generator.bus])
 
 
     real_power = zeros(T, length(bus.idx))
@@ -136,19 +97,17 @@ function power_balance!(du, u, address::Dict, models :: NamedTuple)
 
 
     real_power[load.bus] -= p_load
-    # real_power[fault.bus] -= p_fault
     real_power[generator.bus] += p_gen
     real_power[line.bus1_idx] -= p_line_from
     real_power[line.bus2_idx] += p_line_to
 
     reactive_power[load.bus] -= q_load
-    # reactive_power[fault.bus] -= q_fault
     reactive_power[generator.bus]+=q_gen
     reactive_power[line.bus1_idx] -= q_line_from
     reactive_power[line.bus2_idx] += q_line_to
 
-    # du[address["balance_d"]] = @. real_power[vd_update_buses]
-    # du[address["balance_q"]] = @. reactive_power[vq_update_buses]
+    du[address["line_d"]] = @. ((bus_vd[line.bus1_idx] - bus_vd[line.bus2_idx] - line.R * line_id) / line.X) + (Ω * line_iq)
+    du[address["line_q"]] = @. ((bus_vq[line.bus1_idx] - bus_vq[line.bus2_idx] - line.R * line_iq) / line.X) - (Ω * line_id)
 
     du[address["balance_d"]] = @. real_power[non_slack_buses]
     du[address["balance_q"]] = @. reactive_power[load.bus]
@@ -158,10 +117,6 @@ end
 
 non_slack_buses = setdiff(models.bus.idx, models.slack.bus)
 u0 = vcat(models.line.i_d, models.line.i_q, models.bus.v[vd_update_buses], models.bus.theta[vq_update_buses])
-# u0 = vcat(models.line.i_d, models.line.i_q, models.bus.vd[vd_update_buses], models.bus.vq[vq_update_buses])
-# u0 = [0.9140869456592352, 0.9140869456592352,
-# 0.1549696189867898, 0.15496961898679878,
-# 1.004422950206025, 0.31948009885442474, 0.1842884927989168]
 
 du = zeros(length(u0))
 
@@ -170,7 +125,7 @@ using OrdinaryDiffEq
 
 function powerflow!(du, u, p, t)
     address, models = p
-    line_equation!(du, u, address, models)
+    # line_equation!(du, u, address, models)
     power_balance!(du, u, address, models)
 end
 
@@ -186,4 +141,16 @@ sol = solve(prob, Trapezoid(), adaptive=false, dt = 50e-5)
 
 
 
-@show du
+models.line.i_d .= sol.u[end][address["line_d"]]
+models.line.i_q .= sol.u[end][address["line_q"]]
+
+models.bus.v[vd_update_buses] .= sol.u[end][address["balance_q"]]
+models.bus.theta[vq_update_buses] .= sol.u[end][address["balance_d"]]
+
+phasor2DP!(models.bus)
+
+@show models.line.i_d
+@show models.line.i_q
+
+@show models.bus.v
+@show models.bus.theta
