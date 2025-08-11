@@ -50,6 +50,7 @@ mutable struct Generator{T<:Real}
     omega :: Vector{T}
     M :: Vector{T}
     p_m :: Vector{T}
+    q_m :: Vector{T}
     i_d :: Vector{T}
     i_q :: Vector{T}
     x_d_prime :: Vector{T}
@@ -58,6 +59,7 @@ mutable struct Generator{T<:Real}
     function Generator{T}(n::Integer) where {T<:Real}
         new{T}(Vector{Int32}(undef, n),
                Vector{Int32}(undef, n),
+               Vector{T}(undef, n),
                Vector{T}(undef, n),
                Vector{T}(undef, n),
                Vector{T}(undef, n),
