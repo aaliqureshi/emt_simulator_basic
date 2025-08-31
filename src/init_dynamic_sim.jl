@@ -111,4 +111,14 @@ prob = NonlinearProblem(init_system!, u0, p)
 sol = solve(prob, abstol = 1e-8, reltol = 1e-8)
 
 
+## update models
+
+models.generator.delta .= sol.u[address["delta"]]
+models.generator.omega .= sol.u[address["omega"]]
+models.generator.e_q_prime .= sol.u[address["e_q_prime"]]
+models.generator.i_d .= sol.u[address["gen_id"]]
+models.generator.i_q .= sol.u[address["gen_iq"]]
+models.line.i_d .= sol.u[address["line_id"]]
+models.line.i_q .= sol.u[address["line_iq"]]
+
 
