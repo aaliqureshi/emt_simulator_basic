@@ -1,3 +1,6 @@
+# TODO: add load currents in the equations
+
+
 n_gens = length(models.generator.bus)
 n_lines = length(models.line.idx)
 
@@ -82,9 +85,10 @@ function init_gens!(du, u, address, models)
                                 bus_vq[generator.bus] * cos(gen_delta)
 
     ## temporary, remove later
-    du[address["e_q_prime"]] = @. gen_id - line_iq[1]
-
-
+    # du[address["e_q_prime"]] = @. gen_id - line_iq[1]
+    du[address["e_q_prime"]] = @. line_id[1] - (
+                                  gen_id * cos(gen_delta - pi/2) - 
+                                  gen_iq * sin(gen_delta - pi/2))
 
 end
 
@@ -105,4 +109,6 @@ u0 = ones(length(du))
 
 prob = NonlinearProblem(init_system!, u0, p)
 sol = solve(prob, abstol = 1e-8, reltol = 1e-8)
+
+
 
