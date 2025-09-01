@@ -76,6 +76,12 @@ function init_gens!(du, u, p)
     bus_vd = Vector{T}(bus.vd)  # converts Float64 -> T safely
     bus_vq = Vector{T}(bus.vq)
 
+    id = zeros(T, length(bus.idx))
+    i_load = (load.p - 1im * load.q) / (bus_vd[load.bus] + 1im * bus_vq[load.bus])
+    id[:] += incidence_matrix * line_id
+    id[load.bus] -= @. real(i_load)
+    id[generator.bus] += @. gen_id * cos(gen_delta - pi/2) - gen_iq * sin(gen_delta - pi/2)
+
     du[address["delta"]] = @. Ω * (gen_omega - one(T))
     du[address["omega"]] = @. ((generator.p_m - (gen_id * bus_vd[generator.bus] * sin(gen_delta) - 
                                      gen_id * bus_vq[generator.bus] * cos(gen_delta) + 
@@ -89,12 +95,7 @@ function init_gens!(du, u, p)
                                 bus_vd[generator.bus] * sin(gen_delta) + 
                                 bus_vq[generator.bus] * cos(gen_delta)
 
-    ## temporary, remove later
-    # TODO: add full KCL equation here: 
-    ## gen_id - load_id + network_id = 0
-    du[address["e_q_prime"]] = @. line_id[1] - (
-                                  gen_id * cos(gen_delta - pi/2) - 
-                                  gen_iq * sin(gen_delta - pi/2))
+    du[address["e_q_prime"]] = @. id[generator.bus]
 
 end
 
