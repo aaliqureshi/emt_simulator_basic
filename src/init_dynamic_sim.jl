@@ -1,3 +1,4 @@
+# run after powerflow_traditional.jl
 # TODO: add load currents in the equations
 
 
@@ -23,8 +24,10 @@ address = Dict(
 )
 
 
-function init_line!(du, u, address, models)
+function init_line!(du, u, p)
     T = eltype(u)
+
+    address, models, _ = p
 
     bus = models.bus
     line = models.line
@@ -48,11 +51,13 @@ function init_line!(du, u, address, models)
 
 end
 
-function init_gens!(du, u, address, models)
+function init_gens!(du, u, p)
     T = eltype(u)
 
     Ω = T(2*pi*60)
     d = T(1.0)
+
+    address, models, incidence_matrix = p
 
     bus = models.bus
     generator = models.generator
@@ -85,7 +90,8 @@ function init_gens!(du, u, address, models)
                                 bus_vq[generator.bus] * cos(gen_delta)
 
     ## temporary, remove later
-    # du[address["e_q_prime"]] = @. gen_id - line_iq[1]
+    # TODO: add full KCL equation here: 
+    ## gen_id - load_id + network_id = 0
     du[address["e_q_prime"]] = @. line_id[1] - (
                                   gen_id * cos(gen_delta - pi/2) - 
                                   gen_iq * sin(gen_delta - pi/2))
@@ -95,15 +101,36 @@ end
 function init_system!(u, p)
     T = eltype(u)
     du = zeros(T, length(u))
-    address, models = p
+    # address, models = p
 
-    init_gens!(du, u, address, models)
-    init_line!(du, u, address, models)
+    init_gens!(du, u, p)
+    init_line!(du, u, p)
 
     return du
 end
 
-p = (address, models)
+## add incidence matrix here
+function create_incidence_matrix(models)
+    bus1_idx = models.line.bus1_idx
+    bus2_idx = models.line.bus2_idx
+
+    num_bus = length(models.bus.idx)
+    num_line = length(models.line.idx)
+    incidence_matrix = zeros(Int32, num_bus, num_line)
+
+    for line in collect(1:num_line)
+        incidence_matrix[bus1_idx[line], line] = -1
+        incidence_matrix[bus2_idx[line], line] = 1
+    end
+
+    return incidence_matrix
+end
+
+
+incidence_matrix = create_incidence_matrix(models)
+
+
+p = (address, models, incidence_matrix)
 du = zeros(5 * n_gens + 2 * n_lines)
 u0 = ones(length(du))
 
