@@ -8,8 +8,8 @@ include("data_loader.jl")
 using .DataLoader
 
 
-# data_file = "cases/SMIB_Chow/SMIB_RL_Line_DrCui.xlsx"
-data_file = "cases/ieee14/ieee14_simplified.xlsx"
+data_file = "cases/SMIB_Chow/SMIB_RL_Line_DrCui.xlsx"
+# data_file = "cases/ieee14/ieee14_simplified.xlsx"
 # data_file = "cases/5bus/pjm5bus_simplified.xlsx"
 # data_file = "cases/ieee39/ieee39_simplified.xlsx"
 
@@ -62,16 +62,11 @@ function power_flow_traditional!(du, u, address, models)
     P = zeros(T, length(bus.idx))
     Q = zeros(T, length(bus.idx))
 
-    idx = 1
-    for i in eachindex(bus.idx)
-        for j in 1:length(V)
-            P[idx] += Y_abs[i,j] * V[j] * cos(theta[i] - theta[j] - Y_angle[i,j])
-            Q[idx] += Y_abs[i,j] * V[j] * sin(theta[i] - theta[j] - Y_angle[i,j])
-        end
-        P[idx] *= V[i]
-        Q[idx] *= V[i]
-        idx += 1
-    end
+    v = V .* exp.(1im .* theta)
+    S = v .* conj.(Y * v)
+
+    P = real.(S)
+    Q = imag.(S)
 
     ## power balance : (power injection into network) + (load) - (generation) = 0 
     P[generator.bus] -= @. generator.p_m
@@ -123,3 +118,42 @@ models.bus.theta[non_slack_buses] .= sol.u[address["balance_real_power"]]
 
 @show models.bus.v
 @show models.bus.theta
+
+
+function phasor2DP!(bus)
+    vdq = @. bus.v * exp(1im * bus.theta)
+    bus.vd = real(vdq)
+    bus.vq = imag(vdq)
+end
+# convert to d-q components
+phasor2DP!(models.bus)
+
+# @show models.bus.vd
+# @show models.bus.vq
+
+# Save bus values to reference file
+# using JSON
+
+# # Save reference solution for 14-bus system
+# bus_ref_data = Dict(
+#     "v" => models.bus.v,
+#     "theta" => models.bus.theta,
+#     "vd" => models.bus.vd,
+#     "vq" => models.bus.vq,
+#     "bus_indices" => models.bus.idx
+# )
+
+# open("14bus_ref_sol.json", "w") do f
+#     JSON.print(f, bus_ref_data, 2)
+# end
+
+# println("Reference solution saved to 14bus_ref_sol.json")
+# println("Saved values:")
+# println("  v: ", bus_ref_data["v"])
+# println("  theta: ", bus_ref_data["theta"])
+# println("  vd: ", bus_ref_data["vd"])
+# println("  vq: ", bus_ref_data["vq"])
+
+
+include("../scripts/compare_with_reference.jl")
+compare_with_reference(models)
