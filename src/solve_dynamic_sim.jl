@@ -229,14 +229,17 @@ begin
 end
 
 mass_matrix = zeros(length(du), length(du))
-for i in range(1, (2*n_gens + 2*n_lines + 2*n_faults))
+# for i in range(1, (2*n_gens + 2*n_lines + 2*n_faults))
+#     mass_matrix[i,i] = 1.0
+# end
+
+for i in range(1, (2*n_gens + 2*n_lines))
     mass_matrix[i,i] = 1.0
 end
 
 tspan = (0.0, 10.0)
 prob0 = ODEFunction(solve_dynamic_sim!, mass_matrix=mass_matrix)
 prob = ODEProblem(prob0, u0, tspan, p)
-sol = solve(prob, Trapezoid(), adaptive=false, dt = 50e-5)
 
 using Plots
 plot(sol, idxs = address["delta"])
@@ -250,93 +253,90 @@ plot(sol, idxs = address["fault_iq"])
 plot(sol, idxs = address["balance_d"])
 plot(sol, idxs = address["balance_q"])
 
+# ### quick test
+
+# incidence_matrix = create_incidence_matrix(models)
+# du = zeros(4*n_gens + 2*n_lines + 2*n_faults + 2*length(non_slack_buses))
+
+# u0 = vcat(models.generator.delta, models.generator.omega,
+#           models.line.i_d, models.line.i_q,
+#           models.fault.i_d, models.fault.i_q,
+#           models.generator.i_d, models.generator.i_q,
+#           models.bus.vd[non_slack_buses], models.bus.vq[non_slack_buses])
+
+# bus = models.bus
+# generator = models.generator
+# line = models.line
+# load = models.load
+# slack = models.slack
+# fault = models.fault
+
+# gen_delta = u0[address["delta"]]
+# gen_omega = u0[address["omega"]]
+# gen_id = u0[address["gen_id"]]
+# gen_iq = u0[address["gen_iq"]]
+# line_id = u0[address["line_id"]]
+# line_iq = u0[address["line_iq"]]
+# fault_id = u0[address["fault_id"]]
+# fault_iq = u0[address["fault_iq"]]
+# balance_d = u0[address["balance_d"]]
+# balance_q = u0[address["balance_q"]]
+
+# bus_vd = Vector{Float64}(bus.vd)  # converts Float64 -> T safely
+# bus_vq = Vector{Float64}(bus.vq)
+
+# bus_vd[non_slack_buses] .= balance_d
+# bus_vq[non_slack_buses] .= balance_q
+
+# T = Float64
+# Ω = T(2*pi*60)
+# d = T(1.0)
+# L = (line.X)/Ω
+# Ls = 1e100 .* fault.l_s / Ω
+
+# id = zeros(T, length(bus.idx))
+# iq = zeros(T, length(bus.idx))
+
+# i_load = (load.p - 1im * load.q) / (bus_vd[load.bus] + 1im * bus_vq[load.bus])
 
 
+# du[address["delta"]] = @. Ω * (gen_omega - one(T))
+# du[address["omega"]] = @. (generator.p_m - (gen_id * bus_vd[generator.bus] * sin(gen_delta) - 
+#                                  gen_id * bus_vq[generator.bus] * cos(gen_delta) + 
+#                                  gen_iq * bus_vd[generator.bus] * cos(gen_delta) + 
+#                                  gen_iq * bus_vq[generator.bus] * sin(gen_delta)) - 
+#                                  d * (gen_omega - one(T))) / (generator.M)
+# du[address["gen_id"]] = @. generator.e_q_prime - gen_id * generator.x_d_prime - 
+#                             bus_vd[generator.bus] * cos(gen_delta) - 
+#                             bus_vq[generator.bus] * sin(gen_delta)
+# du[address["gen_iq"]] = @. gen_iq * generator.x_d_prime - 
+#                             bus_vd[generator.bus] * sin(gen_delta) + 
+#                             bus_vq[generator.bus] * cos(gen_delta)
 
-### quick test
+# du[address["line_id"]] = @. ((bus_vd[line.bus1_idx] - bus_vd[line.bus2_idx] - line.R * line_id) / L + (Ω * line_iq))
+# du[address["line_iq"]] = @. ((bus_vq[line.bus1_idx] - bus_vq[line.bus2_idx] - line.R * line_iq) / L - (Ω * line_id))
 
-incidence_matrix = create_incidence_matrix(models)
-du = zeros(4*n_gens + 2*n_lines + 2*n_faults + 2*length(non_slack_buses))
+# du[address["fault_id"]] = @. ((bus_vd[fault.bus] - fault.r_s * fault_id) / Ls + (Ω * fault_iq))
+# du[address["fault_iq"]] = @. ((bus_vq[fault.bus] - fault.r_s * fault_iq) / Ls - (Ω * fault_id))
 
-u0 = vcat(models.generator.delta, models.generator.omega,
-          models.line.i_d, models.line.i_q,
-          models.fault.i_d, models.fault.i_q,
-          models.generator.i_d, models.generator.i_q,
-          models.bus.vd[non_slack_buses], models.bus.vq[non_slack_buses])
+# id[generator.bus] += @. gen_id * cos(gen_delta - pi/2) - gen_iq * sin(gen_delta - pi/2)
+# id[load.bus] -= @. real(i_load)
+# id[fault.bus] -= @. fault_id
+# id[:] += incidence_matrix * line_id
 
-bus = models.bus
-generator = models.generator
-line = models.line
-load = models.load
-slack = models.slack
-fault = models.fault
+# iq[generator.bus] += @. gen_id * sin(gen_delta - pi/2) + gen_iq * cos(gen_delta - pi/2)
+# iq[load.bus] -= @. imag(i_load)
+# iq[fault.bus] -= @. fault_iq
+# iq[:] += incidence_matrix * line_iq
 
-gen_delta = u0[address["delta"]]
-gen_omega = u0[address["omega"]]
-gen_id = u0[address["gen_id"]]
-gen_iq = u0[address["gen_iq"]]
-line_id = u0[address["line_id"]]
-line_iq = u0[address["line_iq"]]
-fault_id = u0[address["fault_id"]]
-fault_iq = u0[address["fault_iq"]]
-balance_d = u0[address["balance_d"]]
-balance_q = u0[address["balance_q"]]
-
-bus_vd = Vector{Float64}(bus.vd)  # converts Float64 -> T safely
-bus_vq = Vector{Float64}(bus.vq)
-
-bus_vd[non_slack_buses] .= balance_d
-bus_vq[non_slack_buses] .= balance_q
-
-T = Float64
-Ω = T(2*pi*60)
-d = T(1.0)
-L = (line.X)/Ω
-Ls = 1e100 .* fault.l_s / Ω
-
-id = zeros(T, length(bus.idx))
-iq = zeros(T, length(bus.idx))
-
-i_load = (load.p - 1im * load.q) / (bus_vd[load.bus] + 1im * bus_vq[load.bus])
-
-
-du[address["delta"]] = @. Ω * (gen_omega - one(T))
-du[address["omega"]] = @. (generator.p_m - (gen_id * bus_vd[generator.bus] * sin(gen_delta) - 
-                                 gen_id * bus_vq[generator.bus] * cos(gen_delta) + 
-                                 gen_iq * bus_vd[generator.bus] * cos(gen_delta) + 
-                                 gen_iq * bus_vq[generator.bus] * sin(gen_delta)) - 
-                                 d * (gen_omega - one(T))) / (generator.M)
-du[address["gen_id"]] = @. generator.e_q_prime - gen_id * generator.x_d_prime - 
-                            bus_vd[generator.bus] * cos(gen_delta) - 
-                            bus_vq[generator.bus] * sin(gen_delta)
-du[address["gen_iq"]] = @. gen_iq * generator.x_d_prime - 
-                            bus_vd[generator.bus] * sin(gen_delta) + 
-                            bus_vq[generator.bus] * cos(gen_delta)
-
-du[address["line_id"]] = @. ((bus_vd[line.bus1_idx] - bus_vd[line.bus2_idx] - line.R * line_id) / L + (Ω * line_iq))
-du[address["line_iq"]] = @. ((bus_vq[line.bus1_idx] - bus_vq[line.bus2_idx] - line.R * line_iq) / L - (Ω * line_id))
-
-du[address["fault_id"]] = @. ((bus_vd[fault.bus] - fault.r_s * fault_id) / Ls + (Ω * fault_iq))
-du[address["fault_iq"]] = @. ((bus_vq[fault.bus] - fault.r_s * fault_iq) / Ls - (Ω * fault_id))
-
-id[generator.bus] += @. gen_id * cos(gen_delta - pi/2) - gen_iq * sin(gen_delta - pi/2)
-id[load.bus] -= @. real(i_load)
-id[fault.bus] -= @. fault_id
-id[:] += incidence_matrix * line_id
-
-iq[generator.bus] += @. gen_id * sin(gen_delta - pi/2) + gen_iq * cos(gen_delta - pi/2)
-iq[load.bus] -= @. imag(i_load)
-iq[fault.bus] -= @. fault_iq
-iq[:] += incidence_matrix * line_iq
-
-du[address["balance_d"]] = @. id[non_slack_buses]
-du[address["balance_q"]] = @. iq[non_slack_buses]
+# du[address["balance_d"]] = @. id[non_slack_buses]
+# du[address["balance_q"]] = @. iq[non_slack_buses]
 
 
 
 
-prob = NonlinearProblem(solve_dynamic_sim!, u0, p)
-sol = solve(prob, reltol = 1e-10)
+# prob = NonlinearProblem(solve_dynamic_sim!, u0, p)
+# sol = solve(prob, reltol = 1e-10)
 
 
-system.models.generator.delta .= sol.u[address["delta"]]
+# system.models.generator.delta .= sol.u[address["delta"]]

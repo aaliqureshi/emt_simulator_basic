@@ -8,10 +8,10 @@ include("data_loader.jl")
 using .DataLoader
 
 
-data_file = "cases/SMIB_Chow/SMIB_RL_Line_DrCui.xlsx"
-# data_file = "cases/ieee14/ieee14_simplified.xlsx"
-# data_file = "cases/5bus/pjm5bus_simplified.xlsx"
-# data_file = "cases/ieee39/ieee39_simplified.xlsx"
+# data_file = "cases/SMIB_Chow/SMIB_RL_Line_DrCui.xlsx"
+# data_file = "cases/SMIB_Chow/ieee14_simplified.xlsx"
+data_file = "cases/Fault_cases/ieee14_fault.xlsx"
+# data_file = "cases/Fault_cases/ieee39_fault.xlsx"
 
 models_dict = load_data(data_file)
 
