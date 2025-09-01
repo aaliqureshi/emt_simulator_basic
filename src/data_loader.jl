@@ -36,13 +36,15 @@ function load_data(data_file::String)
                 line.idx = Int32.(df.idx)
                 line.bus1_idx = Int32.(df.bus1)
                 line.bus2_idx = Int32.(df.bus2)
+                # line.R = Float64.(max.(df.r, 1e-8))
+                # line.X = Float64.(max.(df.x, 1e-8))
                 line.R = Float64.(df.r)
                 line.X = Float64.(df.x)
                 line.i_d = zeros(Float64, length(df.idx))
                 line.i_q = zeros(Float64, length(df.idx))
                 models_dict["line"] = line
             end
-            if sheet == "GENCLS"
+            if sheet == "GENCLS" || sheet == "GENROU"
                 generator = Generator{Float64}(length(df.idx))
                 generator.idx = Int32.(df.idx)
                 generator.bus = Int32.(df.bus)
@@ -67,6 +69,8 @@ function load_data(data_file::String)
                 fault.bus = Int32.(df.bus)
                 fault.r_s = Float64.(df.rf)
                 fault.l_s = Float64.(df.xf)
+                fault.i_d = zeros(Float64, length(df.idx))
+                fault.i_q = zeros(Float64, length(df.idx))
         
                 models_dict["fault"] = fault
             end

@@ -75,9 +75,13 @@ mutable struct Fault{T<:Real}
     bus::Vector{Int32}
     r_s::Vector{T}
     l_s::Vector{T}
+    i_d::Vector{T}
+    i_q::Vector{T}
 
     function Fault{T}(n::Integer) where {T<:Real}
         new{T}(Vector{Int32}(undef, n),
+               Vector{T}(undef, n),
+               Vector{T}(undef, n),
                Vector{T}(undef, n),
                Vector{T}(undef, n))
     end
