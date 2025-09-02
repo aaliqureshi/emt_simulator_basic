@@ -118,25 +118,7 @@ function init_system!(u, p)
     return du
 end
 
-## add incidence matrix here
-function create_incidence_matrix(models)
-    bus1_idx = models.line.bus1_idx
-    bus2_idx = models.line.bus2_idx
-
-    num_bus = length(models.bus.idx)
-    num_line = length(models.line.idx)
-    incidence_matrix = zeros(Int32, num_bus, num_line)
-
-    for line in collect(1:num_line)
-        incidence_matrix[bus1_idx[line], line] = -1
-        incidence_matrix[bus2_idx[line], line] = 1
-    end
-
-    return incidence_matrix
-end
-
-
-incidence_matrix = create_incidence_matrix(models)
+incidence_matrix = build_incidence_matrix(models)
 
 
 p = (address, models, incidence_matrix)
