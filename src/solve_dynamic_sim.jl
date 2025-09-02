@@ -140,7 +140,7 @@ function solve_fault!(du, u, p)
     fault_id = u[address["fault_id"]]
     fault_iq = u[address["fault_iq"]]
 
-    Ls = @. T(fault.l_s * 1e100) / Ω
+    Ls = @. T(fault.l_s) / Ω
 
     bus_vd = Vector{T}(bus.vd)  # converts Float64 -> T safely
     bus_vq = Vector{T}(bus.vq)
@@ -184,7 +184,8 @@ function balance!(du, u, p)
     id = zeros(T, length(bus.idx))
     iq = zeros(T, length(bus.idx))
 
-    i_load = @. (load.p - 1im * load.q) / (bus_vd[load.bus] + 1im * bus_vq[load.bus])
+    ## load current = conjugate(load power) / conjugate(bus voltage)
+    i_load = @. (load.p - 1im * load.q) / (bus_vd[load.bus] - 1im * bus_vq[load.bus])
 
     id[generator.bus] += @. gen_id * cos(gen_delta - pi/2) - gen_iq * sin(gen_delta - pi/2)
     id[load.bus] -= @. real(i_load)
@@ -222,8 +223,10 @@ begin
     u0[address["gen_iq"]] = models.generator.i_q
     u0[address["line_id"]] = models.line.i_d
     u0[address["line_iq"]] = models.line.i_q
-    u0[address["fault_id"]] = models.fault.i_d
-    u0[address["fault_iq"]] = models.fault.i_q
+    # u0[address["fault_id"]] = models.fault.i_d
+    # u0[address["fault_iq"]] = models.fault.i_q
+    u0[address["fault_id"]] = [0.0]
+    u0[address["fault_iq"]] = [0.0]
     u0[address["balance_d"]] = models.bus.vd[non_slack_buses]
     u0[address["balance_q"]] = models.bus.vq[non_slack_buses]
 end
@@ -240,6 +243,8 @@ end
 tspan = (0.0, 10.0)
 prob0 = ODEFunction(solve_dynamic_sim!, mass_matrix=mass_matrix)
 prob = ODEProblem(prob0, u0, tspan, p)
+
+sol = solve(prob, Trapezoid(), adaptive=false, dt = 50e-5)
 
 using Plots
 plot(sol, idxs = address["delta"])
