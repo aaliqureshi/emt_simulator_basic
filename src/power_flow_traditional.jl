@@ -1,3 +1,5 @@
+# this file is used to update power_flow_traditional.jl with improved methods
+
 using Pkg
 Pkg.activate(".")
 
@@ -7,34 +9,22 @@ using .Models
 include("data_loader.jl")
 using .DataLoader
 
+include("utils.jl")
+using .Utils
+
 
 # data_file = "cases/SMIB_Chow/SMIB_RL_Line_DrCui.xlsx"
 # data_file = "cases/SMIB_Chow/ieee14_simplified.xlsx"
-data_file = "cases/Fault_cases/ieee14_fault.xlsx"
+data_file = "cases/Fault_cases/ieee14_fault_barq.xlsx"
 # data_file = "cases/Fault_cases/ieee39_fault.xlsx"
 
-models_dict = load_data(data_file)
-
-models = (bus=models_dict["bus"], line=models_dict["line"], generator=models_dict["generator"], fault=models_dict["fault"], load=models_dict["load"], slack=models_dict["slack"])
+models = load_data(data_file)
 
 n_bus = length(models.bus.idx)
 
-Y = zeros(Complex, n_bus, n_bus)
 
-# create Y matrix conjugate
-for line_idx in eachindex(models.line.idx)
-    Y[models.line.bus1_idx[line_idx], models.line.bus2_idx[line_idx]] = -1 / (models.line.R[line_idx] + 1im * models.line.X[line_idx])
-    Y[models.line.bus2_idx[line_idx], models.line.bus1_idx[line_idx]] = -1 / (models.line.R[line_idx] + 1im * models.line.X[line_idx])
-end
-for row_idx in 1:n_bus
-    Y[row_idx, row_idx] = Y[row_idx, row_idx] + sum(-1 .* Y[row_idx, :])
-end
+Y = build_Y_matrix(models)
 
-Y_abs = abs.(Y)
-Y_angle = angle.(Y)
-
-println(Y_abs)
-println(Y_angle)
 
 v_update_buses = setdiff(models.bus.idx, models.generator.bus, models.slack.bus)
 non_slack_buses = setdiff(models.bus.idx, models.slack.bus)
@@ -43,8 +33,10 @@ V = copy(models.bus.v)
 theta = copy(models.bus.theta)
 
 
-function power_flow_traditional!(du, u, address, models)
+function power_flow_traditional!(du, u, p)
     T = eltype(u)
+
+    address, models, Y = p
 
     bus = models.bus
     line = models.line
@@ -100,14 +92,14 @@ using NonlinearSolve
 function powerflow!(u, p)
     T = eltype(u)
     du = zeros(T, length(u))
-    address, models = p
+    # address, models = p
     # line_equation!(du, u, address, models)
-    power_flow_traditional!(du, u, address, models)
+    power_flow_traditional!(du, u, p)
     return du
 end
 
 
-p = (address, models)
+p = (address, models, Y)
 
 prob = NonlinearProblem(powerflow!, u0, p)
 sol = solve(prob, abstol = 1e-9, reltol = 1e-9)
