@@ -77,10 +77,18 @@ function init_gens!(du, u, p)
     bus_vq = Vector{T}(bus.vq)
 
     id = zeros(T, length(bus.idx))
-    i_load = @. (load.p - 1im * load.q) / (bus_vd[load.bus] + 1im * bus_vq[load.bus])
+    ## load current = conjugate(load power) / conjugate(bus voltage)
+    i_load = @. (load.p - 1im * load.q) / (bus_vd[load.bus] - 1im * bus_vq[load.bus])
     id[:] += incidence_matrix * line_id
     id[load.bus] -= @. real(i_load)
     id[generator.bus] += @. gen_id * cos(gen_delta - pi/2) - gen_iq * sin(gen_delta - pi/2)
+
+    ## add capacitor currents
+    # TODO: move this outside
+    B_mat = build_B_matrix(models)
+    i_cap_d = zeros(T, length(bus.idx))
+    i_cap_d[:] = -1 * B_mat * bus_vq
+    id[:] -= i_cap_d
 
     du[address["delta"]] = @. Ω * (gen_omega - one(T))
     du[address["omega"]] = @. ((generator.p_m - (gen_id * bus_vd[generator.bus] * sin(gen_delta) - 
