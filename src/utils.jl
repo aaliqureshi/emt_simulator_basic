@@ -5,14 +5,15 @@ export build_Y_matrix, build_incidence_matrix
 using Pkg
 Pkg.activate(".")
 
-#TODO: in future this function should update system
+#TODO: in future this function should update system object
 
 function build_Y_matrix(models)
+    # TODO: convert this to sparse matrices for better performance
+    # TODO: add transformers
     n_bus = length(models.bus.idx)
     Y = zeros(ComplexF64, n_bus, n_bus)
 
     # create Y matrix
-    #TODO: add the B matrix
     for line_idx in eachindex(models.line.idx)
         Y[models.line.bus1_idx[line_idx], models.line.bus2_idx[line_idx]] = -1 / (models.line.R[line_idx] + 1im * models.line.X[line_idx])
         Y[models.line.bus2_idx[line_idx], models.line.bus1_idx[line_idx]] = -1 / (models.line.R[line_idx] + 1im * models.line.X[line_idx])
@@ -21,7 +22,16 @@ function build_Y_matrix(models)
         Y[row_idx, row_idx] = Y[row_idx, row_idx] + sum(-1 .* Y[row_idx, :])
     end
 
-    return abs.(Y), angle.(Y)
+    B_mat = zeros(ComplexF64, n_bus, n_bus)
+    for (bus1, bus2, B) in zip(models.line.bus1_idx, models.line.bus2_idx, models.line.B)
+        B_mat[bus1, bus1] += 1im*B / 2
+        B_mat[bus2, bus2] += 1im*B / 2
+    end
+
+    # update Y matrix
+    Y = Y + B_mat
+
+    return Y
 end
 
 
