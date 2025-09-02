@@ -9,13 +9,9 @@ mutable struct Bus{T<:Real}
     theta :: Vector{T}
     vd:: Vector{T}
     vq:: Vector{T}
-    i_d:: Vector{T}
-    i_q:: Vector{T}
 
     function Bus{T}(n::Integer) where {T<:Real}
         new{T}(Vector{Int32}(undef, n),
-               Vector{T}(undef, n),
-               Vector{T}(undef, n),
                Vector{T}(undef, n),
                Vector{T}(undef, n),
                Vector{T}(undef, n),
@@ -29,6 +25,7 @@ mutable struct Line{T<:Real}
     bus2_idx :: Vector{Int32}
     R :: Vector{T}
     X :: Vector{T}
+    B :: Vector{T}
     i_d:: Vector{T}
     i_q:: Vector{T}
 
@@ -39,6 +36,7 @@ mutable struct Line{T<:Real}
                Vector{T}(undef, n),
                Vector{T}(undef, n),
                Vector{T}(undef, n), 
+               Vector{T}(undef, n),
                Vector{T}(undef, n))
     end
 end
@@ -55,10 +53,12 @@ mutable struct Generator{T<:Real}
     i_q :: Vector{T}
     x_d_prime :: Vector{T}
     e_q_prime :: Vector{T}
+    d :: Vector{T}
 
     function Generator{T}(n::Integer) where {T<:Real}
         new{T}(Vector{Int32}(undef, n),
                Vector{Int32}(undef, n),
+               Vector{T}(undef, n),
                Vector{T}(undef, n),
                Vector{T}(undef, n),
                Vector{T}(undef, n),
@@ -75,9 +75,13 @@ mutable struct Fault{T<:Real}
     bus::Vector{Int32}
     r_s::Vector{T}
     l_s::Vector{T}
+    tf::Vector{T}
+    tc::Vector{T}
 
     function Fault{T}(n::Integer) where {T<:Real}
         new{T}(Vector{Int32}(undef, n),
+               Vector{T}(undef, n),
+               Vector{T}(undef, n),
                Vector{T}(undef, n),
                Vector{T}(undef, n))
     end
