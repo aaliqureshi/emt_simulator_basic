@@ -1,6 +1,6 @@
 module Utils
 
-export build_Y_matrix, build_incidence_matrix
+export build_Y_matrix, build_incidence_matrix, build_B_matrix
 
 using Pkg
 Pkg.activate(".")
@@ -22,11 +22,7 @@ function build_Y_matrix(models)
         Y[row_idx, row_idx] = Y[row_idx, row_idx] + sum(-1 .* Y[row_idx, :])
     end
 
-    B_mat = zeros(ComplexF64, n_bus, n_bus)
-    for (bus1, bus2, B) in zip(models.line.bus1_idx, models.line.bus2_idx, models.line.B)
-        B_mat[bus1, bus1] += 1im*B / 2
-        B_mat[bus2, bus2] += 1im*B / 2
-    end
+    B_mat = _build_B_matrix(models)
 
     # update Y matrix
     Y = Y + B_mat
@@ -50,6 +46,30 @@ function build_incidence_matrix(models)
     end
 
     return incidence_matrix
+end
+
+
+function _build_B_matrix(models)
+    """
+    Build B matrix.
+    """
+    n_bus = length(models.bus.idx)
+    B_mat = zeros(ComplexF64, n_bus, n_bus)
+    for (bus1, bus2, B) in zip(models.line.bus1_idx, models.line.bus2_idx, models.line.B)
+        B_mat[bus1, bus1] += 1im*B / 2
+        B_mat[bus2, bus2] += 1im*B / 2
+    end
+
+    return B_mat
+end
+
+
+function build_B_matrix(models)
+    """
+    This function returns the absolute value of the B matrix.
+    """
+    B_mat = _build_B_matrix(models)
+    return abs.(B_mat)
 end
 
 
