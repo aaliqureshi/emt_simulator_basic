@@ -51,6 +51,8 @@ function _verify_models(models::NamedTuple) ::Nothing
         error("Oops! There are more than one load at the same bus - $(load_buses) !!!")
     end
 
+    # TODO: ensure only one line between two same buses
+
     return nothing
 end
 

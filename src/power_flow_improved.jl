@@ -13,10 +13,12 @@ include("utils.jl")
 using .Utils
 
 
-# data_file = "cases/SMIB_Chow/SMIB_RL_Line_DrCui.xlsx"
+# data_file = "cases/Fault_cases/SMIB_RL_Line_DrCui.xlsx"
 # data_file = "cases/SMIB_Chow/ieee14_simplified.xlsx"
-data_file = "cases/Fault_cases/ieee14_fault_barq.xlsx"
-# data_file = "cases/Fault_cases/ieee39_fault.xlsx"
+# data_file = "cases/Fault_cases/ieee14_fault_barq.xlsx"
+data_file = "cases/Fault_cases/ieee39_fault.xlsx"
+# data_file = "cases/Fault_cases/GBnetwork.xlsx"
+# data_file = "cases/Fault_cases/wecc_full.xlsx"
 
 models = load_data(data_file)
 
