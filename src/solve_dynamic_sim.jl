@@ -1,6 +1,7 @@
 # run after init_dynamic_sim.jl
 
 using OrdinaryDiffEq
+using LinearAlgebra
 
 
 n_gens = length(models.generator.bus)
@@ -19,11 +20,12 @@ idx_line_id = idx_omega[end]+1 : idx_omega[end]+n_lines
 idx_line_iq = idx_line_id[end]+1 : idx_line_id[end]+n_lines
 idx_fault_id = idx_line_iq[end]+1 : idx_line_iq[end]+n_faults
 idx_fault_iq = idx_fault_id[end]+1 : idx_fault_id[end]+n_faults
-idx_gen_id = idx_fault_iq[end]+1 : idx_fault_iq[end]+n_gens
-idx_gen_iq = idx_gen_id[end]+1 : idx_gen_id[end]+n_gens
-idx_balance_d = idx_gen_iq[end]+1 : idx_gen_iq[end]+(length(non_slack_buses))
+# idx_gen_id = idx_fault_iq[end]+1 : idx_fault_iq[end]+n_gens
+# idx_gen_iq = idx_gen_id[end]+1 : idx_gen_id[end]+n_gens
+idx_balance_d = idx_fault_iq[end]+1 : idx_fault_iq[end]+(length(non_slack_buses))
 idx_balance_q = idx_balance_d[end]+1 : idx_balance_d[end]+(length(non_slack_buses))
-
+idx_gen_id = idx_balance_q[end]+1 : idx_balance_q[end]+n_gens
+idx_gen_iq = idx_gen_id[end]+1 : idx_gen_id[end]+n_gens
 
 
 
@@ -113,7 +115,7 @@ function solve_line!(du, u, p)
     line_id = u[address["line_id"]]
     line_iq = u[address["line_iq"]]
 
-    L = @. T(line.X) / Ω
+    # L = @. T(line.X) / Ω
     
 
     bus_vd = Vector{T}(bus.vd)  # converts Float64 -> T safely
@@ -122,8 +124,12 @@ function solve_line!(du, u, p)
     bus_vd[non_slack_buses] .= u[address["balance_d"]]
     bus_vq[non_slack_buses] .= u[address["balance_q"]]
 
-    du[address["line_id"]] = @. ((bus_vd[line.bus1_idx] - bus_vd[line.bus2_idx] - line.R * line_id) / L + (Ω * line_iq))
-    du[address["line_iq"]] = @. ((bus_vq[line.bus1_idx] - bus_vq[line.bus2_idx] - line.R * line_iq) / L - (Ω * line_id))
+    # du[address["line_id"]] = @. ((bus_vd[line.bus1_idx] - bus_vd[line.bus2_idx] - line.R * line_id) / L + (Ω * line_iq))
+    # du[address["line_iq"]] = @. ((bus_vq[line.bus1_idx] - bus_vq[line.bus2_idx] - line.R * line_iq) / L - (Ω * line_id))
+    
+    du[address["line_id"]] = @. ((bus_vd[line.bus1_idx] - bus_vd[line.bus2_idx] - line.R * line_id) + (line.X * line_iq))
+    du[address["line_iq"]] = @. ((bus_vq[line.bus1_idx] - bus_vq[line.bus2_idx] - line.R * line_iq) - (line.X * line_id))
+
 
 end
 
@@ -148,8 +154,11 @@ function solve_fault!(du, u, p)
     bus_vd[non_slack_buses] .= u[address["balance_d"]]
     bus_vq[non_slack_buses] .= u[address["balance_q"]]
 
-    du[address["fault_id"]] = @. ((bus_vd[fault.bus] - fault.r_s * fault_id) / Ls + (Ω * fault_iq))
-    du[address["fault_iq"]] = @. ((bus_vq[fault.bus] - fault.r_s * fault_iq) / Ls - (Ω * fault_id))
+    # du[address["fault_id"]] = @. ((bus_vd[fault.bus] - fault.r_s * fault_id) / Ls + (Ω * fault_iq))
+    # du[address["fault_iq"]] = @. ((bus_vq[fault.bus] - fault.r_s * fault_iq) / Ls - (Ω * fault_id))
+
+    du[address["fault_id"]] = @. ((bus_vd[fault.bus] - fault.r_s * fault_id) + (fault.x_s * fault_iq))
+    du[address["fault_iq"]] = @. ((bus_vq[fault.bus] - fault.r_s * fault_iq) - (fault.x_s * fault_id))
 
 end
 
@@ -197,6 +206,13 @@ function balance!(du, u, p)
     iq[fault.bus] -= @. fault_iq
     iq[:] += incidence_matrix * line_iq
 
+    B_mat = build_B_matrix(models)
+    i_cap_d = zeros(T, length(bus.idx))
+    i_cap_q = zeros(T, length(bus.idx))
+
+    id[:] += B_mat * bus_vq
+    iq[:] -= B_mat * bus_vd
+
     du[address["balance_d"]] = @. id[non_slack_buses]
     du[address["balance_q"]] = @. iq[non_slack_buses]
 end
@@ -236,15 +252,70 @@ mass_matrix = zeros(length(du), length(du))
 #     mass_matrix[i,i] = 1.0
 # end
 
-for i in range(1, (2*n_gens + 2*n_lines))
-    mass_matrix[i,i] = 1.0
+b_mat = build_B_matrix(models)
+C_mat = b_mat ./ (2*pi*60)
+C_eq = diag(C_mat)
+
+begin
+
+    # vd 
+    i = 1
+    for idx in collect(address["balance_d"])
+        mass_matrix[idx, idx] = C_eq[i]
+        i += 1
+    end
+
+    # vq bus balances
+    i = 1
+    for idx in collect(address["balance_q"])
+        mass_matrix[idx, idx] = C_eq[i]
+        i += 1
+    end
+
+    # line id
+    i = 1
+    for idx in collect(address["line_id"])
+        mass_matrix[idx, idx] = models.line.L[i]
+        i += 1
+    end
+
+    # line iq
+    i = 1
+    for idx in collect(address["line_iq"])
+        mass_matrix[idx, idx] = models.line.L[i]
+        i += 1
+    end
+
+    # delta
+    for i in collect(address["delta"])
+        mass_matrix[i,i] = 1.0
+    end
+    # omega
+    for i in collect(address["omega"])
+        mass_matrix[i,i] = 1.0
+    end
+
+    # fault id
+    i = 1
+    for idx in collect(address["fault_id"])
+        mass_matrix[idx, idx] = models.fault.L[i]
+        i += 1
+    end
+
+    # fault iq
+    i = 1
+    for idx in collect(address["fault_iq"])
+        mass_matrix[idx, idx] = models.fault.L[i]
+        i += 1
+    end
+    
 end
 
 tspan = (0.0, 10.0)
 prob0 = ODEFunction(solve_dynamic_sim!, mass_matrix=mass_matrix)
 prob = ODEProblem(prob0, u0, tspan, p)
 
-sol = solve(prob, Trapezoid(), adaptive=false, dt = 50e-5)
+sol = solve(prob, Trapezoid(), adaptive=true, dt = 50e-5, reltol=1e-6, abstol=1e-6)
 
 using Plots
 plot(sol, idxs = address["delta"])

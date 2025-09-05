@@ -26,6 +26,8 @@ mutable struct Line{T<:Real}
     R :: Vector{T}
     X :: Vector{T}
     B :: Vector{T}
+    C :: Vector{T}
+    L :: Vector{T}
     i_d:: Vector{T}
     i_q:: Vector{T}
 
@@ -36,6 +38,8 @@ mutable struct Line{T<:Real}
                Vector{T}(undef, n),
                Vector{T}(undef, n),
                Vector{T}(undef, n), 
+               Vector{T}(undef, n),
+               Vector{T}(undef, n),
                Vector{T}(undef, n),
                Vector{T}(undef, n))
     end
@@ -74,12 +78,14 @@ end
 mutable struct Fault{T<:Real}   
     bus::Vector{Int32}
     r_s::Vector{T}
+    x_s::Vector{T}
     l_s::Vector{T}
     tf::Vector{T}
     tc::Vector{T}
 
     function Fault{T}(n::Integer) where {T<:Real}
         new{T}(Vector{Int32}(undef, n),
+               Vector{T}(undef, n),
                Vector{T}(undef, n),
                Vector{T}(undef, n),
                Vector{T}(undef, n),
