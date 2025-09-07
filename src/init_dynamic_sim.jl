@@ -46,8 +46,8 @@ function init_line!(du, u, p)
     bus_vd = Vector{T}(bus.vd)  # converts Float64 -> T safely
     bus_vq = Vector{T}(bus.vq)
 
-    du[address["line_id"]] = @. ((bus_vd[line.bus1_idx] - bus_vd[line.bus2_idx] - line.R * line_id) + (line.X * line_iq))
-    du[address["line_iq"]] = @. ((bus_vq[line.bus1_idx] - bus_vq[line.bus2_idx] - line.R * line_iq) - (line.X * line_id))
+    du[address["line_id"]] = @. bus_vd[line.bus1_idx] - bus_vd[line.bus2_idx] - line.R * line_id + line.X * line_iq
+    du[address["line_iq"]] = @. bus_vq[line.bus1_idx] - bus_vq[line.bus2_idx] - line.R * line_iq - line.X * line_id
 
 end
 
