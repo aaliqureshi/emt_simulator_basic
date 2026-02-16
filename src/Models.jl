@@ -1,116 +1,14 @@
 module Models
 
-export Bus, Line, Generator, Fault, Load, Shunt, Slack
+include("models/bus.jl");       using .BusModel
+include("models/line.jl");      using .LineModel
+include("models/generator.jl"); using .GeneratorModel
+include("models/fault.jl");     using .FaultModel
+include("models/load.jl");      using .LoadModel
+include("models/slack.jl");     using .SlackModel
 
-
-mutable struct Bus{T<:Real}
-    idx :: Vector{Int32}
-    v :: Vector{T}
-    theta :: Vector{T}
-    vd:: Vector{T}
-    vq:: Vector{T}
-
-    function Bus{T}(n::Integer) where {T<:Real}
-        new{T}(Vector{Int32}(undef, n),
-               Vector{T}(undef, n),
-               Vector{T}(undef, n),
-               Vector{T}(undef, n),
-               Vector{T}(undef, n))
-    end
-end
-
-mutable struct Line{T<:Real}
-    idx :: Vector{Int32}
-    bus1_idx :: Vector{Int32}
-    bus2_idx :: Vector{Int32}
-    R :: Vector{T}
-    X :: Vector{T}
-    B :: Vector{T}
-    C :: Vector{T}
-    L :: Vector{T}
-    i_d:: Vector{T}
-    i_q:: Vector{T}
-
-    function Line{T}(n::Integer) where {T<:Real}
-        new{T}(Vector{Int32}(undef, n),
-               Vector{Int32}(undef, n),
-               Vector{Int32}(undef, n),
-               Vector{T}(undef, n),
-               Vector{T}(undef, n),
-               Vector{T}(undef, n), 
-               Vector{T}(undef, n),
-               Vector{T}(undef, n),
-               Vector{T}(undef, n),
-               Vector{T}(undef, n))
-    end
-end
-
-mutable struct Generator{T<:Real}
-    idx :: Vector{Int32}
-    bus :: Vector{Int32}
-    delta :: Vector{T}
-    omega :: Vector{T}
-    M :: Vector{T}
-    p_m :: Vector{T}
-    q_m :: Vector{T}
-    i_d :: Vector{T}
-    i_q :: Vector{T}
-    x_d_prime :: Vector{T}
-    e_q_prime :: Vector{T}
-    d :: Vector{T}
-
-    function Generator{T}(n::Integer) where {T<:Real}
-        new{T}(Vector{Int32}(undef, n),
-               Vector{Int32}(undef, n),
-               Vector{T}(undef, n),
-               Vector{T}(undef, n),
-               Vector{T}(undef, n),
-               Vector{T}(undef, n),
-               Vector{T}(undef, n),
-               Vector{T}(undef, n),
-               Vector{T}(undef, n),
-               Vector{T}(undef, n),
-               Vector{T}(undef, n),
-               Vector{T}(undef, n))
-    end
-end
-
-mutable struct Fault{T<:Real}   
-    bus::Vector{Int32}
-    r_s::Vector{T}
-    x_s::Vector{T}
-    l_s::Vector{T}
-    tf::Vector{T}
-    tc::Vector{T}
-
-    function Fault{T}(n::Integer) where {T<:Real}
-        new{T}(Vector{Int32}(undef, n),
-               Vector{T}(undef, n),
-               Vector{T}(undef, n),
-               Vector{T}(undef, n),
-               Vector{T}(undef, n),
-               Vector{T}(undef, n))
-    end
-end
-
-mutable struct Load{T<:Real}
-    bus::Vector{Int32}
-    p::Vector{T}
-    q::Vector{T}
-
-    function Load{T}(n::Integer) where {T<:Real}
-        new{T}(Vector{Int32}(undef, n),
-               Vector{T}(undef, n),
-               Vector{T}(undef, n))
-    end
-end
-
-mutable struct Slack
-    bus::Vector{Int32}
-
-    function Slack(n::Integer)
-        new(Vector{Int32}(undef, n))
-    end
-end
+export Bus, Line, Generator, Fault, Load, Slack
+export solve_generator!, solve_line!, solve_fault!, balance!
+export phasor2DP!, compute_line_currents!, compute_load_currents
 
 end #module

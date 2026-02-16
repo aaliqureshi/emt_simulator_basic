@@ -22,15 +22,15 @@ data_file = "cases/Fault_cases/ieee14_fault_barq.xlsx"
 # data_file = "cases/Simple_cases/ieee14_fault_barq.xlsx"
 
 models = load_data(data_file)
-
 n_bus = length(models.bus.idx)
 
-
+# create Y matrix
 Y = build_Y_matrix(models)
 
-
-v_update_buses = setdiff(models.bus.idx, models.generator.bus, models.slack.bus)
+# get bus types
+# v_update_buses = setdiff(models.bus.idx, models.generator.bus, models.slack.bus)
 non_slack_buses = setdiff(models.bus.idx, models.slack.bus)
+v_update_buses = setdiff(non_slack_buses, models.generator.bus)
 
 V = copy(models.bus.v)
 theta = copy(models.bus.theta)
@@ -42,17 +42,14 @@ function power_flow_traditional!(du, u, p)
     address, models, Y = p
 
     bus = models.bus
-    line = models.line
     generator = models.generator
     load = models.load
-    slack = models.slack
 
     V = Vector{T}(bus.v)
     theta = Vector{T}(bus.theta)
-    # theta = copy(models.bus.theta)
 
-    V[v_update_buses] .= u[address["balance_reactive_power"]]
-    theta[non_slack_buses] .= u[address["balance_real_power"]]
+    V[v_update_buses] = @. u[address["balance_reactive_power"]]
+    theta[non_slack_buses] = @. u[address["balance_real_power"]]
 
     P = zeros(T, length(bus.idx))
     Q = zeros(T, length(bus.idx))
@@ -79,7 +76,7 @@ idx_balance_reactive_power = 1 : length(v_update_buses)
 idx_balance_real_power = idx_balance_reactive_power[end]+1 : idx_balance_reactive_power[end]+(length(non_slack_buses))
 
 # 2 vars per line + 2 vars at PQ buses + 1 var at PV buses
-du = zeros(2*(length(v_update_buses)) + length(models.generator.bus))
+# du = zeros(2*(length(v_update_buses)) + length(models.generator.bus))
 address = Dict(
     "balance_reactive_power" => idx_balance_reactive_power,
     "balance_real_power" => idx_balance_real_power
@@ -95,8 +92,6 @@ using NonlinearSolve
 function powerflow!(u, p)
     T = eltype(u)
     du = zeros(T, length(u))
-    # address, models = p
-    # line_equation!(du, u, address, models)
     power_flow_traditional!(du, u, p)
     return du
 end
@@ -123,65 +118,21 @@ end
 # convert to d-q components
 phasor2DP!(models.bus)
 
-# @show models.bus.vd
-# @show models.bus.vq
-
-# Save bus values to reference file
-# using JSON
-
-# # Save reference solution for 14-bus system
-# bus_ref_data = Dict(
-#     "v" => models.bus.v,
-#     "theta" => models.bus.theta,
-#     "vd" => models.bus.vd,
-#     "vq" => models.bus.vq,
-#     "bus_indices" => models.bus.idx
-# )
-
-# open("14bus_ref_sol.json", "w") do f
-#     JSON.print(f, bus_ref_data, 2)
-# end
-
-# println("Reference solution saved to 14bus_ref_sol.json")
-# println("Saved values:")
-# println("  v: ", bus_ref_data["v"])
-# println("  theta: ", bus_ref_data["theta"])
-# println("  vd: ", bus_ref_data["vd"])
-# println("  vq: ", bus_ref_data["vq"])
-
-
 # compute reactive power at buses
 v_complex = @. models.bus.v * exp(1im * models.bus.theta)
 s_bus = v_complex .* conj(Y * v_complex)
 p_bus = real(s_bus)
 q_bus = imag(s_bus)
 
-models.load.p
-models.load.q
-models.load.bus
-
 # power balance at buses
 #  power_gen - power_load - power_line = 0 => power_gen = power_load + power_line
 p_gen = zeros(length(models.bus.idx))
-
 p_gen[models.load.bus] += @. models.load.p
 p_gen += @. p_bus
-
 @show p_gen[models.generator.bus]
-
 
 q_gen = zeros(length(models.bus.idx))
 q_gen[models.load.bus] += @. models.load.q
 q_gen += @. q_bus
 
 @show q_gen[models.generator.bus]
-
-# models.generator.p_m = p_gen
-# models.generator.q_m = q_gen
-
-
-
-# include("../scripts/compare_with_reference.jl")
-# compare_with_reference(models)
-
-@show models.generator.delta

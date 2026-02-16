@@ -1,23 +1,10 @@
-# compute line currents
-function compute_line_currents!(models)
-    v_dp = @. models.bus.vd + 1im * models.bus.vq
-    i_line = @. (v_dp[models.line.bus1_idx] - v_dp[models.line.bus2_idx]) / (models.line.R + 1im * models.line.X)
-    models.line.i_d .= real(i_line)
-    models.line.i_q .= imag(i_line)
-end
+module StaticInit
 
-compute_line_currents!(models)
+export run_static_init!
 
+include("Models.jl"); using .Models
+include("utils.jl"); using .Utils
 
-function compute_load_currents(models)
-    v_dp = @. models.bus.vd[models.load.bus] - 1im * models.bus.vq[models.load.bus]
-    i_load = @. (models.load.p - 1im * models.load.q) / v_dp
-    return real(i_load), imag(i_load)
-end
-
-load_id, load_iq = compute_load_currents(models)
-
-# compute shunt currents
 function compute_shunt_currents(models)
     v_dp = @. models.bus.vd + 1im * models.bus.vq
     B_mat = build_B_matrix(models)
@@ -27,68 +14,89 @@ function compute_shunt_currents(models)
     return i_cap_d, i_cap_q
 end
 
-i_cap_d, i_cap_q = compute_shunt_currents(models)
+function run_static_init!(sys)
+    models = sys.models
+    Y = sys.Y
 
+    # compute bus power injections
+    v_complex = @. models.bus.v * exp(1im * models.bus.theta)
+    s_bus = v_complex .* conj(Y * v_complex)
+    p_bus = real(s_bus)
+    q_bus = imag(s_bus)
 
-i_gen = zeros(Complex{Float64}, length(models.bus.idx))
-s_gen = @. p_gen[models.generator.bus] + 1im * q_gen[models.generator.bus]
+    # power balance: p_gen = p_load + p_network
+    p_gen = zeros(length(models.bus.idx))
+    p_gen[models.load.bus] += @. models.load.p
+    p_gen += @. p_bus
 
-i_gen[models.generator.bus] = @. conj(s_gen / v_complex[models.generator.bus])  
+    q_gen = zeros(length(models.bus.idx))
+    q_gen[models.load.bus] += @. models.load.q
+    q_gen += @. q_bus
 
-s_slack = @. p_gen[models.slack.bus] + 1im * q_gen[models.slack.bus]
-i_slack = @. conj(s_slack / v_complex[models.slack.bus])
+    # compute line currents
+    compute_line_currents!(models)
 
-i_slack_d = real(i_slack)
-i_slack_q = imag(i_slack)
+    # compute load currents
+    load_id, load_iq = compute_load_currents(models)
 
-i_gen_d = real(i_gen)
-i_gen_q = imag(i_gen)
+    # compute shunt currents
+    i_cap_d, i_cap_q = compute_shunt_currents(models)
 
-incidence_matrix = build_incidence_matrix(models)
-i_d = incidence_matrix * models.line.i_d
+    # compute generator and slack currents
+    i_gen = zeros(Complex{Float64}, length(models.bus.idx))
+    s_gen = @. p_gen[models.generator.bus] + 1im * q_gen[models.generator.bus]
+    i_gen[models.generator.bus] = @. conj(s_gen / v_complex[models.generator.bus])
 
-i_q = incidence_matrix * models.line.i_q
-# balance currents
-i_d_balance = zeros(length(models.bus.idx))
-i_d_balance[models.generator.bus] += i_gen_d[models.generator.bus]
-i_d_balance[models.load.bus] -= load_id
-i_d_balance[:] -= i_cap_d
-i_d_balance[:] += i_d
-i_d_balance[models.slack.bus] += i_slack_d
+    s_slack = @. p_gen[models.slack.bus] + 1im * q_gen[models.slack.bus]
+    i_slack = @. conj(s_slack / v_complex[models.slack.bus])
 
+    i_slack_d = real(i_slack)
+    i_slack_q = imag(i_slack)
 
-i_d_balance
+    i_gen_d = real(i_gen)
+    i_gen_q = imag(i_gen)
 
-# balance currents
-i_q_balance = zeros(length(models.bus.idx))
-i_q_balance[models.generator.bus] += i_gen_q[models.generator.bus]
-i_q_balance[models.load.bus] -= load_iq
-i_q_balance[:] -= i_cap_q
-i_q_balance[:] += i_q
-i_q_balance[models.slack.bus] += i_slack_q
+    # current balance verification
+    incidence_matrix = sys.incidence_matrix
+    i_d = incidence_matrix * models.line.i_d
+    i_q = incidence_matrix * models.line.i_q
 
-i_q_balance
+    i_d_balance = zeros(length(models.bus.idx))
+    i_d_balance[models.generator.bus] += i_gen_d[models.generator.bus]
+    i_d_balance[models.load.bus] -= load_id
+    i_d_balance[:] -= i_cap_d
+    i_d_balance[:] += i_d
+    i_d_balance[models.slack.bus] += i_slack_d
 
+    i_q_balance = zeros(length(models.bus.idx))
+    i_q_balance[models.generator.bus] += i_gen_q[models.generator.bus]
+    i_q_balance[models.load.bus] -= load_iq
+    i_q_balance[:] -= i_cap_q
+    i_q_balance[:] += i_q
+    i_q_balance[models.slack.bus] += i_slack_q
 
-i_gen_d
+    # compute generator internal voltage (E'q, delta)
+    v_gen = @. (models.bus.vd[models.generator.bus] + 1im * models.bus.vq[models.generator.bus]) +
+            1im*models.generator.x_d_prime*(i_gen_d[models.generator.bus] + 1im*i_gen_q[models.generator.bus])
 
-# i_cap_d[models.generator.bus] - load_id
+    v_gen_mag = @. abs(v_gen)
+    v_gen_angle = @. angle(v_gen)
 
-i_gen_d[models.generator.bus]
+    models.generator.e_q_prime[:] = @. v_gen_mag
+    models.generator.delta[:] = @. v_gen_angle
 
-v_gen = @. (models.bus.vd[models.generator.bus] + 1im * models.bus.vq[models.generator.bus]) + 
-        1im*models.generator.x_d_prime*(i_gen_d[models.generator.bus] + 1im*i_gen_q[models.generator.bus])
+    # transform generator currents to dq frame
+    gen_id = @. i_gen_d[models.generator.bus] * sin(models.generator.delta) - i_gen_q[models.generator.bus] * cos(models.generator.delta)
+    gen_iq = @. i_gen_d[models.generator.bus] * cos(models.generator.delta) + i_gen_q[models.generator.bus] * sin(models.generator.delta)
 
-v_gen_mag = @. abs(v_gen)
-v_gen_angle = @. angle(v_gen)
+    models.generator.i_d[:] = @. gen_id
+    models.generator.i_q[:] = @. gen_iq
 
-models.generator.e_q_prime[:] = @. v_gen_mag
-models.generator.delta[:] = @. v_gen_angle
+    # set initial fault impedance (open circuit)
+    models.fault.r_s = [1e10]
+    models.fault.x_s = [1e10*2*pi*60]
 
-gen_id = @. i_gen_d[models.generator.bus] * sin(models.generator.delta) - i_gen_q[models.generator.bus] * cos(models.generator.delta)
-gen_iq = @. i_gen_d[models.generator.bus] * cos(models.generator.delta) + i_gen_q[models.generator.bus] * sin(models.generator.delta)
+    return nothing
+end
 
-models.generator.i_d[:] = @. gen_id
-models.generator.i_q[:] = @. gen_iq
-
-models.generator.x_d_prime
+end # module
