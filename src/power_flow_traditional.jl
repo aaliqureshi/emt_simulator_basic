@@ -19,6 +19,7 @@ using .Utils
 data_file = "cases/Fault_cases/ieee14_fault_barq.xlsx"
 # data_file = "cases/Fault_cases/ieee39_fault.xlsx"
 # data_file = "cases/Fault_cases/SMIB_RL_Line_DrCui.xlsx"
+# data_file = "cases/Simple_cases/ieee14_fault_barq.xlsx"
 
 models = load_data(data_file)
 
@@ -149,5 +150,38 @@ phasor2DP!(models.bus)
 # println("  vq: ", bus_ref_data["vq"])
 
 
-include("../scripts/compare_with_reference.jl")
-compare_with_reference(models)
+# compute reactive power at buses
+v_complex = @. models.bus.v * exp(1im * models.bus.theta)
+s_bus = v_complex .* conj(Y * v_complex)
+p_bus = real(s_bus)
+q_bus = imag(s_bus)
+
+models.load.p
+models.load.q
+models.load.bus
+
+# power balance at buses
+#  power_gen - power_load - power_line = 0 => power_gen = power_load + power_line
+p_gen = zeros(length(models.bus.idx))
+
+p_gen[models.load.bus] += @. models.load.p
+p_gen += @. p_bus
+
+@show p_gen[models.generator.bus]
+
+
+q_gen = zeros(length(models.bus.idx))
+q_gen[models.load.bus] += @. models.load.q
+q_gen += @. q_bus
+
+@show q_gen[models.generator.bus]
+
+# models.generator.p_m = p_gen
+# models.generator.q_m = q_gen
+
+
+
+# include("../scripts/compare_with_reference.jl")
+# compare_with_reference(models)
+
+@show models.generator.delta
