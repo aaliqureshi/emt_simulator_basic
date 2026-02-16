@@ -7,13 +7,16 @@ n_gens = length(models.generator.bus)
 n_lines = length(models.line.idx)
 n_buses = length(models.bus.idx)
 n_loads = length(models.load.bus)
+n_faults = length(models.fault.bus)
 
 ## state variables
 idx_delta = 1:n_gens
 idx_omega = idx_delta[end]+1 : idx_delta[end]+n_gens
 idx_line_id = idx_omega[end]+1 : idx_omega[end]+n_lines
 idx_line_iq = idx_line_id[end]+1 : idx_line_id[end]+n_lines
-idx_balance_d = idx_line_iq[end]+1 : idx_line_iq[end]+length(non_slack_buses)
+idx_fault_id = idx_line_iq[end]+1 : idx_line_iq[end]+n_faults
+idx_fault_iq = idx_fault_id[end]+1 : idx_fault_id[end]+n_faults
+idx_balance_d = idx_fault_iq[end]+1 : idx_fault_iq[end]+length(non_slack_buses)
 idx_balance_q = idx_balance_d[end]+1 : idx_balance_d[end]+length(non_slack_buses)
 idx_gen_id = idx_balance_q[end]+1 : idx_balance_q[end]+n_gens
 idx_gen_iq = idx_gen_id[end]+1 : idx_gen_id[end]+n_gens
@@ -27,6 +30,8 @@ address = Dict(
     "gen_iq" => idx_gen_iq,
     "line_id" => idx_line_id,
     "line_iq" => idx_line_iq,
+    "fault_id" => idx_fault_id,
+    "fault_iq" => idx_fault_iq,
     "balance_d" => idx_balance_d,
     "balance_q" => idx_balance_q
 )
@@ -94,6 +99,34 @@ function solve_line!(du, u, p)
 
 end
 
+function solve_fault!(du, u, p)
+    T = eltype(u)
+    Ω = T(2*pi*60)
+
+    address, models, _, _ = p
+
+    bus = models.bus
+    line = models.line
+    fault = models.fault
+
+    fault_id = u[address["fault_id"]]
+    fault_iq = u[address["fault_iq"]]
+
+    Ls = @. T(fault.l_s) / Ω
+
+    bus_vd = Vector{T}(bus.vd)  # converts Float64 -> T safely
+    bus_vq = Vector{T}(bus.vq)
+
+    bus_vd[non_slack_buses] = @. u[address["balance_d"]]
+    bus_vq[non_slack_buses] = @. u[address["balance_q"]]
+
+    du[address["fault_id"]] = @. bus_vd[fault.bus] - fault.r_s * fault_id + fault.x_s * fault_iq
+    du[address["fault_iq"]] = @. bus_vq[fault.bus] - fault.r_s * fault_iq - fault.x_s * fault_id
+    # du[address["fault_id"]] = @. bus_vd[fault.bus] - fault.r_s * fault_id
+    # du[address["fault_iq"]] = @. bus_vq[fault.bus] - fault.r_s * fault_iq
+
+end
+
 function balance!(du, u, p)
     T = eltype(u)
     address, models, incidence_matrix, C_eq = p
@@ -118,6 +151,9 @@ function balance!(du, u, p)
     bus_vd[non_slack_buses] = @. u[address["balance_d"]]
     bus_vq[non_slack_buses] = @. u[address["balance_q"]]
 
+    fault_id = u[address["fault_id"]]
+    fault_iq = u[address["fault_iq"]]
+
     id = zeros(T, length(bus.idx))
     iq = zeros(T, length(bus.idx))
 
@@ -126,10 +162,12 @@ function balance!(du, u, p)
 
     id[generator.bus] += @. gen_id * sin(gen_delta) + gen_iq * cos(gen_delta)
     id[load.bus] -= @. real(i_load)
+    id[fault.bus] -= @. fault_id
     id[:] += incidence_matrix * line_id
 
     iq[generator.bus] += @. gen_iq * sin(gen_delta) - gen_id * cos(gen_delta)
     iq[load.bus] -= @. imag(i_load)
+    iq[fault.bus] -= @. fault_iq
     iq[:] += incidence_matrix * line_iq
 
     omega = 2*pi*60
@@ -146,6 +184,7 @@ end
 function solve_dynamic_sim!(du, u, p, t)
     solve_generator!(du, u, p)
     solve_line!(du, u, p)
+    solve_fault!(du, u, p)
     balance!(du, u, p)
 end
 
@@ -153,7 +192,7 @@ end
 incidence_matrix = build_incidence_matrix(models)
 
 
-du = zeros(4*n_gens + 2*n_lines + 2*length(non_slack_buses))
+du = zeros(4*n_gens + 2*n_lines + 2*n_faults + 2*length(non_slack_buses))
 
 begin
     u0 = zeros(length(du))
@@ -163,6 +202,8 @@ begin
     u0[address["gen_iq"]] = models.generator.i_q
     u0[address["line_id"]] = models.line.i_d
     u0[address["line_iq"]] = models.line.i_q
+    u0[address["fault_id"]] = [0.0]
+    u0[address["fault_iq"]] = [0.0]
     u0[address["balance_d"]] = models.bus.vd[non_slack_buses]
     u0[address["balance_q"]] = models.bus.vq[non_slack_buses]
 end
