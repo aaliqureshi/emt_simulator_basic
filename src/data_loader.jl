@@ -51,6 +51,8 @@ function _verify_models(models::NamedTuple) ::Nothing
         error("Oops! There are more than one load at the same bus - $(load_buses) !!!")
     end
 
+    # TODO: ensure only one line between two same buses
+
     return nothing
 end
 
@@ -85,6 +87,9 @@ function _build_line(sym_name::Symbol, table::Dict{Symbol, DataFrame})
     line.R = Float64.(df.r)
     line.X = Float64.(df.x)
     line.B = Float64.(df.b)
+    # line.B = max.(Float64.(df.b), 1e-6)
+    line.C = line.B ./ (2*pi*60)
+    line.L = line.X ./ (2*pi*60)
     line.i_d = zeros(Float64, num_lines)
     line.i_q = zeros(Float64, num_lines)
 
@@ -141,7 +146,8 @@ function _build_fault(sym_name::Symbol, table::Dict{Symbol, DataFrame})
     fault = Fault{Float64}(num_faults)
     fault.bus = Int32.(df.bus)
     fault.r_s = Float64.(df.rf)
-    fault.l_s = Float64.(df.xf)
+    fault.x_s = Float64.(df.xf)
+    fault.l_s = fault.x_s ./ (2*pi*60)
     fault.tf = Float64.(df.tf)
     fault.tc = Float64.(df.tc)
 
@@ -189,6 +195,7 @@ function _build_pq(sym_name::Symbol, table::Dict{Symbol, DataFrame})
     load.bus = Int32.(pq_buses)
     load.p = Float64.(vcat(df_pq.p0, zeros_padded))
     load.q = Float64.(vcat(df_pq.q0, zeros_padded))
+    load.y = zeros(Complex{Float64}, length(pq_buses))
 
     return load
 end
