@@ -37,7 +37,7 @@ function run_static_init!(sys)
     compute_line_currents!(models)
 
     # compute load currents
-    load_id, load_iq = compute_load_currents(models)
+    load_id, load_iq = compute_load_currents!(models)
 
     # compute shunt currents
     i_cap_d, i_cap_q = compute_shunt_currents(models)
@@ -74,6 +74,9 @@ function run_static_init!(sys)
     i_q_balance[:] -= i_cap_q
     i_q_balance[:] += i_q
     i_q_balance[models.slack.bus] += i_slack_q
+
+    @assert all(abs.(i_d_balance) .< 1e-10) "d-axis current balance not satisfied"
+    @assert all(abs.(i_q_balance) .< 1e-10) "q-axis current balance not satisfied"
 
     # compute generator internal voltage (E'q, delta)
     v_gen = @. (models.bus.vd[models.generator.bus] + 1im * models.bus.vq[models.generator.bus]) +

@@ -54,8 +54,8 @@ function balance!(du, u, p)
     id = zeros(T, length(bus.idx))
     iq = zeros(T, length(bus.idx))
 
-    ## load current = conjugate(load power) / conjugate(bus voltage)
-    i_load = @. (load.p - 1im * load.q) / (bus_vd[load.bus] - 1im * bus_vq[load.bus])
+    # i_load = Y * V  :: constant admittance load model
+    i_load = @. load.y * complex(bus_vd[load.bus], bus_vq[load.bus])
 
     id[generator.bus] += @. gen_id * sin(gen_delta) + gen_iq * cos(gen_delta)
     id[load.bus] -= @. real(i_load)

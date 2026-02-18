@@ -11,7 +11,8 @@ include("dynamic_sim.jl"); using .DynamicSim
 using MyDiffEq, Plots
 
 # 1. Load data
-data_file = "cases/Fault_Cases/ieee14_fault_barq.xlsx"
+# data_file = "cases/Fault_Cases/ieee14_fault_barq.xlsx"
+data_file = "cases/Fault_Cases/SMIB_RL_Line_DrCui.xlsx"
 models = load_data(data_file)
 sys = build_system(models)
 
@@ -42,10 +43,18 @@ sol_pre = MyDiffEq.Solve(prob, 50e-4, method=:Euler, adaptive=false)
 states_pre = MyDiffEq.get_states(sol_pre)
 
 # 6. Fault simulation
-sys.models.fault.r_s = [1e-6]
+sys.models.fault.r_s = [1e-4]
 p = (address, sys.models, sys.incidence_matrix, sys.C_eq, sys.non_slack_buses)
 
 prob = MyDiffEq.ODEProblem(solve_dynamic_sim!, sol_pre.u[end], (0.0, 0.1), p, mass_matrix)
-sol_fault = MyDiffEq.Solve(prob, 50e-5, method=:Euler, adaptive=false)
+sol_fault = MyDiffEq.Solve(prob, 50e-4, method=:Euler, adaptive=false)
 
 states_fault = MyDiffEq.get_states(sol_fault)
+
+using OrdinaryDiffEq
+
+prob0 = OrdinaryDiffEq.ODEFunction(solve_dynamic_sim!, mass_matrix=mass_matrix)
+prob = OrdinaryDiffEq.ODEProblem(prob0, sol_pre.u[end], (0.0, 0.1), p)
+sol_fault = solve(prob, ImplicitEuler(nlsolve = NLNewton(always_new=true)), adaptive=false, dt = 50e-4)
+
+states_fault = get_states(sol_fault)

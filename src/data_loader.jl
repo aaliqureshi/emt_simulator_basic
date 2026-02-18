@@ -195,6 +195,7 @@ function _build_pq(sym_name::Symbol, table::Dict{Symbol, DataFrame})
     load.bus = Int32.(pq_buses)
     load.p = Float64.(vcat(df_pq.p0, zeros_padded))
     load.q = Float64.(vcat(df_pq.q0, zeros_padded))
+    load.y = zeros(Complex{Float64}, length(pq_buses))
 
     return load
 end

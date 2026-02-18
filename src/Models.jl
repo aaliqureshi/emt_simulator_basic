@@ -9,6 +9,6 @@ include("models/slack.jl");     using .SlackModel
 
 export Bus, Line, Generator, Fault, Load, Slack
 export solve_generator!, solve_line!, solve_fault!, balance!
-export phasor2DP!, compute_line_currents!, compute_load_currents
+export phasor2DP!, compute_line_currents!, compute_load_currents!
 
 end #module
