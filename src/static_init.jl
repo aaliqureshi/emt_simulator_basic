@@ -95,10 +95,6 @@ function run_static_init!(sys)
     models.generator.i_d[:] = @. gen_id
     models.generator.i_q[:] = @. gen_iq
 
-    # set initial fault impedance (open circuit)
-    models.fault.r_s = [1e10]
-    models.fault.x_s = [1e10*2*pi*60]
-
     return nothing
 end
 

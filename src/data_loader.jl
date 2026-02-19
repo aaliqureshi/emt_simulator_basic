@@ -139,17 +139,29 @@ end
 function _build_fault(sym_name::Symbol, table::Dict{Symbol, DataFrame})
     """
     Load the fault data from the table.
+    Note: fault impedance is added a small impedance to avoid division by zero.
     """
     df = table[sym_name]
     num_faults = length(df.idx)
 
+    r_open = [1e10]
+    x_open = [1e10]
+    Ω = 2*pi*60
+
     fault = Fault{Float64}(num_faults)
     fault.bus = Int32.(df.bus)
-    fault.r_s = Float64.(df.rf)
-    fault.x_s = Float64.(df.xf)
-    fault.l_s = fault.x_s ./ (2*pi*60)
-    fault.tf = Float64.(df.tf)
-    fault.tc = Float64.(df.tc)
+
+    # fault impedance - add a small impedance to avoid division by zero
+    fault.r_fault = max.(Float64.(df.rf), 1e-4)
+    fault.x_fault = max.(Float64.(df.xf), 1e-4)
+    fault.l_fault = fault.x_fault ./ Ω
+    
+    fault.t_fault = Float64.(df.tf)
+    fault.t_clear = Float64.(df.tc)
+
+    fault.r_open = Float64.(r_open)
+    fault.x_open = Float64.(x_open)
+    fault.l_open = fault.x_open ./ Ω
 
     return fault
 end
