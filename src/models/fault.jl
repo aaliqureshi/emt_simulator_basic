@@ -40,10 +40,7 @@ function solve_fault!(du, u, p, t)
     bus_vd[non_slack_buses] = @. u[address["balance_d"]]
     bus_vq[non_slack_buses] = @. u[address["balance_q"]]
 
-    r_s = fault.r_s
-    r_eff = (1e-2)^(t / 0.1) * (1e10)^(1-t/0.1)
-
-    # g_fault = @. 1 / (r_eff)
+    r_s = fault.r_s[1]
     g_fault = 1 / r_s
 
     du[address["fault_id"]] = @. g_fault * bus_vd[fault.bus] - fault_id
