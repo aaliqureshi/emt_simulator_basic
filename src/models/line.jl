@@ -28,7 +28,7 @@ mutable struct Line{T<:Real}
     end
 end
 
-function solve_line!(du, u, p)
+function solve_line!(du, u, p, t)
     T = eltype(u)
     Ω = T(2*pi*60)
 
@@ -45,6 +45,17 @@ function solve_line!(du, u, p)
 
     bus_vd[non_slack_buses] = @. u[address["balance_d"]]
     bus_vq[non_slack_buses] = @. u[address["balance_q"]]
+
+    # models.line.R[2] = 1.0 <= t <= 1.1 ? 1e10 : 0.05403
+    # models.line.X[2] = 1.0 <= t <= 1.1 ? 1e10 : 0.22304
+
+    # models.line.R[2] = t > 2.0 ? 1e10 : 0.05403
+    # models.line.X[2] = t > 2.0 ? 1e10 : 0.22304
+
+    # lines = [2, 5, 7]
+    # models.line.R[lines] .= t > 2.0 ? 1e10 : models.line.R[lines]
+    # models.line.X[lines] .= t > 2.0 ? 1e10 : models.line.X[lines]
+
 
     du[address["line_id"]] = @. bus_vd[line.bus1_idx] - bus_vd[line.bus2_idx] - line.R * line_id + line.X * line_iq
     du[address["line_iq"]] = @. bus_vq[line.bus1_idx] - bus_vq[line.bus2_idx] - line.R * line_iq - line.X * line_id
