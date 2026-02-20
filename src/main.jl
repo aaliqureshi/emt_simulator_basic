@@ -11,7 +11,8 @@ include("dynamic_sim.jl"); using .DynamicSim
 using MyDiffEq, Plots
 
 # 1. Load data
-data_file = "cases/Fault_Cases/ieee14_fault_barq.xlsx"
+# data_file = "cases/Fault_Cases/ieee14_fault_barq.xlsx"
+data_file = "cases/Fault_Cases/ieee14_fault_barq_no_shunt.xlsx"
 # data_file = "cases/Fault_Cases/SMIB_RL_Line_DrCui.xlsx"
 models = load_data(data_file)
 sys = build_system(models)
@@ -30,11 +31,14 @@ address = build_dynamic_address(sys)
 mass_matrix = build_mass_matrix(sys, address)
 u0 = build_initial_conditions(sys, address)
 p = (address, sys.models, sys.incidence_matrix, sys.C_eq, sys.non_slack_buses)
-tstops = [sys.models.fault.t_fault[1], sys.models.fault.t_clear[1]]
+# tstops = [sys.models.fault.t_fault[1], sys.models.fault.t_clear[1], 2.0] 
+tstops = [1.0, 1.1]
+# tstops = [2.0]
+# tstops = []
 
 # 5. Pre-fault simulation
-prob = MyDiffEq.ODEProblem(solve_dynamic_sim!, u0, (0.0, 20.0), p, mass_matrix)
-sol = MyDiffEq.Solve(prob, 50e-6, method=:Trap, adaptive=false, tstops=tstops)
+prob = MyDiffEq.ODEProblem(solve_dynamic_sim!, u0, (0.0, 5.0), p, mass_matrix)
+sol = MyDiffEq.Solve(prob, 50e-5, method=:Euler, adaptive=false, tstops=tstops)
 
 states = MyDiffEq.get_states(sol)
 
@@ -45,3 +49,28 @@ plot(sol.time[2:end], sol.dt_hist)
 
 plot(sol.time, states[address["delta"],:]')
 plot(sol.time, states[address["omega"],:]')
+plot(sol.time, states[address["line_id"],:]')
+plot(sol.time, states[address["line_iq"],:]')
+plot(sol.time, states[address["fault_id"],:]')
+plot(sol.time, states[address["fault_iq"],:]')
+plot(sol.time, states[address["balance_d"],:]')
+plot(sol.time, states[address["balance_q"],:]')
+
+v = complex.(states[address["balance_d"],:], states[address["balance_q"],:])
+plot(sol.time, abs.(v'))
+
+nlog = sol.newton_log
+nlog.time
+nlog.iters
+nlog.residual_norm
+nlog.correction_norm
+nlog.u_prev
+nlog.u_final
+
+plot(1:nlog.iters, nlog.residual_norm, yscale=:log10,
+       xlabel="Newton iteration", ylabel="||G(u)||", marker=:circle)
+plot(1:nlog.iters, nlog.correction_norm, yscale=:log10,
+       xlabel="Newton iteration", ylabel="||Δx||", marker=:circle)
+
+plot(2:nlog.iters, nlog.residual_norm[2:end])
+# plot(2:nlog.iters, nlog.correction_norm[2:end])

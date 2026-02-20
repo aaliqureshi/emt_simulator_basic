@@ -6,7 +6,7 @@ include("Models.jl"); using .Models
 
 function solve_dynamic_sim!(du, u, p, t)
     solve_generator!(du, u, p)
-    solve_line!(du, u, p)
+    solve_line!(du, u, p, t)
     solve_fault!(du, u, p, t)
     balance!(du, u, p)
 end
@@ -68,18 +68,18 @@ function build_mass_matrix(sys, address)
     end
 
     # line id (inductance)
-    i = 1
-    for idx in collect(address["line_id"])
-        mass_matrix[idx, idx] = models.line.L[i]
-        i += 1
-    end
+    # i = 1
+    # for idx in collect(address["line_id"])
+    #     mass_matrix[idx, idx] = models.line.L[i]
+    #     i += 1
+    # end
 
-    # line iq (inductance)
-    i = 1
-    for idx in collect(address["line_iq"])
-        mass_matrix[idx, idx] = models.line.L[i]
-        i += 1
-    end
+    # # line iq (inductance)
+    # i = 1
+    # for idx in collect(address["line_iq"])
+    #     mass_matrix[idx, idx] = models.line.L[i]
+    #     i += 1
+    # end
 
     # delta
     for i in collect(address["delta"])

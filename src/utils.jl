@@ -62,12 +62,12 @@ function _build_B_matrix(models)
     end
 
     # Add artficial capacitance to Every bus - this ensures mass matrix diagonal is not 0
-    C_artifact = 1e-6
-    B_artifact = 2*pi*60*C_artifact
+    # C_artifact = 1e-6
+    # B_artifact = 2*pi*60*C_artifact
     
-    for i in eachindex(1:n_bus)
-        B_mat[i, i] += 1im * B_artifact
-    end
+    # for i in eachindex(1:n_bus)
+    #     B_mat[i, i] += 1im * B_artifact
+    # end
 
     return B_mat
 end

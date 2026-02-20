@@ -55,7 +55,8 @@ function balance!(du, u, p)
     iq = zeros(T, length(bus.idx))
 
     # i_load = Y * V  :: constant admittance load model
-    i_load = @. load.y * complex(bus_vd[load.bus], bus_vq[load.bus])
+    # i_load = @. load.y * complex(bus_vd[load.bus], bus_vq[load.bus])
+    i_load = @. conj(complex(load.p, load.q) / complex(bus_vd[load.bus], bus_vq[load.bus]))
 
     id[generator.bus] += @. gen_id * sin(gen_delta) + gen_iq * cos(gen_delta)
     id[load.bus] -= @. real(i_load)
