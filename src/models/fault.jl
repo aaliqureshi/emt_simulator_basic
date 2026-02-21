@@ -30,7 +30,7 @@ function solve_fault!(du, u, p, t)
     T = eltype(u)
     Ω = T(2*pi*60)
 
-    address, models, _, _, non_slack_buses = p
+    address, models, _, _, non_slack_buses, lambda = p
 
     bus = models.bus
     fault = models.fault
@@ -44,8 +44,10 @@ function solve_fault!(du, u, p, t)
     bus_vd[non_slack_buses] = @. u[address["balance_d"]]
     bus_vq[non_slack_buses] = @. u[address["balance_q"]]
 
-    r_eff = fault.t_fault[1] <= t <= fault.t_clear[1] ? fault.r_fault[1] : fault.r_open[1]
+    # r_eff = fault.t_fault[1] <= t <= fault.t_clear[1] ? fault.r_fault[1] : fault.r_open[1]
+    r_eff = (1e10)^(1-lambda) * (fault.r_fault[1])^(lambda)
     g_fault = 1 / r_eff
+    #TODO: add reactive fault 
 
     du[address["fault_id"]] = @. g_fault * bus_vd[fault.bus] - fault_id
     du[address["fault_iq"]] = @. g_fault * bus_vq[fault.bus] - fault_iq

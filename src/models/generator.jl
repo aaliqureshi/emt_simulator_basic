@@ -38,7 +38,7 @@ function solve_generator!(du, u, p)
     Ω = T(2*pi*60)
     d = T(1.0)
 
-    address, models, _, _, non_slack_buses = p
+    address, models, _, _, non_slack_buses, _ = p
 
     bus = models.bus
     generator = models.generator

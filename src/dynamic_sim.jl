@@ -60,26 +60,26 @@ function build_mass_matrix(sys, address)
     mass_matrix = zeros(n_states, n_states)
 
     # bus balance equations (capacitance)
-    for (i, bus_idx) in enumerate(address["balance_d"])
-        real_bus_idx = non_slack_buses[i]
-        mass_matrix[bus_idx, bus_idx] = C_eq[real_bus_idx]
-        q_idx = address["balance_q"][i]
-        mass_matrix[q_idx, q_idx] = C_eq[real_bus_idx]
-    end
+    # for (i, bus_idx) in enumerate(address["balance_d"])
+    #     real_bus_idx = non_slack_buses[i]
+    #     mass_matrix[bus_idx, bus_idx] = C_eq[real_bus_idx]
+    #     q_idx = address["balance_q"][i]
+    #     mass_matrix[q_idx, q_idx] = C_eq[real_bus_idx]
+    # end
 
     # line id (inductance)
-    # i = 1
-    # for idx in collect(address["line_id"])
-    #     mass_matrix[idx, idx] = models.line.L[i]
-    #     i += 1
-    # end
+    i = 1
+    for idx in collect(address["line_id"])
+        mass_matrix[idx, idx] = models.line.L[i]
+        i += 1
+    end
 
-    # # line iq (inductance)
-    # i = 1
-    # for idx in collect(address["line_iq"])
-    #     mass_matrix[idx, idx] = models.line.L[i]
-    #     i += 1
-    # end
+    # line iq (inductance)
+    i = 1
+    for idx in collect(address["line_iq"])
+        mass_matrix[idx, idx] = models.line.L[i]
+        i += 1
+    end
 
     # delta
     for i in collect(address["delta"])

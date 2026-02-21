@@ -26,7 +26,7 @@ end
 
 function balance!(du, u, p)
     T = eltype(u)
-    address, models, incidence_matrix, C_eq, non_slack_buses = p
+    address, models, incidence_matrix, C_eq, non_slack_buses, _ = p
 
     bus = models.bus
     line = models.line

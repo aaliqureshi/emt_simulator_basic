@@ -32,7 +32,7 @@ function solve_line!(du, u, p, t)
     T = eltype(u)
     Ω = T(2*pi*60)
 
-    address, models, _, _, non_slack_buses = p
+    address, models, _, _, non_slack_buses, lambda = p
 
     bus = models.bus
     line = models.line
@@ -53,8 +53,15 @@ function solve_line!(du, u, p, t)
     # models.line.X[2] = t > 2.0 ? 1e10 : 0.22304
 
     # lines = [2, 5, 7]
+    lines = [2]
     # models.line.R[lines] .= t > 2.0 ? 1e10 : models.line.R[lines]
     # models.line.X[lines] .= t > 2.0 ? 1e10 : models.line.X[lines]
+
+    # models.line.R[lines] .= 1e10
+    # models.line.X[lines] .= 1e10
+
+    # models.line.R[2] = (0.05403)^(1-lambda) * (1e10)^(lambda)
+    # models.line.X[2] = (0.22304)^(1-lambda) * (1e10)^(lambda)
 
 
     du[address["line_id"]] = @. bus_vd[line.bus1_idx] - bus_vd[line.bus2_idx] - line.R * line_id + line.X * line_iq
