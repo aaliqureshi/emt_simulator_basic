@@ -70,6 +70,12 @@ function _build_bus(sym_name::Symbol, table::Dict{Symbol, DataFrame})
     bus.theta = Float64.(df.a0)
     bus.vd = zeros(Float64, length(df.idx))
     bus.vq = zeros(Float64, length(df.idx))
+
+    ## update voltage of PV buses
+    df_pv = table[:pv]
+    pv_buses = Int32.(df_pv.bus)
+    bus.v[pv_buses] = Float64.(df_pv.v0)
+
     return bus
 end
 
@@ -84,12 +90,14 @@ function _build_line(sym_name::Symbol, table::Dict{Symbol, DataFrame})
     line.idx = Int32.(collect(1:num_lines))
     line.bus1_idx = Int32.(df.bus1)
     line.bus2_idx = Int32.(df.bus2)
-    line.R = Float64.(df.r)
-    line.X = Float64.(df.x)
+    line.R = max.(Float64.(df.r), 1e-8)
+    x_vals = Float64.(df.x)
+    line.X = ifelse.(x_vals .== 0.0, 1e-8, x_vals)
     line.B = Float64.(df.b)
     # line.B = max.(Float64.(df.b), 1e-6)
     line.C = line.B ./ (2*pi*60)
     line.L = line.X ./ (2*pi*60)
+    line.tap = hasproperty(df, :tap) ? Float64.(df.tap) : ones(Float64, num_lines)
     line.i_d = zeros(Float64, num_lines)
     line.i_q = zeros(Float64, num_lines)
 

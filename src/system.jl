@@ -11,7 +11,7 @@ mutable struct System
     Y::Matrix{ComplexF64}
     non_slack_buses::Vector{Int32}
     v_update_buses::Vector{Int32}
-    incidence_matrix::Matrix{Int32}
+    incidence_matrix::Matrix{Float64}
     C_eq::Vector{Float64}
 end
 

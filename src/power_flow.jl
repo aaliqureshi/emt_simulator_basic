@@ -24,7 +24,7 @@ function power_flow_traditional!(du, u, p)
     P = zeros(T, length(bus.idx))
     Q = zeros(T, length(bus.idx))
 
-    v = V .* exp.(1im .* theta)
+    v = V .* cis.(theta)
     S = v .* conj.(Y * v)
 
     P = real.(S)
@@ -39,7 +39,7 @@ function power_flow_traditional!(du, u, p)
     du[address["balance_real_power"]] .= @. P[non_slack_buses]
 end
 
-function powerflow!(u, p)
+function powerflow(u, p)
     T = eltype(u)
     du = zeros(T, length(u))
     power_flow_traditional!(du, u, p)
@@ -47,6 +47,7 @@ function powerflow!(u, p)
 end
 
 function solve_power_flow!(sys)
+    # Assumes bus numbering is 1:n_bus (sys.Y and bus vectors indexed by bus number).
     models = sys.models
     Y = sys.Y
     non_slack_buses = sys.non_slack_buses
@@ -66,8 +67,8 @@ function solve_power_flow!(sys)
 
     p = (address, models, Y, non_slack_buses, v_update_buses)
 
-    prob = NonlinearProblem(powerflow!, u0, p)
-    sol = solve(prob, abstol = 1e-9, reltol = 1e-9)
+    prob = NonlinearProblem(powerflow, u0, p)
+    sol = solve(prob, NewtonRaphson(); abstol = 1e-9, reltol = 1e-9, maxiters = 100)
 
     # populate models with the solution
     models.bus.v[v_update_buses] .= sol.u[address["balance_reactive_power"]]
