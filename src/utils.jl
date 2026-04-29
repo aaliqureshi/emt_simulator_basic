@@ -9,17 +9,20 @@ Pkg.activate(".")
 
 function build_Y_matrix(models)
     # TODO: convert this to sparse matrices for better performance
-    # TODO: add transformers
     n_bus = length(models.bus.idx)
     Y = zeros(ComplexF64, n_bus, n_bus)
 
-    # create Y matrix
+    # create Y matrix (with transformer tap handling)
     for line_idx in eachindex(models.line.idx)
-        Y[models.line.bus1_idx[line_idx], models.line.bus2_idx[line_idx]] = -1 / (models.line.R[line_idx] + 1im * models.line.X[line_idx])
-        Y[models.line.bus2_idx[line_idx], models.line.bus1_idx[line_idx]] = -1 / (models.line.R[line_idx] + 1im * models.line.X[line_idx])
-    end
-    for row_idx in 1:n_bus
-        Y[row_idx, row_idx] = Y[row_idx, row_idx] + sum(-1 .* Y[row_idx, :])
+        i = models.line.bus1_idx[line_idx]
+        j = models.line.bus2_idx[line_idx]
+        y = 1 / (models.line.R[line_idx] + 1im * models.line.X[line_idx])
+        t = models.line.tap[line_idx]
+
+        Y[i, j] += -y / t
+        Y[j, i] += -y / t
+        Y[i, i] += y / (t^2)
+        Y[j, j] += y
     end
 
     B_mat = _build_B_matrix(models)
@@ -35,13 +38,16 @@ end
 function build_incidence_matrix(models)
     bus1_idx = models.line.bus1_idx
     bus2_idx = models.line.bus2_idx
+    tap = models.line.tap
 
     num_bus = length(models.bus.idx)
     num_line = length(models.line.idx)
-    incidence_matrix = zeros(Int32, num_bus, num_line)
+    # transformer convention: Bus i ---(a:1)---[Z]--- Bus j
+    # current at bus i is i_line/a, current at bus j is i_line
+    incidence_matrix = zeros(Float64, num_bus, num_line)
 
     for line in collect(1:num_line)
-        incidence_matrix[bus1_idx[line], line] = -1
+        incidence_matrix[bus1_idx[line], line] = -1 / tap[line]
         incidence_matrix[bus2_idx[line], line] = 1
     end
 

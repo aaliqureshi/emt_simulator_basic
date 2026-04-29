@@ -11,6 +11,7 @@ mutable struct Line{T<:Real}
     B :: Vector{T}
     C :: Vector{T}
     L :: Vector{T}
+    tap :: Vector{T}
     i_d:: Vector{T}
     i_q:: Vector{T}
 
@@ -24,15 +25,16 @@ mutable struct Line{T<:Real}
                Vector{T}(undef, n),
                Vector{T}(undef, n),
                Vector{T}(undef, n),
+               Vector{T}(undef, n),
                Vector{T}(undef, n))
     end
 end
 
-function solve_line!(du, u, p)
+function solve_line!(du, u, p, t)
     T = eltype(u)
     Ω = T(2*pi*60)
 
-    address, models, _, _, non_slack_buses = p
+    address, models, _, _, non_slack_buses, lambda = p
 
     bus = models.bus
     line = models.line
@@ -46,13 +48,14 @@ function solve_line!(du, u, p)
     bus_vd[non_slack_buses] = @. u[address["balance_d"]]
     bus_vq[non_slack_buses] = @. u[address["balance_q"]]
 
-    du[address["line_id"]] = @. bus_vd[line.bus1_idx] - bus_vd[line.bus2_idx] - line.R * line_id + line.X * line_iq
-    du[address["line_iq"]] = @. bus_vq[line.bus1_idx] - bus_vq[line.bus2_idx] - line.R * line_iq - line.X * line_id
+    # transformer convention: Bus i ---(a:1)---[Z]--- Bus j
+    du[address["line_id"]] = @. bus_vd[line.bus1_idx] / line.tap - bus_vd[line.bus2_idx] - line.R * line_id + line.X * line_iq
+    du[address["line_iq"]] = @. bus_vq[line.bus1_idx] / line.tap - bus_vq[line.bus2_idx] - line.R * line_iq - line.X * line_id
 end
 
 function compute_line_currents!(models)
     v_dp = @. models.bus.vd + 1im * models.bus.vq
-    i_line = @. (v_dp[models.line.bus1_idx] - v_dp[models.line.bus2_idx]) / (models.line.R + 1im * models.line.X)
+    i_line = @. (v_dp[models.line.bus1_idx] / models.line.tap - v_dp[models.line.bus2_idx]) / (models.line.R + 1im * models.line.X)
     models.line.i_d .= real(i_line)
     models.line.i_q .= imag(i_line)
 end

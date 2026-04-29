@@ -70,6 +70,12 @@ function _build_bus(sym_name::Symbol, table::Dict{Symbol, DataFrame})
     bus.theta = Float64.(df.a0)
     bus.vd = zeros(Float64, length(df.idx))
     bus.vq = zeros(Float64, length(df.idx))
+
+    ## update voltage of PV buses
+    df_pv = table[:pv]
+    pv_buses = Int32.(df_pv.bus)
+    bus.v[pv_buses] = Float64.(df_pv.v0)
+
     return bus
 end
 
@@ -84,12 +90,14 @@ function _build_line(sym_name::Symbol, table::Dict{Symbol, DataFrame})
     line.idx = Int32.(collect(1:num_lines))
     line.bus1_idx = Int32.(df.bus1)
     line.bus2_idx = Int32.(df.bus2)
-    line.R = Float64.(df.r)
-    line.X = Float64.(df.x)
+    line.R = max.(Float64.(df.r), 1e-8)
+    x_vals = Float64.(df.x)
+    line.X = ifelse.(x_vals .== 0.0, 1e-8, x_vals)
     line.B = Float64.(df.b)
     # line.B = max.(Float64.(df.b), 1e-6)
     line.C = line.B ./ (2*pi*60)
     line.L = line.X ./ (2*pi*60)
+    line.tap = hasproperty(df, :tap) ? Float64.(df.tap) : ones(Float64, num_lines)
     line.i_d = zeros(Float64, num_lines)
     line.i_q = zeros(Float64, num_lines)
 
@@ -139,17 +147,29 @@ end
 function _build_fault(sym_name::Symbol, table::Dict{Symbol, DataFrame})
     """
     Load the fault data from the table.
+    Note: fault impedance is added a small impedance to avoid division by zero.
     """
     df = table[sym_name]
     num_faults = length(df.idx)
 
+    r_open = [1e10]
+    x_open = [1e10]
+    Ω = 2*pi*60
+
     fault = Fault{Float64}(num_faults)
     fault.bus = Int32.(df.bus)
-    fault.r_s = Float64.(df.rf)
-    fault.x_s = Float64.(df.xf)
-    fault.l_s = fault.x_s ./ (2*pi*60)
-    fault.tf = Float64.(df.tf)
-    fault.tc = Float64.(df.tc)
+
+    # fault impedance - add a small impedance to avoid division by zero
+    fault.r_fault = max.(Float64.(df.rf), 1e-4)
+    fault.x_fault = max.(Float64.(df.xf), 1e-4)
+    fault.l_fault = fault.x_fault ./ Ω
+    
+    fault.t_fault = Float64.(df.tf)
+    fault.t_clear = Float64.(df.tc)
+
+    fault.r_open = Float64.(r_open)
+    fault.x_open = Float64.(x_open)
+    fault.l_open = fault.x_open ./ Ω
 
     return fault
 end

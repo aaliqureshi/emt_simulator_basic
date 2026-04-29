@@ -8,11 +8,13 @@ include("power_flow.jl"); using .PowerFlow
 include("static_init.jl"); using .StaticInit
 include("dynamic_sim.jl"); using .DynamicSim
 
-using MyDiffEq, Plots
+using MyDiffEq, Plots, Printf
 
 # 1. Load data
 # data_file = "cases/Fault_Cases/ieee14_fault_barq.xlsx"
-data_file = "cases/Fault_Cases/SMIB_RL_Line_DrCui.xlsx"
+# data_file = "cases/Fault_Cases/ieee14_fault_barq_no_shunt.xlsx"
+# data_file = "cases/Fault_Cases/SMIB_RL_Line_DrCui.xlsx"
+data_file = "cases/Fault_Cases/ieee39_fault.xlsx"
 models = load_data(data_file)
 sys = build_system(models)
 
@@ -25,36 +27,42 @@ solve_power_flow!(sys)
 # 3. Static initialization
 run_static_init!(sys)
 
-@show sys.models.generator.delta
-@show sys.models.generator.e_q_prime
-@show sys.models.generator.i_d
-@show sys.models.generator.i_q
-
 # 4. Dynamic simulation setup
 address = build_dynamic_address(sys)
 mass_matrix = build_mass_matrix(sys, address)
 u0 = build_initial_conditions(sys, address)
-p = (address, sys.models, sys.incidence_matrix, sys.C_eq, sys.non_slack_buses)
+
+lambda = 1.0
+p = (address, sys.models, sys.incidence_matrix, sys.C_eq, sys.non_slack_buses, lambda)
+# tstops = [sys.models.fault.t_fault[1], sys.models.fault.t_clear[1], 2.0] 
+# tstops = [1.0, 1.1]
+# tstops = [2.0]
+tstops = []
 
 # 5. Pre-fault simulation
-prob = MyDiffEq.ODEProblem(solve_dynamic_sim!, u0, (0.0, 10.0), p, mass_matrix)
-sol_pre = MyDiffEq.Solve(prob, 50e-4, method=:Euler, adaptive=false)
+prob = MyDiffEq.ODEProblem(solve_dynamic_sim!, u0, (0.0, 1.0), p, mass_matrix)
+sol = MyDiffEq.Solve(prob, 5e-4, method=:Euler, adaptive=false, tstops=tstops)
 
-states_pre = MyDiffEq.get_states(sol_pre)
+states = MyDiffEq.get_states(sol)
 
-# 6. Fault simulation
-sys.models.fault.r_s = [1e-4]
-p = (address, sys.models, sys.incidence_matrix, sys.C_eq, sys.non_slack_buses)
+# @show sol.iters[1:5]
 
-prob = MyDiffEq.ODEProblem(solve_dynamic_sim!, sol_pre.u[end], (0.0, 0.1), p, mass_matrix)
-sol_fault = MyDiffEq.Solve(prob, 50e-4, method=:Euler, adaptive=false)
+using Plots
+plot(sol.time[2:end], sol.iters)
+plot(sol.time[2:end], sol.dt_hist)
 
-states_fault = MyDiffEq.get_states(sol_fault)
 
-using OrdinaryDiffEq
+plot(sol.time, states[address["delta"],:]')
+plot(sol.time, states[address["omega"],:]')
+plot(sol.time, states[address["line_id"],:]')
+plot(sol.time, states[address["line_iq"],:]')
+plot(sol.time, states[address["fault_id"],:]')
+plot(sol.time, states[address["fault_iq"],:]')
+plot(sol.time, states[address["balance_d"],:]')
+plot(sol.time, states[address["balance_q"],:]')
 
-prob0 = OrdinaryDiffEq.ODEFunction(solve_dynamic_sim!, mass_matrix=mass_matrix)
-prob = OrdinaryDiffEq.ODEProblem(prob0, sol_pre.u[end], (0.0, 0.1), p)
-sol_fault = solve(prob, ImplicitEuler(nlsolve = NLNewton(always_new=true)), adaptive=false, dt = 50e-4)
+v = complex.(states[address["balance_d"],:], states[address["balance_q"],:])
+plot(sol.time, abs.(v'))
 
-states_fault = get_states(sol_fault)
+# plot(2:nlog.iters, nlog.residual_norm[2:end])
+plot(2:nlog.iters, nlog.correction_norm[2:end])
