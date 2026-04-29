@@ -12,15 +12,9 @@ function solve_algebraic!(u, p, mass_matrix, address; tol=1e-6, max_iter=1000)
     # Freeze only mechanical states (delta, omega); solve everything else
     n_mech = length(address["delta"]) + length(address["omega"])
     alg_idx = n_mech+1:n
-
-    for k in 1:max_iter
-        # Full residual evaluation (only algebraic part matters)
-        du = zeros(n)
-        solve_dynamic_sim!(du, u, p, 0.0)
-        g = du[alg_idx]
-
-        # Jacobian of algebraic equations w.r.t. algebraic variables only
-        jac_alg = ForwardDiff.jacobian(y -> begin
+    
+    # Jacobian of algebraic equations w.r.t. algebraic variables only
+            jac_alg = ForwardDiff.jacobian(y -> begin
             T = eltype(y)
             u_tmp = Vector{T}(u)
             u_tmp[alg_idx] .= y
@@ -28,6 +22,22 @@ function solve_algebraic!(u, p, mass_matrix, address; tol=1e-6, max_iter=1000)
             solve_dynamic_sim!(du_tmp, u_tmp, p, 0.0)
             du_tmp[alg_idx]
         end, u[alg_idx])
+
+    for k in 1:max_iter
+        # Full residual evaluation (only algebraic part matters)
+        du = zeros(n)
+        solve_dynamic_sim!(du, u, p, 0.0)
+        g = du[alg_idx]
+
+        # # Jacobian of algebraic equations w.r.t. algebraic variables only
+        # jac_alg = ForwardDiff.jacobian(y -> begin
+        #     T = eltype(y)
+        #     u_tmp = Vector{T}(u)
+        #     u_tmp[alg_idx] .= y
+        #     du_tmp = similar(u_tmp)
+        #     solve_dynamic_sim!(du_tmp, u_tmp, p, 0.0)
+        #     du_tmp[alg_idx]
+        # end, u[alg_idx])
 
         # Newton correction
         delta_y = jac_alg \ (-g)

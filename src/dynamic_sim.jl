@@ -1,8 +1,12 @@
 module DynamicSim
 
 export solve_dynamic_sim!, build_dynamic_address, build_mass_matrix, build_initial_conditions
+export solve_newton!, solve_damped_newton!, solve_backtracking_newton!
+export solve_levenberg_marquardt!, solve_homotopy!, solve_homotopy2!, solve_homotopy_lm!
+export solve_adaptive_homotopy!
 
 include("Models.jl"); using .Models
+include("algebraic_solvers.jl")
 
 function solve_dynamic_sim!(du, u, p, t)
     solve_generator!(du, u, p)

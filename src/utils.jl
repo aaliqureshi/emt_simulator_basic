@@ -61,20 +61,19 @@ function _build_B_matrix(models)
     """
     n_bus = length(models.bus.idx)
     B_mat = zeros(ComplexF64, n_bus, n_bus)
-    # transformer convention: Bus i ---(a:1)---[B/2]---[Z]---[B/2]--- Bus j
-    # bus i shunt sees V_i/a, so admittance referred to bus i is B/(2a²)
-    for (bus1, bus2, B, a) in zip(models.line.bus1_idx, models.line.bus2_idx, models.line.B, models.line.tap)
-        B_mat[bus1, bus1] += 1im * B / (2 * a^2)
-        B_mat[bus2, bus2] += 1im * B / 2
+    for (bus1, bus2, B) in zip(models.line.bus1_idx, models.line.bus2_idx, models.line.B)
+        B_half = 1im * B / 2
+        B_mat[bus1, bus1] += B_half
+        B_mat[bus2, bus2] += B_half
     end
 
     # Add artficial capacitance to Every bus - this ensures mass matrix diagonal is not 0
-    # C_artifact = 1e-6
-    # B_artifact = 2*pi*60*C_artifact
+    C_artifact = 1e-6
+    B_artifact = 2*pi*60*C_artifact
     
-    # for i in eachindex(1:n_bus)
-    #     B_mat[i, i] += 1im * B_artifact
-    # end
+    for i in eachindex(1:n_bus)
+        B_mat[i, i] += 1im * B_artifact
+    end
 
     return B_mat
 end

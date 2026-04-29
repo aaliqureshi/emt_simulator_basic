@@ -45,12 +45,31 @@ function solve_fault!(du, u, p, t)
     bus_vq[non_slack_buses] = @. u[address["balance_q"]]
 
     # r_eff = fault.t_fault[1] <= t <= fault.t_clear[1] ? fault.r_fault[1] : fault.r_open[1]
-    r_eff = (1e10)^(1-lambda) * (fault.r_fault[1])^(lambda)
-    g_fault = 1 / r_eff
-    #TODO: add reactive fault 
+    # r_eff = (1e10)^(1-lambda) * (fault.r_fault[1])^(lambda)
+    # r_eff = (1e10)^(lambda) * (fault.r_fault[1])^(1-lambda) 
+    # g_fault = 1 / r_eff
 
-    du[address["fault_id"]] = @. g_fault * bus_vd[fault.bus] - fault_id
-    du[address["fault_iq"]] = @. g_fault * bus_vq[fault.bus] - fault_iq
+    # du[address["fault_id"]] = @. g_fault * bus_vd[fault.bus] - fault_id
+    # du[address["fault_iq"]] = @. g_fault * bus_vq[fault.bus] - fault_iq
+
+    # reactive fault
+    x_eff = (1e10)^(1-lambda) * (fault.x_fault[1])^(lambda)
+    # x_eff = (1e10)^(lambda) * (fault.x_fault[1])^(1-lambda) 
+    # x_eff = t < 2.0 ? (1e10)^(1-lambda) * (fault.x_fault[1])^(lambda) : 1e10
+    # x_eff = models.fault.x_fault[1]
+    b_fault = 1 / x_eff
+    du[address["fault_id"]] = @. b_fault * bus_vd[fault.bus] + fault_iq
+    du[address["fault_iq"]] = @. b_fault * bus_vq[fault.bus] - fault_id
+
+    # resistive + reactive fault
+    # r_eff = (1e10)^(lambda) * (fault.r_fault[1])^(1-lambda) 
+    # x_eff = (1e10)^(lambda) * (fault.x_fault[1])^(1-lambda) 
+    # r_eff = (1e10)^(1-lambda) * (fault.r_fault[1])^(lambda) 
+    # x_eff = (1e10)^(1-lambda) * (fault.x_fault[1])^(lambda) 
+    # g_fault = 1 / r_eff
+    # b_fault = 1 / x_eff
+    # du[address["fault_id"]] = @. g_fault * b_fault * bus_vd[fault.bus] - b_fault * fault_id + g_fault * fault_iq
+    # du[address["fault_iq"]] = @. g_fault * b_fault * bus_vq[fault.bus] - g_fault * fault_id - b_fault * fault_iq
 end
 
 end # module
