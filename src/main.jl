@@ -7,6 +7,7 @@ include("system.jl"); using .SystemModel
 include("power_flow.jl"); using .PowerFlow
 include("static_init.jl"); using .StaticInit
 include("dynamic_sim.jl"); using .DynamicSim
+include("SteadyStateAnalysis.jl"); using .SteadyStateAnalysis
 
 using MyDiffEq, Plots, Printf
 
@@ -32,15 +33,21 @@ address = build_dynamic_address(sys)
 mass_matrix = build_mass_matrix(sys, address)
 u0 = build_initial_conditions(sys, address)
 
+# 4b. Small-signal analysis around the steady state (fault off, t=0)
+ssa = small_signal_analysis(solve_dynamic_sim!, sys, address, mass_matrix, u0;
+                            case_file=data_file, report_dir="reports", top_n=5)
+
 lambda = 1.0
 p = (address, sys.models, sys.incidence_matrix, sys.C_eq, sys.non_slack_buses, lambda)
+models.fault.t_fault=[100.]
+models.fault.t_clear=[100.]
 # tstops = [sys.models.fault.t_fault[1], sys.models.fault.t_clear[1], 2.0] 
 # tstops = [1.0, 1.1]
 # tstops = [2.0]
 tstops = []
 
 # 5. Pre-fault simulation
-prob = MyDiffEq.ODEProblem(solve_dynamic_sim!, u0, (0.0, 1.0), p, mass_matrix)
+prob = MyDiffEq.ODEProblem(solve_dynamic_sim!, u0, (0.0, 5.0), p, mass_matrix)
 sol = MyDiffEq.Solve(prob, 5e-4, method=:Euler, adaptive=false, tstops=tstops)
 
 states = MyDiffEq.get_states(sol)
@@ -64,5 +71,3 @@ plot(sol.time, states[address["balance_q"],:]')
 v = complex.(states[address["balance_d"],:], states[address["balance_q"],:])
 plot(sol.time, abs.(v'))
 
-# plot(2:nlog.iters, nlog.residual_norm[2:end])
-plot(2:nlog.iters, nlog.correction_norm[2:end])

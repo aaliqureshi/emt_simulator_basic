@@ -1,0 +1,106 @@
+Small-Signal Analysis Report
+========================================================================
+Case file        : cases/Fault_Cases/SMIB_RL_Line_DrCui.xlsx
+Generated        : 2026-04-29T16:55:24.077
+States           : 14
+Linearization t  : 0.0  (fault off)
+Steady-state |f| : 1.003e-10  (OK)
+
+Eigenvalue summary
+------------------------------------------------------------------------
+  finite eigenvalues    : 10
+  algebraic (Inf) modes : 4
+
+Finite eigenvalues  (sorted by real part, least damped first)
+------------------------------------------------------------------------
+    #               real               imag     freq[Hz]      damping
+    1      -2.043852e-02       4.166893e+06  663181.5957       0.0000
+    2      -2.043852e-02      -4.166893e+06  663181.5957       0.0000
+    3      -6.703043e-02      -9.523643e+00       1.5157       0.0070
+    4      -6.703043e-02       9.523643e+00       1.5157       0.0070
+    5      -5.272305e+01      -6.370209e+02     101.3850       0.0825
+    6      -5.272305e+01       6.370209e+02     101.3850       0.0825
+    7      -4.600512e+03       0.000000e+00       0.0000       1.0000
+    8      -8.966503e+03       0.000000e+00       0.0000       1.0000
+    9      -4.877587e+05       0.000000e+00       0.0000       1.0000
+   10      -9.891636e+05       0.000000e+00       0.0000       1.0000
+
+Algebraic (infinite) modes
+------------------------------------------------------------------------
+  alg    1 : λ = -Inf + NaN*im
+  alg    2 : λ = -Inf + NaN*im
+  alg    3 : λ = -Inf + NaN*im
+  alg    4 : λ = Inf + NaN*im
+
+Participation factors  (top 5 per finite mode, |p_ki| normalized)
+------------------------------------------------------------------------
+Mode    1   λ = -2.043852e-02 +4.166893e+06j
+    vd_bus1                                       p = 0.4999
+    vq_bus1                                       p = 0.4999
+    i_d_line1(b1->b3)                             p = 0.0001
+    i_q_line1(b1->b3)                             p = 0.0001
+    vd_bus3                                       p = 0.0000
+
+Mode    2   λ = -2.043852e-02 -4.166893e+06j
+    vd_bus1                                       p = 0.4999
+    vq_bus1                                       p = 0.4999
+    i_d_line1(b1->b3)                             p = 0.0001
+    i_q_line1(b1->b3)                             p = 0.0001
+    vd_bus3                                       p = 0.0000
+
+Mode    3   λ = -6.703043e-02 -9.523643e+00j
+    delta_gen_bus1                                p = 0.4974
+    omega_gen_bus1                                p = 0.4974
+    i_q_line1(b1->b3)                             p = 0.0017
+    i_d_line2(b3->b2)                             p = 0.0015
+    i_q_line2(b3->b2)                             p = 0.0011
+
+Mode    4   λ = -6.703043e-02 +9.523643e+00j
+    delta_gen_bus1                                p = 0.4974
+    omega_gen_bus1                                p = 0.4974
+    i_q_line1(b1->b3)                             p = 0.0017
+    i_d_line2(b3->b2)                             p = 0.0015
+    i_q_line2(b3->b2)                             p = 0.0011
+
+Mode    5   λ = -5.272305e+01 -6.370209e+02j
+    i_d_line2(b3->b2)                             p = 0.2856
+    i_q_line2(b3->b2)                             p = 0.2824
+    i_q_line1(b1->b3)                             p = 0.2175
+    i_d_line1(b1->b3)                             p = 0.2142
+    omega_gen_bus1                                p = 0.0001
+
+Mode    6   λ = -5.272305e+01 +6.370209e+02j
+    i_d_line2(b3->b2)                             p = 0.2856
+    i_q_line2(b3->b2)                             p = 0.2824
+    i_q_line1(b1->b3)                             p = 0.2175
+    i_d_line1(b1->b3)                             p = 0.2142
+    omega_gen_bus1                                p = 0.0001
+
+Mode    7   λ = -4.600512e+03 +0.000000e+00j
+    i_q_line1(b1->b3)                             p = 0.5507
+    i_q_line2(b3->b2)                             p = 0.4149
+    i_d_line2(b3->b2)                             p = 0.0235
+    i_d_line1(b1->b3)                             p = 0.0060
+    vq_bus3                                       p = 0.0044
+
+Mode    8   λ = -8.966503e+03 +0.000000e+00j
+    i_d_line1(b1->b3)                             p = 0.5368
+    i_d_line2(b3->b2)                             p = 0.4197
+    i_q_line1(b1->b3)                             p = 0.0194
+    vd_bus3                                       p = 0.0178
+    i_q_line2(b3->b2)                             p = 0.0062
+
+Mode    9   λ = -4.877587e+05 +0.000000e+00j
+    vd_bus3                                       p = 0.9816
+    i_d_line1(b1->b3)                             p = 0.0104
+    i_d_line2(b3->b2)                             p = 0.0079
+    vq_bus3                                       p = 0.0002
+    i_q_line1(b1->b3)                             p = 0.0000
+
+Mode   10   λ = -9.891636e+05 +0.000000e+00j
+    vq_bus3                                       p = 0.9953
+    i_q_line1(b1->b3)                             p = 0.0026
+    i_q_line2(b3->b2)                             p = 0.0019
+    vd_bus3                                       p = 0.0002
+    i_d_line1(b1->b3)                             p = 0.0000
+
