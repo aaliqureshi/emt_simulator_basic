@@ -118,19 +118,17 @@ function balance!(du, u, p)
     id[:] += w1
     iq[:] -= w2
 
-    p_h = zeros(T, length(bus.idx))
-    q_h = zeros(T, length(bus.idx))
+    # p_h = zeros(T, length(bus.idx))
+    # q_h = zeros(T, length(bus.idx))
 
-    p_h[non_slack_buses] = @. id[non_slack_buses] * bus_vd[non_slack_buses] + iq[non_slack_buses] * bus_vq[non_slack_buses]
-    q_h[non_slack_buses] = @. id[non_slack_buses] * bus_vq[non_slack_buses] - iq[non_slack_buses] * bus_vd[non_slack_buses]
+    # p_h[non_slack_buses] = @. id[non_slack_buses] * bus_vd[non_slack_buses] + iq[non_slack_buses] * bus_vq[non_slack_buses]
+    # q_h[non_slack_buses] = @. id[non_slack_buses] * bus_vq[non_slack_buses] - iq[non_slack_buses] * bus_vd[non_slack_buses]
 
+    du[address["balance_d"]] = @. id[non_slack_buses]
+    du[address["balance_q"]] = @. iq[non_slack_buses]
 
-
-    # du[address["balance_d"]] = @. id[non_slack_buses]
-    # du[address["balance_q"]] = @. iq[non_slack_buses]
-
-    du[address["balance_d"]] = @. p_h[non_slack_buses]
-    du[address["balance_q"]] = @. q_h[non_slack_buses]
+    # du[address["balance_d"]] = @. p_h[non_slack_buses]
+    # du[address["balance_q"]] = @. q_h[non_slack_buses]
 end
 
 end # module

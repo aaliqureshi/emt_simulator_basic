@@ -48,16 +48,6 @@ function solve_line!(du, u, p, t)
     bus_vd[non_slack_buses] = @. u[address["balance_d"]]
     bus_vq[non_slack_buses] = @. u[address["balance_q"]]
 
-
-    # # lines = [2, 5, 7, 19]
-    # models.line.R[lines] = @. t > 2.0 ? (1e10)^(lambda) * ([0.05403, 0.05695, 0.01335,0.0])^(1 - lambda) : models.line.R[lines]
-    # models.line.X[lines] = @. t > 2.0 ? (1e10)^(lambda) * ([0.22304, 0.17388, 0.04211, 0.25202])^(1 - lambda) : models.line.X[lines]
-
-    # lines = [1, 3]
-    # models.line.R[lines] = @. t > 2.0 ? (1e10)^(lambda) * ([0.01938, 0.04699])^(1 - lambda) : models.line.R[lines]
-    # models.line.X[lines] = @. t > 2.0 ? (1e10)^(lambda) * ([0.029585, 0.098985])^(1 - lambda) : models.line.X[lines]
-
-
     # transformer convention: Bus i ---(a:1)---[Z]--- Bus j
     du[address["line_id"]] = @. bus_vd[line.bus1_idx] / line.tap - bus_vd[line.bus2_idx] - line.R * line_id + line.X * line_iq
     du[address["line_iq"]] = @. bus_vq[line.bus1_idx] / line.tap - bus_vq[line.bus2_idx] - line.R * line_iq - line.X * line_id
