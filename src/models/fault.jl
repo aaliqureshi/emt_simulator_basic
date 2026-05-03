@@ -44,14 +44,34 @@ function solve_fault!(du, u, p, t)
     bus_vd[non_slack_buses] = @. u[address["balance_d"]]
     bus_vq[non_slack_buses] = @. u[address["balance_q"]]
 
-    
-    # r_eff = fault.t_fault[1] <= t <= fault.t_clear[1] ? fault.r_fault[1] : fault.r_open[1]
+    # ──────────────────────────────────────────────────────────────────────────
+    # Discontinuity convention used in this codebase:
+    #   `fault.t_fault < t <= fault.t_clear` (strict on lower, ≤ on upper)
+    #
+    # MyDiffEq evaluates the residual at the END of a step: t = t_n + dt.
+    # Together with the tstop mechanism, this means:
+    #   - the step that lands at t = t_fault is the LAST pre-fault sample
+    #     (fault still OFF in the residual),
+    #   - the step that lands at t_fault + dt is the FIRST in-fault sample;
+    #     by then `callback_check!` has set `reinit_step = true`, so this
+    #     step uses Richardson + Euler — no divided-difference history is
+    #     reused across the jump.
+    #   - symmetric on the clearing side: t = t_clear is the last in-fault
+    #     sample, t_clear + dt is the first post-fault sample.
+    #
+    # Any new switching device (converters, reclosers, etc.) should adopt
+    # the same `t_event < t <= t_event_end` convention and add the event
+    # times to `tstops` in main.jl.
+    # ──────────────────────────────────────────────────────────────────────────
+
+    # r_eff = fault.t_fault[1] < t <= fault.t_clear[1] ? fault.r_fault[1] : fault.r_open[1]
     # g_fault = 1 / r_eff
     # du[address["fault_id"]] = @. g_fault * bus_vd[fault.bus] - fault_id
     # du[address["fault_iq"]] = @. g_fault * bus_vq[fault.bus] - fault_iq
 
     # reactive fault
     # x_eff = models.fault.x_fault[1]
+    x_eff = fault.t_fault[1] < t <= fault.t_clear[1] ? fault.x_fault[1] : fault.x_open[1]
     b_fault = 1 / x_eff
     du[address["fault_id"]] = @. b_fault * bus_vd[fault.bus] + fault_iq
     du[address["fault_iq"]] = @. b_fault * bus_vq[fault.bus] - fault_id
