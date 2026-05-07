@@ -21,8 +21,12 @@ models = load_data(data_file)
 # build system
 sys = build_system(models)
 
-models.fault.bus = [20]
-models.fault.x_fault[1] = 0.015
+# models.fault.bus = [20]
+# models.fault.bus = [16]
+# models.fault.x_fault[1] = 0.015
+
+models.fault.bus = [28]
+models.fault.x_fault[1] = 0.024
 
 # 2. Solve power flow
 solve_power_flow!(sys)
@@ -44,7 +48,7 @@ tstops = []
 always_new=true
 prob = MyDiffEq.ODEProblem(solve_dynamic_sim!, u0, (0.0, 0.1), p, mass_matrix)
 sol = MyDiffEq.Solve(prob, 5e-4, method=:Euler, adaptive=false, tstops=tstops, always_new=always_new)
-u1 = sol.u[end]
+u1 = copy(sol.u[end])
 
 # # 5. post-fault simulation
 # lambda = 1.0
@@ -58,7 +62,7 @@ u2 = sol2.u[end]
 
 # # 5. post-fault simulation with smaller dt
 lambda = 1.0
-always_true=true
+always_new=true
 dt2=5e-5
 p = (address, sys.models, sys.incidence_matrix, sys.C_eq, sys.non_slack_buses, lambda)
 prob99 = MyDiffEq.ODEProblem(solve_dynamic_sim!, u1, (0.0, 0.1), p, mass_matrix)
@@ -70,59 +74,114 @@ u99 = sol99.u[end]
 # re-init
 λ_target = 1.0
 # lambda=1.0
-always_new=true
+always_new=false
 p_direct = (address, sys.models, sys.incidence_matrix, sys.C_eq, sys.non_slack_buses, λ_target)
 p_base   = (address, sys.models, sys.incidence_matrix, sys.C_eq, sys.non_slack_buses)
 
 u0_new = copy(u1)
 u0_homotopy = copy(u1)
 u0_adapt_h = copy(u1)
+u0_damped = copy(u1)
+u0_line = copy(u1)
+u0_lm = copy(u1)
+
+
 
 r1 = solve_newton!(u0_new, p_direct, address; max_iter=100, always_new=always_new)
 r2 = solve_homotopy!(u0_homotopy, p_base, address; λ_target=λ_target, Δλ=0.1, always_new=always_new)
-r3 = solve_adaptive_homotopy!(u0_adapt_h, p_base, address; λ_target=λ_target, always_new=always_new)
+# r3 = solve_adaptive_homotopy!(u0_adapt_h, p_base, address; λ_target=λ_target, always_new=always_new)
+r4 = solve_damped_newton!(u0_damped, p_direct, address; always_new=always_new)
+r5 = solve_backtracking_newton!(u0_line, p_direct, address; always_new=always_new)
+r6 = solve_levenberg_marquardt!(u0_lm, p_direct, address; always_new=always_new)
+r3 = solve_adaptive_homotopy!(u0_adapt_h, 
+                              p_base, 
+                              address; 
+                              λ_target=λ_target, 
+                              always_new=always_new,
+                              n_target = 10,
+                              Δλ_init=0.1,
+                              k_p=0.5,
+                              k_i=0.0,
+                              )
 
 
 
 
 # # 5. post re-init simulation
-lambda = 0.0
+lambda = 1.0
 p = (address, sys.models, sys.incidence_matrix, sys.C_eq, sys.non_slack_buses, lambda)
 u3 = copy(u0_new)
+# u3= copy(u0_adapt_h)
+# u3= copy(u0_homotopy)
+# u3= copy(u0_damped)
+# u3= copy(u0_line)
+# u3= copy(u0_lm)
 # u3= copy(u2)
 # u3= copy(u1)
 always_new=true
 prob3 = MyDiffEq.ODEProblem(solve_dynamic_sim!, u3, (0.0, 0.1), p, mass_matrix)
 sol3 = MyDiffEq.Solve(prob3, 5e-4, method=:Euler, adaptive=false, tstops=tstops, always_new=always_new)
-u3 = sol3.u[end]
+u4 = copy(sol3.u[end])
 
 
 
-# Optional - re-init post-fault
+
 λ_target = 0.0
 p_direct = (address, sys.models, sys.incidence_matrix, sys.C_eq, sys.non_slack_buses, λ_target)
 p_base   = (address, sys.models, sys.incidence_matrix, sys.C_eq, sys.non_slack_buses)
 
-u1_new = copy(u3)
-u1_homotopy = copy(u3)
-u1_adapt_h = copy(u3)
+always_new = true
 
-r4 = solve_newton!(u1_new, p_direct, address; max_iter=1000, always_new=true)
-r5 = solve_homotopy!(u1_homotopy, p_base, address; λ_target=λ_target, Δλ=0.1, always_new=true)
-r6 = solve_adaptive_homotopy!(u1_adapt_h, p_base, address; λ_target=λ_target,always_new=true)
+# u1_new = copy(u4)
+# u1_homotopy = copy(u4)
+# u1_adapt_h = copy(u4)
+
+u1_new = copy(u4)
+u1_homotopy = copy(u4)
+u1_adapt_h = copy(u4)
+u1_damped = copy(u4)
+u1_line = copy(u4)
+u1_lm = copy(u4)
+
+# r4 = solve_newton!(u1_new, p_direct, address; max_iter=1000, always_new=true)
+# r5 = solve_homotopy!(u1_homotopy, p_base, address; λ_target=λ_target, Δλ=0.1, always_new=true)
+# r6 = solve_adaptive_homotopy!(u1_adapt_h, p_base, address; λ_target=λ_target,always_new=true)
+
+r11 = solve_newton!(u1_new, p_direct, address; max_iter=100, always_new=always_new)
+r22 = solve_homotopy!(u1_homotopy, p_base, address; λ_target=λ_target, Δλ=0.1, always_new=always_new)
+r33 = solve_adaptive_homotopy!(u1_adapt_h, p_base, address; λ_target=λ_target, always_new=always_new)
+r44 = solve_damped_newton!(u1_damped, p_direct, address; always_new=always_new)
+r55 = solve_backtracking_newton!(u1_line, p_direct, address; always_new=always_new)
+r66 = solve_levenberg_marquardt!(u1_lm, p_direct, address; always_new=always_new)
 
 
-# post-fault integration
+
+# post-fault integration without re-init
 
 lambda = 0.0
 p = (address, sys.models, sys.incidence_matrix, sys.C_eq, sys.non_slack_buses, lambda)
-u4 = copy(u3)
+u5 = copy(u4)
 # u4= copy(u2)
 # u4= copy(u1)
 # u4=copy(u1_new)
 always_new=true
-prob4 = MyDiffEq.ODEProblem(solve_dynamic_sim!, u4, (0.0, 10e-4), p, mass_matrix)
+prob4 = MyDiffEq.ODEProblem(solve_dynamic_sim!, u5, (0.0, 0.1), p, mass_matrix)
 sol4 = MyDiffEq.Solve(prob4, 5e-4, method=:Euler, adaptive=false, tstops=tstops,always_new=always_new)
+
+
+# post-fault integration with re-init
+
+lambda = 0.0
+p = (address, sys.models, sys.incidence_matrix, sys.C_eq, sys.non_slack_buses, lambda)
+# u5 = copy(u3)
+# u4= copy(u2)
+# u4= copy(u1)
+# u6=copy(u1_new)
+# u6=copy(u1_adapt_h)
+u6=copy(u1_homotopy)
+always_new=true
+prob5 = MyDiffEq.ODEProblem(solve_dynamic_sim!, u6, (0.0, 0.1), p, mass_matrix)
+sol5 = MyDiffEq.Solve(prob5, 5e-4, method=:Euler, adaptive=false, tstops=tstops,always_new=always_new)
 
 
 
@@ -566,7 +625,7 @@ using LaTeXStrings
 begin
     tol_line = 1e-6
 #     tosave = false
-     tosave = true
+     tosave = false
     size = (520, 380)
 
     default(
@@ -740,8 +799,8 @@ using LaTeXStrings
 
 begin
     tol_line = 1e-6
-#     tosave = false
-     tosave = true
+    tosave = false
+    #  tosave = true
     size = (1200, 500)
 
     default(
@@ -905,10 +964,11 @@ scatter!(
 plt = plot(
     pa, pb,
     layout = (1, 2),
-    size = (1300, 550)
+    # size = (1300, 550)
+    size = (1400, 600)
 )
 
     display(plt)
-    tosave && savefig(plt, "homotopy_continuation_effort_combined.pdf")
+    tosave && savefig(plt, "homotopy_continuation_effort_combined_bus29.pdf")
 #     savefig(pb, "homotopy_continuation_effort.png")
 end
