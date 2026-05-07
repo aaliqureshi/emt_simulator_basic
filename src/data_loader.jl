@@ -106,21 +106,25 @@ function _build_line(sym_name::Symbol, table::Dict{Symbol, DataFrame})
     return line
 end
 
-function _build_gencls(sym_name::Symbol, table::Dict{Symbol, DataFrame})
+function _build_gencls(sym_name::Symbol, table::Dict{Symbol, DataFrame}; sys_base::Real=100.0)
     """
     Load the generator data from the table.
     """
     df = table[sym_name]
     num_gens = length(df.idx)
 
+    sn = Float64.(df.Sn)
+    sb = Float64(sys_base)
+    base_ratio = sn ./ sb
+
     generator = Generator{Float64}(num_gens)
     generator.idx = Int32.(collect(1:num_gens))
     generator.bus = Int32.(df.bus)
     generator.delta = ones(Float64, num_gens)
     generator.omega = ones(Float64, num_gens)
-    generator.M = Float64.(df.M)
-    generator.x_d_prime = Float64.(df.xd1)
-    generator.d = Float64.(df.D)
+    generator.M = Float64.(df.M) .* base_ratio
+    generator.x_d_prime = Float64.(df.xd1) ./ base_ratio
+    generator.d = Float64.(df.D) .* base_ratio
     generator.e_q_prime = ones(Float64, num_gens)
     generator.i_d = zeros(Float64, num_gens)
     generator.i_q = zeros(Float64, num_gens)
