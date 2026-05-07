@@ -75,13 +75,19 @@ function solve_newton!(u, p, address; tol=1e-6, max_iter=100, always_new=false)
 end
 
 # ── 2. Damped Newton (fixed α) ──
-
-function solve_damped_newton!(u, p, address; α=0.5, tol=1e-6, max_iter=100)
+function solve_damped_newton!(u, p, address; α=0.5, tol=1e-6, max_iter=100, always_new=false)
     n, alg_idx = _setup_alg(u, address)
     hist = Float64[]
 
+    local J
     for k in 1:max_iter
-        g, J = _eval_g_jac(u, p, n, alg_idx)
+        if always_new || k == 1
+            g, J = _eval_g_jac(u, p, n, alg_idx)
+            # jac_updates += 1
+        else
+            g, _ = _eval_g_jac(u, p, n, alg_idx)
+        end
+        # g, J = _eval_g_jac(u, p, n, alg_idx)
         push!(hist, norm(g, Inf))
         any(!isfinite, g) && return (converged=false, iters=k, residuals=hist)
 
@@ -98,12 +104,19 @@ end
 
 # ── 3. Newton with Armijo backtracking line search ──
 
-function solve_backtracking_newton!(u, p, address; tol=1e-6, max_iter=100, c₁=1e-4, ρ=0.5)
+function solve_backtracking_newton!(u, p, address; tol=1e-6, max_iter=100, c₁=1e-4, ρ=0.5, always_new=false)
     n, alg_idx = _setup_alg(u, address)
     hist = Float64[]
 
+    local J
     for k in 1:max_iter
-        g, J = _eval_g_jac(u, p, n, alg_idx)
+        if always_new || k == 1
+            g, J = _eval_g_jac(u, p, n, alg_idx)
+            # jac_updates += 1
+        else
+            g, _ = _eval_g_jac(u, p, n, alg_idx)
+        end
+        # g, J = _eval_g_jac(u, p, n, alg_idx)
         push!(hist, norm(g, Inf))
         any(!isfinite, g) && return (converged=false, iters=k, residuals=hist)
 
@@ -137,13 +150,20 @@ end
 
 # ── 4. Levenberg-Marquardt (adaptive damping) ──
 
-function solve_levenberg_marquardt!(u, p, address; tol=1e-6, max_iter=100, μ₀=1e-3)
+function solve_levenberg_marquardt!(u, p, address; tol=1e-6, max_iter=100, μ₀=1e-3, always_new=false)
     n, alg_idx = _setup_alg(u, address)
     hist = Float64[]
     μ = μ₀
 
+    local J
     for k in 1:max_iter
-        g, J = _eval_g_jac(u, p, n, alg_idx)
+        if always_new || k == 1
+            g, J = _eval_g_jac(u, p, n, alg_idx)
+            # jac_updates += 1
+        else
+            g, _ = _eval_g_jac(u, p, n, alg_idx)
+        end
+        # g, J = _eval_g_jac(u, p, n, alg_idx)
         push!(hist, norm(g, Inf))
         any(!isfinite, g) && return (converged=false, iters=k, residuals=hist)
 
