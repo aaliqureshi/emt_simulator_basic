@@ -14,11 +14,13 @@ using MyDiffEq, Plots, Printf
 
 using BenchmarkTools
 # 1. Load data
-data_file = "cases/Fault_Cases/ieee14_fault_barq.xlsx"
+# data_file = "cases/Fault_Cases/ieee14_fault_barq.xlsx"
 # data_file = "cases/Fault_Cases/ieee14_fault_barq_no_shunt.xlsx"
-# data_file = "cases/Fault_Cases/SMIB_RL_Line_DrCui.xlsx"
+data_file = "cases/Fault_Cases/SMIB_RL_Line_DrCui.xlsx"
 # data_file = "cases/Fault_Cases/ieee39_fault.xlsx"
 models = load_data(data_file)
+models.line.X[:] /= 2 
+models.line.R[:] .= 1e-5
 sys = build_system(models)
 
 # 2. Solve power flow
@@ -36,8 +38,8 @@ mass_matrix = build_mass_matrix(sys, address)
 u0 = build_initial_conditions(sys, address)
 
 # 4b. Small-signal analysis around the steady state (fault off, t=0)
-# ssa = small_signal_analysis(solve_dynamic_sim!, sys, address, mass_matrix, u0;
-                            # case_file=data_file, report_dir="reports", top_n=5)
+ssa = small_signal_analysis(solve_dynamic_sim!, sys, address, mass_matrix, u0;
+                            case_file=data_file, report_dir="reports", top_n=5)
 
 lambda = 1.0
 p = (address, sys.models, sys.incidence_matrix, sys.C_eq, sys.non_slack_buses, lambda)
@@ -50,7 +52,7 @@ models.fault.x_fault .= 1e-4
 # tstops = []
 
 # 5. Pre-fault simulation
-adaptive = true
+adaptive = false
 always_new = true
 dt = 5e-4
 method = :Euler
@@ -62,7 +64,7 @@ prob = MyDiffEq.ODEProblem(solve_dynamic_sim!,
                            )
 
 
-@elapsed sol = MyDiffEq.Solve(prob,
+sol = MyDiffEq.Solve(prob,
                      dt,
                      method=method,
                      adaptive=adaptive,
@@ -89,7 +91,7 @@ plot(sol.time[2:end], sol.dt_hist)
 
 
 plot(sol.time, states[address["delta"],:]')
-plot(sol.time, states[address["omega"],:]')
+plot!(sol.time, states[address["omega"],:]')
 plot(sol.time, states[address["line_id"],:]')
 plot(sol.time, states[address["line_iq"],:]')
 plot(sol.time, states[address["fault_id"],:]')
