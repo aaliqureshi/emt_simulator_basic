@@ -4,7 +4,7 @@ export solve_power_flow!
 
 include("Models.jl"); using .Models
 
-using NonlinearSolve
+using NonlinearSolve, MyDiffEq
 
 function power_flow_traditional!(du, u, p)
     T = eltype(u)
@@ -63,16 +63,75 @@ function solve_power_flow!(sys)
     )
 
     # initial guess from bus data
-    u0 = vcat(models.bus.v[v_update_buses], models.bus.theta[non_slack_buses])
+    # u0 = vcat(models.bus.v[v_update_buses], models.bus.theta[non_slack_buses])
+    #flat start
+    u0 = vcat(ones(Float64, length(v_update_buses)), zeros(Float64, length(non_slack_buses)))
+    # random start
+    # a1=0.9
+    # a2=1.1
+    # b1=-2*pi*50/360
+    # b2=2*pi*10/360
+    # r1=a1.+(a2-a1).*rand(length(v_update_buses))
+    # r2=b1.+(b2-b1).*rand(length(non_slack_buses))
+    # u0=vcat(r1, r2)
+    
 
     p = (address, models, Y, non_slack_buses, v_update_buses)
 
-    prob = NonlinearProblem(powerflow, u0, p)
-    sol = solve(prob, NewtonRaphson(); abstol = 1e-9, reltol = 1e-9, maxiters = 100)
+    # prob = MyDiffEq.NonLinearProblem(powerflow, u0, p)
+    # sol = MyDiffEq.NLsolve(prob, method=:GradientDescent, 
+    #                        atol = 1e-9, rtol = 1e-7, max_iter = 20000,alpha=1e-2)
+    # u0 = sol.u_final
 
+
+    # prob = NonlinearProblem(powerflow, u0, p)
+    # sol = solve(prob, NewtonRaphson(); abstol = 1e-9, reltol = 1e-9, maxiters = 5000)
+    
+    # prob = MyDiffEq.NonLinearProblem(powerflow, u0, p)
+    # sol = MyDiffEq.NLsolve(prob, method=:GradientDescent, 
+    #                        atol = 1e-9, rtol = 1e-7, max_iter = 3500,alpha=1e-9)
+    
+    prob = MyDiffEq.NonLinearProblem(powerflow, u0, p)
+    # sol = MyDiffEq.NLsolve(prob, 
+    #                        method=:SRD,
+    #                        max_iter = 75000,
+    #                        atol = 1e-7,
+    #                        rtol = 1e-7, 
+    #                        alpha=1e-6,
+    #                     #    step_decay=0.1,
+    #                        verbose=true,
+    #                     #    sampling_mode=:with_replacement,
+    #                        sampling_mode=:random_reshuffling,
+    #                     #    normalize=:kaczmarz,
+    #                        )
+    sol = MyDiffEq.NLsolve(prob, 
+                        #    method=:LiftedGD,
+                        method=:GradientDescent,
+                        # method=:NewtonRaphson,
+                           max_iter = 5000,
+                        # max_iter=150,
+                           atol = 1e-3,
+                           rtol = 1e-5, 
+                           alpha=1e-0,
+                        # alpha = 1e-1,
+                        # #    step_decay=0.1,
+                           verbose=true,
+                        # #    sampling_mode=:with_replacement,
+                        #    sampling_mode=:random_reshuffling,
+                        # #    normalize=:kaczmarz,
+                        store_stats=true,
+                           )
+    
+    # u0 = sol.u_final
+    # @show sol.u_final
+    # prob = NonlinearProblem(powerflow, u0, p)
+    # sol = solve(prob, NewtonRaphson(); abstol = 1e-9, reltol = 1e-9, maxiters = 5000)
+                       
     # populate models with the solution
-    models.bus.v[v_update_buses] .= sol.u[address["balance_reactive_power"]]
-    models.bus.theta[non_slack_buses] .= sol.u[address["balance_real_power"]]
+    # models.bus.v[v_update_buses] .= sol.u[address["balance_reactive_power"]]
+    # models.bus.theta[non_slack_buses] .= sol.u[address["balance_real_power"]]
+    models.bus.v[v_update_buses] .= sol.u_final[address["balance_reactive_power"]]
+    models.bus.theta[non_slack_buses] .= sol.u_final[address["balance_real_power"]]
 
     # convert to d-q components
     phasor2DP!(models.bus)

@@ -13,19 +13,30 @@ includet("io/json.jl"); using .JsonRW
 
 using MyDiffEq, Plots, Printf
 
-using BenchmarkTools
+# using BenchmarkTools
 # 1. Load data
-# data_file = "cases/Fault_Cases/ieee14_fault_barq.xlsx"
+data_file = "cases/Fault_Cases/ieee14_fault_barq.xlsx"
 # data_file = "cases/Fault_Cases/ieee14_fault_barq_no_shunt.xlsx"
-data_file = "cases/Fault_Cases/SMIB_RL_Line_DrCui.xlsx"
+# data_file = "cases/Fault_Cases/SMIB_RL_Line_DrCui.xlsx"
+# data_file = "cases/Fault_Cases/wecc_full.xlsx"
 # data_file = "cases/Fault_Cases/ieee39_fault.xlsx"
 models = load_data(data_file)
-models.line.X[:] /= 2 
-models.line.R[:] .= 1e-5
+
+# models.line.X[:] /= 2 
+# models.line.R[:] .= 1e-5
+# models.load.p[:]*=4.03
+
 sys = build_system(models)
 
+# models.bus.v[:] .= 1.0
+# models.bus.theta[:] .= 0.0
+
 # 2. Solve power flow
-solve_power_flow!(sys)
+sol = solve_power_flow!(sys)
+plot_pf_convergence(sol)
+# sol.correction_norm
+sol.residual_norm
+diff(sol.residual_norm)
 
 @show sys.models.bus.v
 @show sys.models.bus.theta
@@ -39,8 +50,8 @@ mass_matrix = build_mass_matrix(sys, address)
 u0 = build_initial_conditions(sys, address)
 
 # 4b. Small-signal analysis around the steady state (fault off, t=0)
-ssa = small_signal_analysis(solve_dynamic_sim!, sys, address, mass_matrix, u0;
-                            case_file=data_file, report_dir="reports", top_n=5)
+# ssa = small_signal_analysis(solve_dynamic_sim!, sys, address, mass_matrix, u0;
+#                             case_file=data_file, report_dir="reports", top_n=5)
 
 lambda = 1.0
 p = (address, sys.models, sys.incidence_matrix, sys.C_eq, sys.non_slack_buses, lambda)
@@ -50,22 +61,23 @@ tstops = [sys.models.fault.t_fault[1], sys.models.fault.t_clear[1]]
 models.fault.x_fault .= 1e-4
 # tstops = [1.0, 1.1]
 # tstops = [2.0]
-# tstops = []
+tstops = []
 
 # 5. Pre-fault simulation
 adaptive = false
 always_new = true
-dt = 5e-4
+dt = 50e-6
 method = :Euler
-prob = MyDiffEq.ODEProblem(solve_dynamic_sim!,
+NLsolver = :GD
+prob0 = MyDiffEq.ODEProblem(solve_dynamic_sim!,
                            u0,
-                           (0.0, 5.0),
+                           (0.0, 0.1),
                            p,
                            mass_matrix,
                            )
 
 
-sol = MyDiffEq.Solve(prob,
+sol0 = MyDiffEq.Solve(prob0,
                      dt,
                      method=method,
                      adaptive=adaptive,
@@ -73,32 +85,87 @@ sol = MyDiffEq.Solve(prob,
                      always_new=always_new,
                      rtol=5e-3,
                      atol=1e-5,
+                     NLsolver=NLsolver,
+                     max_iter=10000,
+                     alpha=1e-1,
                      )
 
-states = MyDiffEq.get_states(sol)
+states0 = MyDiffEq.get_states(sol0)
 
-@show sol.sol_stats
-
-# # 6. Save results
-# case_base = splitext(basename(data_file))[1]
-# save_results(joinpath("results_full", case_base * ".json"), sol, sys, address;
-#              case_file=data_file, solver=method, adaptive=adaptive, dt=dt)
-
-# @show sol.iters[1:5]
 
 using Plots
-plot(sol.time[2:end], sol.iters)
-plot(sol.time[2:end], sol.dt_hist)
+lambda = 0.0; t=0
+p = (address, sys.models, sys.incidence_matrix, sys.C_eq, sys.non_slack_buses, lambda)
+u1 = copy(sol0.u[end])
+
+prob1 = MyDiffEq.ODEProblem(solve_dynamic_sim!,
+                           u1,
+                           (0.0, 0.1),
+                           p,
+                           mass_matrix,
+                           )
 
 
-plot(sol.time, states[address["delta"],:]')
-plot!(sol.time, states[address["omega"],:]')
-plot(sol.time, states[address["line_id"],:]')
-plot(sol.time, states[address["line_iq"],:]')
-plot(sol.time, states[address["fault_id"],:]')
-plot(sol.time, states[address["fault_iq"],:]')
-plot(sol.time, states[address["balance_d"],:]')
-plot(sol.time, states[address["balance_q"],:]')
+sol1 = MyDiffEq.Solve(prob1,
+                     dt,
+                     method=method,
+                     adaptive=adaptive,
+                     tstops=tstops,
+                     always_new=always_new,
+                     rtol=5e-3,
+                     atol=1e-5,
+                     NLsolver=NLsolver,
+                     max_iter=20000,
+                     alpha=1e-13,
+                     )
 
-v = complex.(states[address["balance_d"],:], states[address["balance_q"],:])
-plot(sol.time, abs.(v'))
+states1 = MyDiffEq.get_states(sol1)
+
+
+
+mode = :gradient
+# mode = :newton
+gamma = -1e-1
+# res1 = stabilize_algebraic!(u1, p, t, mass_matrix; mode = mode, tol = 1e-5, gamma = gamma)
+res = stabilize_algebraic!(u1, p, t, mass_matrix; mode = mode, tol = 1e-8, gamma = 1e-8)
+
+# @show res.converged, res.iters, res.g_norm
+
+# plot!(res1.history, label="$gamma")
+plot(res.history, label="$gamma")
+
+# plot(res.history, yscale=:log10)
+
+u2 = copy(res.u)
+lambda = 0.0; t=0
+p = (address, sys.models, sys.incidence_matrix, sys.C_eq, sys.non_slack_buses, lambda)
+
+NLsolver=:GD
+
+prob2 = MyDiffEq.ODEProblem(solve_dynamic_sim!,
+                           u2,
+                           (0.0, 0.1),
+                           p,
+                           mass_matrix,
+                           )
+
+
+sol2 = MyDiffEq.Solve(prob2,
+                     dt,
+                     method=method,
+                     adaptive=adaptive,
+                     tstops=tstops,
+                     always_new=always_new,
+                     rtol=5e-3,
+                     atol=1e-5,
+                     NLsolver=NLsolver,
+                     max_iter=20000,
+                     alpha=1e-12,
+                     )
+
+states2 = MyDiffEq.get_states(sol2)
+
+plot(states2[11,:])
+
+plot(1:res.iters, res.history[2:end], yscale=:log10, label = "", xlabel="iteration number", ylabel="log ||g||_2",
+     title="Convergence behaviour of GD")
