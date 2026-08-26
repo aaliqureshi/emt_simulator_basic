@@ -55,12 +55,13 @@ function save_results(path::AbstractString, sol, sys, address;
         metadata[String(k)] = v
     end
 
+    orig = sys.models.bus.orig_idx
     topology = Dict{String,Any}(
-        "all_buses"       => collect(Int.(sys.models.bus.idx)),
-        "generator_buses" => collect(Int.(sys.models.generator.bus)),
-        "non_slack_buses" => collect(Int.(sys.non_slack_buses)),
-        "fault_buses"     => collect(Int.(sys.models.fault.bus)),
-        "line_endpoints"  => [[Int(b1), Int(b2)] for (b1, b2) in
+        "all_buses"       => collect(Int.(orig)),
+        "generator_buses" => collect(Int.(orig[sys.models.generator.bus])),
+        "non_slack_buses" => collect(Int.(orig[sys.non_slack_buses])),
+        "fault_buses"     => collect(Int.(orig[sys.models.fault.bus])),
+        "line_endpoints"  => [[Int(orig[b1]), Int(orig[b2])] for (b1, b2) in
                               zip(sys.models.line.bus1_idx, sys.models.line.bus2_idx)],
     )
 
