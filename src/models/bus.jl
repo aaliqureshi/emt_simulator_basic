@@ -4,6 +4,7 @@ export Bus, balance!, phasor2DP!
 
 mutable struct Bus{T<:Real}
     idx :: Vector{Int32}
+    orig_idx :: Vector{Int32}
     v :: Vector{T}
     theta :: Vector{T}
     vd:: Vector{T}
@@ -11,6 +12,7 @@ mutable struct Bus{T<:Real}
 
     function Bus{T}(n::Integer) where {T<:Real}
         new{T}(Vector{Int32}(undef, n),
+               Vector{Int32}(undef, n),
                Vector{T}(undef, n),
                Vector{T}(undef, n),
                Vector{T}(undef, n),
