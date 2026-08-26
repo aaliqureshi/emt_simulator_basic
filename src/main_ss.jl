@@ -59,6 +59,16 @@ label="PGD (BDF)"
 # label="GD (FE) (fixed alpha)"
 # label="GD (FE) (line search alpha)"
 
+label="PGD (BDF) nesterov beta"
+# label="PGD (BDF) fixed beta=0.94"
+# label="PGD (BDF) var beta rule 1"
+# label="PGD (BDF) var beta rule 2"
+# label="PGD (BDF) var beta rule 3"
+# label="PGD (BDF) var beta rule 4"
+# label="PGD (BDF) var beta rule 5"
+# label="PGD (BDF) var beta rule 7"
+
+
 plt = plot_pf_convergence(sol, overlay=true, label=label)
 
 # plt = plot_pf_convergence(sol, overlay=false, label=label)
