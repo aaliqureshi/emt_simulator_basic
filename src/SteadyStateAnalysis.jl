@@ -24,7 +24,8 @@ function _state_labels(address, models, non_slack_buses)
     nstates = maximum(maximum.(values(address)))
     labels = fill("", nstates)
 
-    gen_bus = models.generator.bus
+    orig = models.bus.orig_idx
+    gen_bus = orig[models.generator.bus]
     for (i, k) in enumerate(address["delta"]);   labels[k] = "delta_gen_bus$(gen_bus[i])";  end
     for (i, k) in enumerate(address["omega"]);   labels[k] = "omega_gen_bus$(gen_bus[i])";  end
     for (i, k) in enumerate(address["gen_id"]);  labels[k] = "i_d_gen_bus$(gen_bus[i])";    end
@@ -32,18 +33,18 @@ function _state_labels(address, models, non_slack_buses)
 
     line = models.line
     for (i, k) in enumerate(address["line_id"])
-        labels[k] = "i_d_line$(line.idx[i])(b$(line.bus1_idx[i])->b$(line.bus2_idx[i]))"
+        labels[k] = "i_d_line$(line.idx[i])(b$(orig[line.bus1_idx[i]])->b$(orig[line.bus2_idx[i]]))"
     end
     for (i, k) in enumerate(address["line_iq"])
-        labels[k] = "i_q_line$(line.idx[i])(b$(line.bus1_idx[i])->b$(line.bus2_idx[i]))"
+        labels[k] = "i_q_line$(line.idx[i])(b$(orig[line.bus1_idx[i]])->b$(orig[line.bus2_idx[i]]))"
     end
 
-    fault_bus = models.fault.bus
+    fault_bus = orig[models.fault.bus]
     for (i, k) in enumerate(address["fault_id"]); labels[k] = "i_d_fault_bus$(fault_bus[i])"; end
     for (i, k) in enumerate(address["fault_iq"]); labels[k] = "i_q_fault_bus$(fault_bus[i])"; end
 
-    for (i, k) in enumerate(address["balance_d"]); labels[k] = "vd_bus$(non_slack_buses[i])"; end
-    for (i, k) in enumerate(address["balance_q"]); labels[k] = "vq_bus$(non_slack_buses[i])"; end
+    for (i, k) in enumerate(address["balance_d"]); labels[k] = "vd_bus$(orig[non_slack_buses[i]])"; end
+    for (i, k) in enumerate(address["balance_q"]); labels[k] = "vq_bus$(orig[non_slack_buses[i]])"; end
 
     return labels
 end
