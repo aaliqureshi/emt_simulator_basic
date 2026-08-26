@@ -65,7 +65,7 @@ function compare_with_reference(models, ref_file="14bus_ref_sol.json"; tolerance
             for i in eachindex(models.bus.v)
                 diff = abs(models.bus.v[i] - v_ref[i])
                 if diff >= tolerance
-                    println("  Bus $(models.bus.idx[i]): $(models.bus.v[i]) vs $(v_ref[i]) (diff: $diff)")
+                    println("  Bus $(models.bus.orig_idx[i]): $(models.bus.v[i]) vs $(v_ref[i]) (diff: $diff)")
                 end
             end
         end
@@ -75,7 +75,7 @@ function compare_with_reference(models, ref_file="14bus_ref_sol.json"; tolerance
             for i in eachindex(models.bus.theta)
                 diff = abs(models.bus.theta[i] - theta_ref[i])
                 if diff >= tolerance
-                    println("  Bus $(models.bus.idx[i]): $(models.bus.theta[i]) vs $(theta_ref[i]) (diff: $diff)")
+                    println("  Bus $(models.bus.orig_idx[i]): $(models.bus.theta[i]) vs $(theta_ref[i]) (diff: $diff)")
                 end
             end
         end
@@ -85,7 +85,7 @@ function compare_with_reference(models, ref_file="14bus_ref_sol.json"; tolerance
             for i in eachindex(models.bus.vd)
                 diff = abs(models.bus.vd[i] - vd_ref[i])
                 if diff >= tolerance
-                    println("  Bus $(models.bus.idx[i]): $(models.bus.vd[i]) vs $(vd_ref[i]) (diff: $diff)")
+                    println("  Bus $(models.bus.orig_idx[i]): $(models.bus.vd[i]) vs $(vd_ref[i]) (diff: $diff)")
                 end
             end
         end
@@ -95,7 +95,7 @@ function compare_with_reference(models, ref_file="14bus_ref_sol.json"; tolerance
             for i in eachindex(models.bus.vq)
                 diff = abs(models.bus.vq[i] - vq_ref[i])
                 if diff >= tolerance
-                    println("  Bus $(models.bus.idx[i]): $(models.bus.vq[i]) vs $(vq_ref[i]) (diff: $diff)")
+                    println("  Bus $(models.bus.orig_idx[i]): $(models.bus.vq[i]) vs $(vq_ref[i]) (diff: $diff)")
                 end
             end
         end
