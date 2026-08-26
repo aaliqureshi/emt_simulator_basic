@@ -106,9 +106,9 @@ function solve_power_flow!(sys)
     #                        )
     sol = MyDiffEq.NLsolve(prob, 
                         #    method=:LiftedGD,
-                        method=:GradientDescent,
-                        # method=:NewtonRaphson,
-                           max_iter = 5000,
+                        # method=:GradientDescent,
+                        method=:NewtonRaphson,
+                           max_iter = 6000,
                         # max_iter=150,
                            atol = 1e-3,
                            rtol = 1e-5, 
@@ -119,7 +119,7 @@ function solve_power_flow!(sys)
                         # #    sampling_mode=:with_replacement,
                         #    sampling_mode=:random_reshuffling,
                         # #    normalize=:kaczmarz,
-                        store_stats=true,
+                        store_stats=false,
                            )
     
     # u0 = sol.u_final
