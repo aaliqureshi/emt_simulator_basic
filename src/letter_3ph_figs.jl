@@ -1,13 +1,14 @@
 using Pkg; Pkg.activate(".")
+using Revise
 
-include("Models.jl"); using .Models
-include("data_loader.jl"); using .DataLoader
-include("utils.jl"); using .Utils
-include("system.jl"); using .SystemModel
-include("power_flow.jl"); using .PowerFlow
-include("static_init.jl"); using .StaticInit
-include("dynamic_sim.jl"); using .DynamicSim
-# include("homotopy.jl"); using .Homotopy
+includet("Models.jl"); using .Models
+includet("data_loader.jl"); using .DataLoader
+includet("utils.jl"); using .Utils
+includet("system.jl"); using .SystemModel
+includet("power_flow.jl"); using .PowerFlow
+includet("static_init.jl"); using .StaticInit
+includet("dynamic_sim.jl"); using .DynamicSim
+# includet("homotopy.jl"); using .Homotopy
 
 using MyDiffEq, Plots
 
