@@ -48,6 +48,10 @@ sol = MyDiffEq.Solve(prob, 5e-4, method=:Euler, adaptive=false, tstops=tstops, a
 u1 = sol.u[end]
 
 # # 5. post-fault simulation
+u1 = sol.u[end]
+# use flat start
+# u1[address["balance_d"]] .= 1.0
+# u1[address["balance_q"]] .= 0.0
 # lambda = 1.0
 lambda = 1.0
 always_new=true
@@ -60,11 +64,13 @@ u2 = sol2.u[end]
 # # 5. post-fault simulation with smaller dt
 lambda = 1.0
 always_true=true
-dt2=5e-5
+dt2=5e-6
 p = (address, sys.models, sys.incidence_matrix, sys.C_eq, sys.non_slack_buses, lambda)
 prob99 = MyDiffEq.ODEProblem(solve_dynamic_sim!, u1, (0.0, 0.1), p, mass_matrix)
 sol99 = MyDiffEq.Solve(prob99, dt2, method=:Euler, adaptive=false, tstops=tstops, always_new=always_new)
 u99 = sol99.u[end]
+
+
 
 
 
@@ -450,7 +456,8 @@ begin
         color = :blue,
         linestyle = :dash,
         marker = :diamond,
-        label = "No re-init. (h = 500 μs)",
+        # label = "No re-init. (h = 500 μs)",
+        label = "No re-init. (h = $(trunc(Int, dt1/1e-6)) μs)"
     )
 
     plot!(
@@ -460,7 +467,8 @@ begin
         color = :red,
         linestyle = :dash,
         marker = :diamond,
-        label = "No re-init. (h = 50 μs)",
+        # label = "No re-init. (h = 50 μs)",
+        label = "No re-init. (h = $(trunc(Int, dt2/1e-6)) μs)",
     )
 
     plot!(
@@ -566,8 +574,8 @@ using LaTeXStrings
 
 begin
     tol_line = 1e-6
-#     tosave = false
-     tosave = true
+    tosave = false
+    #  tosave = true
     size = (520, 380)
 
     default(
@@ -596,7 +604,8 @@ begin
         color = :blue,
         linestyle = :dash,
         marker = :diamond,
-        label = "No re-init. (h = 500 μs)",
+        # label = "No re-init. (h = 500 μs)",
+        label = "No re-init. (h = $(trunc(Int, dt1/1e-6)) μs)",
      #    size = (560, 380),
      #    size = (520, 380),
           size = size,
@@ -609,7 +618,8 @@ begin
         color = :red,
         linestyle = :dash,
         marker = :diamond,
-        label = "No re-init. (h = 50 μs)",
+        # label = "No re-init. (h = 50 μs)",
+        label = "No re-init. (h = $(trunc(Int, dt2/1e-6)) μs)",
     )
 
     plot!(
@@ -741,8 +751,8 @@ using LaTeXStrings
 
 begin
     tol_line = 1e-6
-#     tosave = false
-     tosave = true
+    tosave = false
+    #  tosave = true
     size = (1200, 500)
 
     default(
@@ -777,7 +787,8 @@ begin
         color = :blue,
         linestyle = :dash,
         marker = :diamond,
-        label = "No re-init. (h = 500 μs)",
+        # label = "No re-init. (h = 500 μs)",
+        label = "No re-init. (h = $(trunc(Int, dt1/1e-6)) μs)",
      #    size = (560, 380),
      #    size = (520, 380),
           # size = size,
@@ -790,7 +801,8 @@ begin
         color = :red,
         linestyle = :dash,
         marker = :diamond,
-        label = "No re-init. (h = 50 μs)",
+        # label = "No re-init. (h = 50 μs)",
+        label = "No re-init. (h = $(trunc(Int, dt2/1e-6)) μs)",
     )
 
     plot!(
