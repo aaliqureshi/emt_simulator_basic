@@ -2,7 +2,7 @@ module PowerFlow
 
 export solve_power_flow!
 
-include("Models.jl"); using .Models
+using ..Models
 
 using NonlinearSolve
 

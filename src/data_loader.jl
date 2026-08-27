@@ -3,13 +3,9 @@ module DataLoader
 
 export load_data
 
-using Pkg
-Pkg.activate(".")
-
 using XLSX, DataFrames, Base.Threads
 
-include("Models.jl")
-using .Models
+using ..Models
 
 
 # normalize a sheet name to a Symbol key

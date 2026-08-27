@@ -2,8 +2,8 @@ module StaticInit
 
 export run_static_init!
 
-include("Models.jl"); using .Models
-include("utils.jl"); using .Utils
+using ..Models
+using ..Utils
 
 function compute_shunt_currents(models)
     v_dp = @. models.bus.vd + 1im * models.bus.vq

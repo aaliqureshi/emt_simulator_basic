@@ -2,7 +2,7 @@ module SystemModel
 
 export System, build_system
 
-include("utils.jl"); using .Utils
+using ..Utils
 
 using LinearAlgebra
 

@@ -2,9 +2,6 @@ module Utils
 
 export build_Y_matrix, build_incidence_matrix, build_B_matrix
 
-using Pkg
-Pkg.activate(".")
-
 #TODO: in future this function should update system object
 
 function build_Y_matrix(models)

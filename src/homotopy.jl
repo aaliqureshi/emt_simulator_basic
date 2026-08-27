@@ -2,7 +2,7 @@ module Homotopy
 
 export solve_algebraic!, pseudo_arclength!
 
-include("dynamic_sim.jl"); using .DynamicSim
+using ..DynamicSim
 
 using ForwardDiff
 using LinearAlgebra

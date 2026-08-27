@@ -2,7 +2,7 @@
 
 julia_version = "1.12.6"
 manifest_format = "2.0"
-project_hash = "045e0df12822003b509e096d456d64bc5b1bc029"
+project_hash = "5df4d9ba57332ec7cdfeb4a8f8f92ef06d68acbd"
 
 [[deps.ADTypes]]
 deps = ["PrecompileTools"]
@@ -168,6 +168,12 @@ deps = ["Dates", "IntervalSets", "IterTools", "RangeArrays"]
 git-tree-sha1 = "4126b08903b777c88edf1754288144a0492c05ad"
 uuid = "39de3d68-74b9-583c-8d2d-e117c070f3a9"
 version = "0.4.8"
+
+[[deps.Barq]]
+deps = ["BenchmarkTools", "CSV", "CairoMakie", "DataFrames", "ForwardDiff", "JSON", "LaTeXStrings", "LinearAlgebra", "Memoization", "Memoize", "MyDiffEq", "NLsolve", "NonlinearSolve", "OrdinaryDiffEq", "Plots", "PreallocationTools", "Revise", "XLSX"]
+path = "."
+uuid = "83f53157-cc60-4aa7-bb0e-59727f5cbb4b"
+version = "0.1.0"
 
 [[deps.Base64]]
 uuid = "2a0f44e3-6c83-55bd-87e4-b1978d98bd5f"

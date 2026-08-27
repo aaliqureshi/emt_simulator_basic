@@ -1,13 +1,6 @@
 using Pkg; Pkg.activate(".")
 
-include("Models.jl"); using .Models
-include("data_loader.jl"); using .DataLoader
-include("utils.jl"); using .Utils
-include("system.jl"); using .SystemModel
-include("power_flow.jl"); using .PowerFlow
-include("static_init.jl"); using .StaticInit
-include("dynamic_sim.jl"); using .DynamicSim
-include("homotopy.jl"); using .Homotopy
+using Barq
 
 using MyDiffEq, Plots
 

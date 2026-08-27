@@ -1,15 +1,6 @@
 using Pkg; Pkg.activate(".")
 using Revise
-
-includet("Models.jl"); using .Models
-includet("data_loader.jl"); using .DataLoader
-includet("utils.jl"); using .Utils
-includet("system.jl"); using .SystemModel
-includet("power_flow.jl"); using .PowerFlow
-includet("static_init.jl"); using .StaticInit
-includet("dynamic_sim.jl"); using .DynamicSim
-# includet("homotopy.jl"); using .Homotopy
-
+using Barq
 using MyDiffEq, Plots
 
 # 1. Load data
@@ -25,6 +16,9 @@ sys = build_system(models)
 models.fault.bus = [20]
 models.fault.x_fault[1] = 0.015
 
+# models.fault.bus = [16]
+# models.fault.x_fault[1] = 0.015
+
 # 2. Solve power flow
 solve_power_flow!(sys)
 
@@ -39,7 +33,7 @@ u0 = build_initial_conditions(sys, address)
 
 function run_simulation(u0, lambda, dt; always_new=true, tstops=[], adaptive=false)
     p = (address, sys.models, sys.incidence_matrix, sys.C_eq, sys.non_slack_buses, lambda)
-    prob = MyDiffEq.ODEProblem(solve_dynamic_sim!, u0, (0.0, 0.1), p, mass_matrix)
+    prob = MyDiffEq.ODEProblem(solve_dynamic_sim!, u0, (0.0, 2dt), p, mass_matrix)
     sol = MyDiffEq.Solve(prob, dt, method=:Euler, adaptive=adaptive, tstops=tstops, always_new=always_new)
     return sol
 end
