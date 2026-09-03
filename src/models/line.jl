@@ -6,6 +6,7 @@ mutable struct Line{T<:Real}
     idx :: Vector{Int32}
     bus1_idx :: Vector{Int32}
     bus2_idx :: Vector{Int32}
+    status :: Vector{T}
     R :: Vector{T}
     X :: Vector{T}
     B :: Vector{T}
@@ -19,6 +20,7 @@ mutable struct Line{T<:Real}
         new{T}(Vector{Int32}(undef, n),
                Vector{Int32}(undef, n),
                Vector{Int32}(undef, n),
+               Vector{T}(undef, n),
                Vector{T}(undef, n),
                Vector{T}(undef, n),
                Vector{T}(undef, n),
@@ -59,8 +61,8 @@ function solve_line!(du, u, p, t)
 
 
     # transformer convention: Bus i ---(a:1)---[Z]--- Bus j
-    du[address["line_id"]] = @. bus_vd[line.bus1_idx] / line.tap - bus_vd[line.bus2_idx] - line.R * line_id + line.X * line_iq
-    du[address["line_iq"]] = @. bus_vq[line.bus1_idx] / line.tap - bus_vq[line.bus2_idx] - line.R * line_iq - line.X * line_id
+    du[address["line_id"]] = @. line.status * (bus_vd[line.bus1_idx] / line.tap - bus_vd[line.bus2_idx] - line.R * line_id + line.X * line_iq) - (1 - line.status) * line_id
+    du[address["line_iq"]] = @. line.status * (bus_vq[line.bus1_idx] / line.tap - bus_vq[line.bus2_idx] - line.R * line_iq - line.X * line_id) - (1 - line.status) * line_iq
 end
 
 function compute_line_currents!(models)
