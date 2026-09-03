@@ -4,6 +4,7 @@ export Bus, balance!, phasor2DP!
 
 mutable struct Bus{T<:Real}
     idx :: Vector{Int32}
+    orig_idx :: Vector{Int32}
     v :: Vector{T}
     theta :: Vector{T}
     vd:: Vector{T}
@@ -11,6 +12,7 @@ mutable struct Bus{T<:Real}
 
     function Bus{T}(n::Integer) where {T<:Real}
         new{T}(Vector{Int32}(undef, n),
+               Vector{Int32}(undef, n),
                Vector{T}(undef, n),
                Vector{T}(undef, n),
                Vector{T}(undef, n),
@@ -64,10 +66,14 @@ function balance!(du, u, p)
     # I component: I = conj(S₀)·V / (|V₀|·|V|) — regularize |V| at low voltage
     # P component: I = conj(S₀)·V / |V|²       — regularize |V|² at low voltage
 
-    k_pz = T(1.0)
-    k_pi = T(0.0)
-    k_pp = T(0.0)
-    v_min = T(0.1)   # voltage floor (pu) — I and P components freeze below this
+    k_pz = T(0.333)
+    k_pi = T(0.333)
+    k_pp = T(0.333)
+
+    # k_pz = T(0.7)
+    # k_pi = T(0.1)
+    # k_pp = T(0.2)
+    v_min = T(0.7)   # voltage floor (pu) — I and P components freeze below this
 
     vd_l = bus_vd[load.bus]
     vq_l = bus_vq[load.bus]
@@ -118,19 +124,17 @@ function balance!(du, u, p)
     id[:] += w1
     iq[:] -= w2
 
-    p_h = zeros(T, length(bus.idx))
-    q_h = zeros(T, length(bus.idx))
+    # p_h = zeros(T, length(bus.idx))
+    # q_h = zeros(T, length(bus.idx))
 
-    p_h[non_slack_buses] = @. id[non_slack_buses] * bus_vd[non_slack_buses] + iq[non_slack_buses] * bus_vq[non_slack_buses]
-    q_h[non_slack_buses] = @. id[non_slack_buses] * bus_vq[non_slack_buses] - iq[non_slack_buses] * bus_vd[non_slack_buses]
+    # p_h[non_slack_buses] = @. id[non_slack_buses] * bus_vd[non_slack_buses] + iq[non_slack_buses] * bus_vq[non_slack_buses]
+    # q_h[non_slack_buses] = @. id[non_slack_buses] * bus_vq[non_slack_buses] - iq[non_slack_buses] * bus_vd[non_slack_buses]
 
+    du[address["balance_d"]] = @. id[non_slack_buses]
+    du[address["balance_q"]] = @. iq[non_slack_buses]
 
-
-    # du[address["balance_d"]] = @. id[non_slack_buses]
-    # du[address["balance_q"]] = @. iq[non_slack_buses]
-
-    du[address["balance_d"]] = @. p_h[non_slack_buses]
-    du[address["balance_q"]] = @. q_h[non_slack_buses]
+    # du[address["balance_d"]] = @. p_h[non_slack_buses]
+    # du[address["balance_q"]] = @. q_h[non_slack_buses]
 end
 
 end # module
