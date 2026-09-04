@@ -15,9 +15,14 @@ sys = build_system(models)
 
 models.fault.bus = [20]
 models.fault.x_fault[1] = 0.015
+# models.fault.x_fault[1] = 0.038
 
 # models.fault.bus = [16]
 # models.fault.x_fault[1] = 0.015
+
+# models.fault.bus=[3]
+# models.fault.x_fault[1] = 0.00015
+# models.load.p .*= 4.03
 
 # 2. Solve power flow
 solve_power_flow!(sys)
@@ -31,9 +36,9 @@ mass_matrix = build_mass_matrix(sys, address)
 u0 = build_initial_conditions(sys, address)
 
 
-function run_simulation(u0, lambda, dt; always_new=true, tstops=[], adaptive=false)
+function run_simulation(u0, lambda, dt; always_new=true, tstops=[], adaptive=false, t_end=0.1)
     p = (address, sys.models, sys.incidence_matrix, sys.C_eq, sys.non_slack_buses, lambda)
-    prob = MyDiffEq.ODEProblem(solve_dynamic_sim!, u0, (0.0, 2dt), p, mass_matrix)
+    prob = MyDiffEq.ODEProblem(solve_dynamic_sim!, u0, (0.0, t_end), p, mass_matrix)
     sol = MyDiffEq.Solve(prob, dt, method=:Euler, adaptive=adaptive, tstops=tstops, always_new=always_new)
     return sol
 end
@@ -41,16 +46,18 @@ end
 # Pre-fault simulation
 lambda=0.0
 dt0=5e-4
-sol_pf=run_simulation(u0, lambda, dt0)
+sol_pf=run_simulation(u0, lambda, dt0, t_end=0.01)
 u1 = sol_pf.u[end]
 
 # fault-on simulation 3
-dt_list = [5e-4, 5e-5, 5e-6]
+# dt_list = [5e-4, 5e-5, 5e-6]
+dt_list = [5e-4, 5e-5]
+# dt_list=[5e-4]
 lambda = 1.0
 sol_list = []
 num_fails = 0
 for iter in eachindex(dt_list)
-    ux = run_simulation(u1, lambda, dt_list[iter])
+    ux = run_simulation(u1, lambda, dt_list[iter], t_end=0.01)
     if ux.retcode == :MaxIter
         num_fails+=1
     end
@@ -63,7 +70,7 @@ end
 u2=copy(u1)
 u2[address["balance_d"]] .= 1.0
 u2[address["balance_q"]] .= 0.0 
-dt_flat = 5e-6
+dt_flat = 5e-4
 sol_flat = run_simulation(u2, lambda, dt_flat)
 
 
@@ -86,11 +93,11 @@ r3 = solve_adaptive_homotopy!(u0_adapt_h, p_base, address; λ_target=λ_target, 
 
 # 5. post re-init simulation
 lambda = 0.0
-u3 = copy(u0_new)
-# u3= copy(u2)
+# u3 = copy(u0_new)
+u3= copy(u0_homotopy)
 # u3= copy(u1)
 dt_post = 5e-4
-sol_post = run_simulation(u3, lambda, dt_post)
+sol_post = run_simulation(u3, lambda, dt_post, t_end=dt_post)
 
 
 using Plots
