@@ -10,10 +10,11 @@ using LinearAlgebra
 const OMEGA = 2 * pi * 60
 
 """Open `lines` in place: scale R and X by `mult`, keeping L = X/OMEGA and dropping the charging B."""
-function _open_lines!(models, lines::AbstractVector; mult=1e4)
-    models.line.R[lines] .*= mult
-    models.line.X[lines] .*= mult
-    models.line.L[lines] .= models.line.X[lines] ./ OMEGA
+function _open_lines!(models, lines::AbstractVector; mult=1e10)
+    # models.line.R[lines] .*= mult
+    # models.line.X[lines] .*= mult
+    # models.line.L[lines] .= models.line.X[lines] ./ OMEGA
+    models.line.status[lines] .= 0.0
     models.line.B[lines] .= 0.0
     models.line.C[lines] .= 0.0
     return nothing
@@ -55,7 +56,7 @@ end
 """Trip one line as a breaker would and report whether Newton fails on the first post-trip step."""
 function _run_case(data_file, line; dt, method, max_iter, mult, settle_steps, post_steps)
     models = load_data(data_file)
-    # models.load.p[:] .*= 1.2
+    models.load.p[:] .*= 1.2
     sys = build_system(models)
     solve_power_flow!(sys)
     run_static_init!(sys)
@@ -107,7 +108,9 @@ end
 # data_file = "cases/Simple_Cases/wecc_full_slack.xlsx"
 
 """Sweep every single-line outage (N-1) and record the trips whose first step fails to converge."""
-function main(; data_file="cases/Fault_Cases/ieee39_fault.xlsx",
+function main(; 
+                data_file="cases/Fault_Cases/ieee39_fault.xlsx",
+                # data_file = "cases/Fault_Cases/ieee14_fault_barq_no_shunt.xlsx",
                 # on ieee39 the first post-trip step converges for every line up to dt = 1e-3;
                 # first-step MaxIter failures start appearing at dt = 2e-3
                 dt=5e-4,
