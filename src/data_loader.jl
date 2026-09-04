@@ -83,6 +83,11 @@ function _verify_models(models::NamedTuple) ::Nothing
         error("Oops! There are more than one load at the same bus - $(load_buses) !!!")
     end
 
+    ## ensure no negative tap
+    if any(tap -> tap < 0.0, models.line.tap)
+        error("Oops! There are negative tap ratios !!!")
+    end
+
     # TODO: ensure only one line between two same buses
 
     return nothing
@@ -134,6 +139,7 @@ function _build_line(sym_name::Symbol, table::Dict{Symbol, DataFrame},
     line.C = line.B ./ (2*pi*60)
     line.L = line.X ./ (2*pi*60)
     line.tap = hasproperty(df, :tap) ? Float64.(df.tap) : ones(Float64, num_lines)
+    replace!(line.tap, 0.0 => 1.0)
     line.i_d = zeros(Float64, num_lines)
     line.i_q = zeros(Float64, num_lines)
 
