@@ -487,7 +487,7 @@ function solve_adaptive_homotopy!(u, p_base, address;
 
         # ── Corrector: Newton-Raphson from predicted initial guess ──
         p = (p_base..., λ_next)
-        r = _newton_corrector!(u, p, n, alg_idx; tol=tol, max_iter=max_iter)
+        r = _newton_corrector!(u, p, n, alg_idx; tol=tol, max_iter=max_iter, always_new=always_new)
         total_newton_iters += r.iters
         total_jac_evals    += r.iters
 
