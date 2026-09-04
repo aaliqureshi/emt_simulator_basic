@@ -56,6 +56,7 @@ function solve_fault!(du, u, p, t)
     x_eff = (1e10)^(1-lambda) * (fault.x_fault[1])^(lambda)
     # x_eff = (1e10)^(lambda) * (fault.x_fault[1])^(1-lambda) 
     # x_eff = t < 2.0 ? (1e10)^(1-lambda) * (fault.x_fault[1])^(lambda) : 1e10
+    # x_eff = 1.0 <= t <= 1.1 ? fault.x_fault[1] : 1e10
     # x_eff = models.fault.x_fault[1]
     b_fault = 1 / x_eff
     du[address["fault_id"]] = @. b_fault * bus_vd[fault.bus] + fault_iq
