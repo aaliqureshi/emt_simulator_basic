@@ -251,32 +251,54 @@ function _build_pq(sym_name::Symbol, table::Dict{Symbol, DataFrame},
                    idmap::Dict{Int32,Int32})
     """
     Load the PQ data from the table.
+    Multiple loads at the same bus are aggregated (P and Q summed).
+    Connection buses (no load/gen/slack) are included with P = Q = 0.
     """
     df_pq = table[sym_name]
     df_bus = table[:bus]
     df_pv = table[:pv]
     df_slack = table[:slack]
-    
-    all_buses = df_bus.idx
-    gen_buses = df_pv.bus
-    slack_buses = df_slack.bus
 
-    non_generator_buses = setdiff(all_buses, gen_buses, slack_buses)
+    # original bus numbers from file
+    all_buses = Int32.(df_bus.idx)
+    gen_buses = Int32.(df_pv.bus)
+    slack_buses = Int32.(df_slack.bus)
     load_buses = Int32.(df_pq.bus)
-    connection_buses = setdiff(non_generator_buses, load_buses)
+
+    # buses that are neither PV nor slack
+    non_generator_buses = setdiff(all_buses, gen_buses, slack_buses)
+
+    # non-generator buses with no explicit load
+    connection_buses = Int32.(setdiff(non_generator_buses, load_buses))
+
+    n_load_entries = length(load_buses)
 
     ## pq_buses are buses with loads and connection buses
-    pq_buses = vcat(load_buses, connection_buses)
+    model_buses = vcat(load_buses, connection_buses)
 
-    ## for connection bus, p and q 
-    # loads are zero
-    zeros_padded = zeros(Float64, length(connection_buses))
+    # remap file bus numbers
+    model_buses = _remap_buses(model_buses, idmap, :pq, :bus)
 
-    load = Load{Float64}(length(pq_buses))
-    load.bus = _remap_buses(pq_buses, idmap, :pq, :bus)
-    load.p = Float64.(vcat(df_pq.p0, zeros_padded))
-    load.q = Float64.(vcat(df_pq.q0, zeros_padded))
-    load.y = zeros(Complex{Float64}, length(pq_buses))
+    unique_model_buses = unique(model_buses)
+    n = length(unique_model_buses)
+
+    load = Load{Float64}(n)
+    load.bus = copy(unique_model_buses)
+
+    # Initialize all load buses with zero load
+    p_dict = Dict(bus => 0.0 for bus in load.bus)
+    q_dict = Dict(bus => 0.0 for bus in load.bus)
+
+    # aggregate all explicit loads
+    for (bus, p, q) in zip(@view(model_buses[1:n_load_entries]), df_pq.p0, df_pq.q0)
+        p_dict[bus] += Float64(p)
+        q_dict[bus] += Float64(q)
+    end
+
+    load.p = [p_dict[bus] for bus in load.bus]
+    load.q = [q_dict[bus] for bus in load.bus]
+
+    load.y = zeros(Complex{Float64}, n)
 
     return load
 end
