@@ -2,7 +2,7 @@
 
 julia_version = "1.12.6"
 manifest_format = "2.0"
-project_hash = "5df4d9ba57332ec7cdfeb4a8f8f92ef06d68acbd"
+project_hash = "83d82ad750b877968dc34102c4ab3df3a12831bd"
 
 [[deps.ADTypes]]
 deps = ["PrecompileTools"]
@@ -170,7 +170,7 @@ uuid = "39de3d68-74b9-583c-8d2d-e117c070f3a9"
 version = "0.4.8"
 
 [[deps.Barq]]
-deps = ["BenchmarkTools", "CSV", "CairoMakie", "DataFrames", "ForwardDiff", "JSON", "LaTeXStrings", "LinearAlgebra", "Memoization", "Memoize", "MyDiffEq", "NLsolve", "NonlinearSolve", "OrdinaryDiffEq", "Plots", "PreallocationTools", "Revise", "XLSX"]
+deps = ["BenchmarkTools", "CSV", "CairoMakie", "DataFrames", "ForwardDiff", "JSON", "LaTeXStrings", "LinearAlgebra", "Memoization", "Memoize", "MyDiffEq", "NLsolve", "NonlinearSolve", "OrdinaryDiffEq", "Plots", "PreallocationTools", "Revise", "SparseArrays", "XLSX"]
 path = "."
 uuid = "83f53157-cc60-4aa7-bb0e-59727f5cbb4b"
 version = "0.1.0"
