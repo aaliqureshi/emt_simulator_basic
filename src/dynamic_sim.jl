@@ -1,5 +1,7 @@
 module DynamicSim
 
+using SparseArrays
+
 export solve_dynamic_sim!, build_dynamic_address, build_mass_matrix, build_initial_conditions
 export solve_newton!, solve_damped_newton!, solve_backtracking_newton!
 export solve_levenberg_marquardt!, solve_homotopy!, solve_homotopy_lm!
@@ -97,7 +99,7 @@ function build_mass_matrix(sys, address)
         idx += 1
     end
 
-    return mass_matrix
+    return sparse(mass_matrix)
 end
 
 function build_initial_conditions(sys, address)
