@@ -34,9 +34,7 @@ end
 
 function solve_line!(du, u, p, t)
     T = eltype(u)
-    Ω = T(2*pi*60)
-
-    address, models, _, _, non_slack_buses, lambda = p
+    address, models, _, _, non_slack_buses, _ = p
 
     bus = models.bus
     line = models.line
