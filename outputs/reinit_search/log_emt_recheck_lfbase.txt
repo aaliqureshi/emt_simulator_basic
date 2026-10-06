@@ -1,0 +1,4 @@
+mode=emt LF_max=NaN levels=Tuple{SubString{String}, Float64}[("base", 1.0)] -> outputs/reinit_search/emt_recheck_lfbase_20260929_190023
+LF base = 1.0000: 8 events, pre-event residual 1.0e-10
+LF base summary: Dict("A_direct_ok" => 2, "reinit_then_fails" => 6)
+done: outputs/reinit_search/emt_recheck_lfbase_20260929_190023

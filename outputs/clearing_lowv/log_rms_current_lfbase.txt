@@ -1,0 +1,2 @@
+LF base: 184 clearing events, Dict("no_low" => 184)
+done: outputs/clearing_lowv/rms_current_lfbase_20260929_195351

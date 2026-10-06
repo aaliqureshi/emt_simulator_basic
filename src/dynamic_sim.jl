@@ -5,7 +5,7 @@ using SparseArrays
 export solve_dynamic_sim!, build_dynamic_address, build_mass_matrix, build_initial_conditions
 export solve_newton!, solve_damped_newton!, solve_backtracking_newton!
 export solve_levenberg_marquardt!, solve_homotopy!, solve_homotopy_lm!
-export solve_adaptive_homotopy!
+export solve_adaptive_homotopy!, build_residual_homotopy
 
 using ..Models
 include("algebraic_solvers.jl")
@@ -74,18 +74,18 @@ function build_mass_matrix(sys, address)
     # end
 
     # line id (inductance)
-    i = 1
-    for idx in collect(address["line_id"])
-        mass_matrix[idx, idx] = models.line.L[i]
-        i += 1
-    end
+    # i = 1
+    # for idx in collect(address["line_id"])
+    #     mass_matrix[idx, idx] = models.line.L[i]
+    #     i += 1
+    # end
 
     # line iq (inductance)
-    i = 1
-    for idx in collect(address["line_iq"])
-        mass_matrix[idx, idx] = models.line.L[i]
-        i += 1
-    end
+    # i = 1
+    # for idx in collect(address["line_iq"])
+    #     mass_matrix[idx, idx] = models.line.L[i]
+    #     i += 1
+    # end
 
     # delta
     for i in collect(address["delta"])

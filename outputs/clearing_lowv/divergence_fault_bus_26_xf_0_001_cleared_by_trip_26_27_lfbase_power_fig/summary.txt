@@ -1,0 +1,65 @@
+event: fault bus 26 xf=0.001 cleared by trip 26-27  LF = 1.0000  loads = (zip = (0.7, 0.1, 0.2), low_voltage = true, pqbrak = 1.0e-6, characteristic = 1)  form = power  mode = rms
+inherited state: V26 = 0.0442, min V = 0.0442, angle spread = 24.3 deg, post-clearing algebraic residual |g|_inf = 4.350e+01
+
+[Newton re-init from inherited state]
+  k= 1  |g|=4.350e+01  |dy|=5.548e+01  V26=0.0442  minV=0.0442  maxV=0.969
+  k= 2  |g|=5.266e+00  |dy|=8.043e+00  V26=0.1969  minV=0.1969  maxV=1.025
+  k= 3  |g|=1.144e+00  |dy|=1.400e+00  V26=0.0337  minV=0.0337  maxV=1.011
+  k= 4  |g|=3.669e-02  |dy|=5.357e-02  V26=0.0089  minV=0.0089  maxV=1.011
+  k= 5  |g|=7.383e-05  |dy|=1.194e-04  V26=0.0088  minV=0.0088  maxV=1.011
+  k= 6  |g|=4.686e-10  |dy|=5.209e-10  V26=0.0088  minV=0.0088  maxV=1.011
+  k= 7  |g|=3.553e-15  |dy|=6.943e-15  V26=0.0088  minV=0.0088  maxV=1.011
+  converged at k=7
+  solve_newton!: converged=true iters=7 last residuals: 1.14e+00 3.67e-02 7.38e-05 4.69e-10 3.55e-15
+
+[Direct integration, first step from inherited state]
+  h=0.001: Success (t_end=0.02)
+    k= 1  |G|=4.727e+01  |dx|=5.549e+01  V26=0.0442  minV=0.0442  maxV=0.969
+    k= 2  |G|=6.956e+00  |dx|=8.043e+00  V26=0.1969  minV=0.1969  maxV=1.025
+    k= 3  |G|=1.221e+00  |dx|=1.399e+00  V26=0.0336  minV=0.0336  maxV=1.011
+    k= 4  |G|=3.995e-02  |dx|=5.352e-02  V26=0.0089  minV=0.0089  maxV=1.011
+    k= 5  |G|=9.392e-05  |dx|=1.192e-04  V26=0.0088  minV=0.0088  maxV=1.011
+    k= 6  |G|=4.756e-10  |dx|=5.194e-10  V26=0.0088  minV=0.0088  maxV=1.011
+    converged at k=6, V26 = 0.0088, KCL = 2.827897421439629e-15
+  h=0.0001: Success (t_end=0.002)
+    k= 1  |G|=4.727e+01  |dx|=5.548e+01  V26=0.0442  minV=0.0442  maxV=0.969
+    k= 2  |G|=6.954e+00  |dx|=8.043e+00  V26=0.1969  minV=0.1969  maxV=1.025
+    k= 3  |G|=1.222e+00  |dx|=1.400e+00  V26=0.0337  minV=0.0337  maxV=1.011
+    k= 4  |G|=3.996e-02  |dx|=5.357e-02  V26=0.0089  minV=0.0089  maxV=1.011
+    k= 5  |G|=9.405e-05  |dx|=1.194e-04  V26=0.0088  minV=0.0088  maxV=1.011
+    k= 6  |G|=4.770e-10  |dx|=5.207e-10  V26=0.0088  minV=0.0088  maxV=1.011
+    converged at k=6, V26 = 0.0088, KCL = 1.0658141036401503e-14
+  h=1e-05: Success (t_end=0.0002)
+    k= 1  |G|=4.727e+01  |dx|=5.548e+01  V26=0.0442  minV=0.0442  maxV=0.969
+    k= 2  |G|=6.954e+00  |dx|=8.043e+00  V26=0.1969  minV=0.1969  maxV=1.025
+    k= 3  |G|=1.222e+00  |dx|=1.400e+00  V26=0.0337  minV=0.0337  maxV=1.011
+    k= 4  |G|=3.996e-02  |dx|=5.357e-02  V26=0.0089  minV=0.0089  maxV=1.011
+    k= 5  |G|=9.406e-05  |dx|=1.194e-04  V26=0.0088  minV=0.0088  maxV=1.011
+    k= 6  |G|=4.771e-10  |dx|=5.208e-10  V26=0.0088  minV=0.0088  maxV=1.011
+    converged at k=6, V26 = 0.0088, KCL = 7.105427357601002e-15
+
+[Homotopy re-init (clearing parameter 0 -> 1)]
+  converged=true total Newton iterations=233 lambda_failed=nothing
+  root: V26 = 1.0842, min V = 0.9873, KCL = 2.66e-15, |g|_inf = 2.66e-15
+  flat start Newton: converged=true iters=5, distance to homotopy root (alg states, inf) = 3.11e-15
+
+[Integration from the homotopy root]
+  h=0.001 T=0.3: Success, t_end=0.300
+  max angle spread = 25.2 deg, min V over run = 0.971, max KCL = 4.4e-15, V26(end) = 1.052
+
+[Direct integration, no re-init, h=0.001 for T=0.3]
+  Success, t_end=0.300
+  V26(end) = 0.010, min V(end) = 0.010, KCL(end) = 3.6e-15
+
+[First DAE step from the homotopy root]
+  h=0.001: 3 iterations, residuals 3.4e-03 2.1e-05 2.1e-11 1.5e-14
+  h=0.0001: 2 iterations, residuals 3.4e-04 2.1e-07 1.4e-14
+  h=1e-05: 2 iterations, residuals 3.4e-05 2.1e-09 1.8e-14
+
+Newton root: V26 = 0.0088, min V = 0.0088, KCL = 7.11e-15 (differs from homotopy root)
+
+[Integration from the Newton (low-voltage) root] h=0.001 T=0.3: Success, t_end=0.300
+  max angle spread = 74.1 deg, min V over run = 0.009, max KCL = 1.8e-14, V26(end) = 0.010
+
+[Integration from the flat-start root] h=0.001 T=0.3: Success, t_end=0.300
+  max angle spread = 25.2 deg, min V over run = 0.971, max KCL = 5.3e-15, V26(end) = 1.052

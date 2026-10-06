@@ -1,0 +1,4 @@
+  [0.99] fault bus 8 xf=0.001 cleared by trip 8-9: Newton -> spurious, newton_run_failed(exception); HV recovered by SubString{String}["hc", "flat"]
+  [0.99] fault bus 10 xf=0.005 cleared by trip 10-11: Newton -> spurious, newton_run_failed(exception); HV recovered by SubString{String}["flat"]
+LF 0.99: 184 clearing events, Dict("newton_low(spurious, newton_run_failed(exception))" => 2, "direct_low_only" => 5, "no_low" => 177)
+done: outputs/clearing_lowv/rms_power_zipPQBRAK_t0.25_lf0.99_20260929_213845

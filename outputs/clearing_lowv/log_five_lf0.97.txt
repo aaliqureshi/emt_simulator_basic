@@ -1,0 +1,4 @@
+  [0.97] fault bus 8 xf=0.001 cleared by trip 8-9: Newton -> spurious, stays_low; HV recovered by SubString{String}["hc", "flat"]
+  [0.97] fault bus 28 xf=0.001 cleared by trip 28-29: Newton -> spurious, recovers; HV recovered by SubString{String}["hc", "flat"]
+LF 0.97: 2 clearing events, Dict("newton_low(spurious, recovers)" => 1, "newton_low(spurious, stays_low)" => 1)
+done: outputs/clearing_lowv/rms_power_five_lf0.97_20260929_221935

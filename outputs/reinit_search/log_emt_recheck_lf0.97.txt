@@ -1,0 +1,4 @@
+mode=emt LF_max=2.3125 levels=Tuple{SubString{String}, Float64}[("0.97", 2.243125)] -> outputs/reinit_search/emt_recheck_lf0.97_20260929_190023
+LF 0.97 = 2.2431: 11 events, pre-event residual 7.5e-11
+LF 0.97 summary: Dict("A_direct_ok" => 9, "reinit_then_fails" => 2)
+done: outputs/reinit_search/emt_recheck_lf0.97_20260929_190023

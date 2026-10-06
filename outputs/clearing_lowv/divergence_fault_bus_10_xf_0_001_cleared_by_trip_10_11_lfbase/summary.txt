@@ -1,0 +1,79 @@
+event: fault bus 10 xf=0.001 cleared by trip 10-11  LF = 1.0000  loads = (zip = (0.7, 0.1, 0.2), low_voltage = true, pqbrak = 1.0e-6, characteristic = 1)  form = power  mode = rms
+inherited state: V10 = 0.0473, min V = 0.0473, angle spread = 31.1 deg, post-clearing algebraic residual |g|_inf = 4.726e+01
+
+[Newton re-init from inherited state]
+  k= 1  |g|=4.726e+01  |dy|=1.221e+02  V10=0.0473  minV=0.0473  maxV=0.961
+  k= 2  |g|=3.949e+02  |dy|=6.827e+01  V10=0.9958  minV=0.0909  maxV=3.621
+  k= 3  |g|=1.127e+02  |dy|=6.920e+01  V10=0.3160  minV=0.0692  maxV=1.746
+  k= 4  |g|=1.097e+02  |dy|=3.888e+01  V10=0.1854  minV=0.0617  maxV=1.634
+  k= 5  |g|=2.967e+01  |dy|=2.222e+01  V10=0.1893  minV=0.0199  maxV=0.946
+  k= 6  |g|=9.703e+00  |dy|=1.158e+01  V10=0.3400  minV=0.0179  maxV=0.960
+  k= 7  |g|=2.670e+00  |dy|=7.508e+00  V10=0.4193  minV=0.0278  maxV=0.969
+  k= 8  |g|=4.760e-01  |dy|=1.193e+01  V10=0.4578  minV=0.0344  maxV=0.971
+  k= 9  |g|=3.874e-01  |dy|=7.277e+00  V10=0.4701  minV=0.0161  maxV=0.973
+  k=10  |g|=1.356e-01  |dy|=3.897e+00  V10=0.4704  minV=0.0206  maxV=0.972
+  k=11  |g|=5.466e-02  |dy|=3.071e+01  V10=0.4710  minV=0.0204  maxV=0.973
+  k=12  |g|=2.726e+00  |dy|=1.549e+01  V10=0.4711  minV=0.0200  maxV=0.973
+  k=15  |g|=6.810e-02  |dy|=6.259e+00  V10=0.4709  minV=0.0204  maxV=0.973
+  k=20  |g|=5.136e+01  |dy|=6.675e+01  V10=0.4755  minV=0.0180  maxV=0.974
+  k=25  |g|=1.198e-01  |dy|=4.316e+00  V10=0.4711  minV=0.0204  maxV=0.973
+  k=30  |g|=9.083e-02  |dy|=5.123e+00  V10=0.4705  minV=0.0205  maxV=0.973
+  k=35  |g|=6.961e-02  |dy|=5.850e+00  V10=0.4708  minV=0.0205  maxV=0.973
+  k=40  |g|=7.248e-02  |dy|=5.524e+00  V10=0.4709  minV=0.0204  maxV=0.973
+  k=45  |g|=9.443e-02  |dy|=4.530e+00  V10=0.4709  minV=0.0204  maxV=0.973
+  k=50  |g|=3.522e-01  |dy|=5.973e+00  V10=0.4710  minV=0.0203  maxV=0.973
+  solve_newton!: converged=false iters=50 last residuals: 3.12e-01 9.59e-02 6.03e-02 3.52e-01 1.06e-01
+
+[Direct integration, first step from inherited state]
+  h=0.01: MaxIter (t_end=0)
+    k= 1  |G|=5.112e+01  |dx|=1.214e+02  V10=0.0473  minV=0.0473  maxV=0.961
+    k= 2  |G|=3.917e+02  |dx|=6.816e+01  V10=0.9948  minV=0.0840  maxV=3.601
+    k= 3  |G|=1.135e+02  |dx|=6.391e+01  V10=0.3262  minV=0.0687  maxV=1.740
+    k= 4  |G|=9.507e+01  |dx|=3.663e+01  V10=0.1439  minV=0.0527  maxV=1.519
+    k= 5  |G|=2.527e+01  |dx|=2.141e+01  V10=0.1938  minV=0.0258  maxV=0.944
+    k= 6  |G|=9.031e+00  |dx|=1.141e+01  V10=0.3533  minV=0.0224  maxV=0.962
+    k= 7  |G|=2.562e+00  |dx|=7.679e+00  V10=0.4164  minV=0.0274  maxV=0.968
+    k= 8  |G|=4.726e-01  |dx|=1.398e+01  V10=0.4550  minV=0.0332  maxV=0.971
+    k=10  |G|=2.853e-01  |dx|=3.956e+00  V10=0.4664  minV=0.0208  maxV=0.972
+    k=20  |G|=8.143e-02  |dx|=4.059e+01  V10=0.4673  minV=0.0206  maxV=0.973
+    k=30  |G|=4.477e-01  |dx|=6.160e+00  V10=0.4674  minV=0.0205  maxV=0.973
+    k=40  |G|=8.467e-02  |dx|=2.468e+02  V10=0.4673  minV=0.0206  maxV=0.973
+    k=50  |G|=9.766e-09  |dx|=1.969e-07  V10=0.4716  minV=0.0187  maxV=0.974
+    converged at k=50, V10 = 0.4716, KCL = 6.217248937900877e-15
+  h=0.001: MaxIter (t_end=0)
+    k= 1  |G|=5.112e+01  |dx|=1.220e+02  V10=0.0473  minV=0.0473  maxV=0.961
+    k= 2  |G|=3.957e+02  |dx|=6.826e+01  V10=0.9957  minV=0.0903  maxV=3.619
+    k= 3  |G|=1.144e+02  |dx|=6.861e+01  V10=0.3168  minV=0.0692  maxV=1.746
+    k= 4  |G|=1.082e+02  |dx|=3.861e+01  V10=0.1810  minV=0.0605  maxV=1.622
+    k= 5  |G|=2.936e+01  |dx|=2.210e+01  V10=0.1894  minV=0.0201  maxV=0.946
+    k= 6  |G|=9.892e+00  |dx|=1.156e+01  V10=0.3415  minV=0.0183  maxV=0.960
+    k= 7  |G|=2.674e+00  |dx|=7.537e+00  V10=0.4192  minV=0.0277  maxV=0.969
+    k= 8  |G|=4.974e-01  |dx|=1.255e+01  V10=0.4576  minV=0.0344  maxV=0.971
+    k=10  |G|=2.141e-01  |dx|=3.865e+00  V10=0.4700  minV=0.0206  maxV=0.972
+    k=20  |G|=7.914e-02  |dx|=7.509e+00  V10=0.4705  minV=0.0205  maxV=0.973
+    k=30  |G|=9.491e-02  |dx|=5.346e+00  V10=0.4706  minV=0.0204  maxV=0.973
+    k=40  |G|=1.080e-01  |dx|=4.853e+00  V10=0.4706  minV=0.0204  maxV=0.973
+    k=50  |G|=1.240e-01  |dx|=4.496e+00  V10=0.4705  minV=0.0205  maxV=0.973
+  h=0.0001: MaxIter (t_end=0)
+    k= 1  |G|=5.112e+01  |dx|=1.221e+02  V10=0.0473  minV=0.0473  maxV=0.961
+    k= 2  |G|=3.960e+02  |dx|=6.827e+01  V10=0.9958  minV=0.0908  maxV=3.621
+    k= 3  |G|=1.145e+02  |dx|=6.914e+01  V10=0.3160  minV=0.0692  maxV=1.746
+    k= 4  |G|=1.097e+02  |dx|=3.885e+01  V10=0.1850  minV=0.0615  maxV=1.633
+    k= 5  |G|=2.982e+01  |dx|=2.221e+01  V10=0.1893  minV=0.0199  maxV=0.946
+    k= 6  |G|=1.000e+01  |dx|=1.158e+01  V10=0.3402  minV=0.0180  maxV=0.960
+    k= 7  |G|=2.692e+00  |dx|=7.511e+00  V10=0.4193  minV=0.0278  maxV=0.969
+    k= 8  |G|=5.010e-01  |dx|=1.199e+01  V10=0.4578  minV=0.0344  maxV=0.971
+    k=10  |G|=1.936e-01  |dx|=3.894e+00  V10=0.4704  minV=0.0206  maxV=0.972
+    k=20  |G|=1.502e+01  |dx|=3.237e+01  V10=0.4697  minV=0.0216  maxV=0.972
+    k=30  |G|=7.048e-02  |dx|=3.481e+01  V10=0.4708  minV=0.0205  maxV=0.973
+    k=40  |G|=3.395e-01  |dx|=5.413e+00  V10=0.4707  minV=0.0191  maxV=0.973
+    k=50  |G|=7.339e-02  |dx|=1.178e+01  V10=0.4708  minV=0.0204  maxV=0.973
+
+[Homotopy re-init (clearing parameter 0 -> 1)]
+  converged=true total Newton iterations=230 lambda_failed=nothing
+  root: V10 = 1.0281, min V = 0.9791, KCL = 1.55e-15, |g|_inf = 1.78e-15
+  flat start Newton: converged=true iters=5, distance to homotopy root (alg states, inf) = 2.15e-15
+
+[Integration from the homotopy root]
+  h=0.01 T=2: Success, t_end=2.000
+  max angle spread = 56.6 deg, min V over run = 0.865, max KCL = 2.6e-13, V10(end) = 1.031

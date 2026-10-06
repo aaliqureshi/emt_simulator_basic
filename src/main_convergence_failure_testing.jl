@@ -8,32 +8,41 @@ using MyDiffEq, Plots
 data_file = "cases/Fault_Cases/ieee39_fault.xlsx"
 # data_file = "cases/Fault_Cases/SMIB_RL_Line_DrCui.xlsx"
 # data_file = "cases/Simple_Cases/wecc_full_slack.xlsx"
+# data_file = "cases/Fault_Cases/case2383wp_gc.xlsx"
+# data_file = "cases/Fault_Cases/case118_gc.xlsx"
+# data_file = "cases/Fault_Cases/case3012wp_barq.xlsx"
 models = load_data(data_file)
 
 # build system
 sys = build_system(models)
 
-models.fault.bus = [20]
-models.fault.x_fault[1] = 0.015
-# models.fault.x_fault[1] = 0.038
+# models.fault.bus = [20]
+# models.fault.bus = [3]
+models.fault.bus = [24]
+models.fault.x_fault[1] = 0.0006
+# models.fault.x_fault[1] = 0.101
 
-# models.fault.bus = [16]
-# models.fault.x_fault[1] = 0.015
+# models.fault.bus = [1396]
+# models.fault.x_fault[1] = 0.01
 
-# models.fault.bus=[3]
-# models.fault.x_fault[1] = 0.00015
-# models.load.p .*= 4.03
+# case 118 fault
+# models.fault.bus=[12]
+# models.fault.x_fault[1]=0.009
+
+# models.load.p[:] .*= 1.42
+
+# models.load.p[end-553] = 4.0
 
 # 2. Solve power flow
-solve_power_flow!(sys)
+solve_power_flow!(sys);
 
 # 3. Static initialization
 run_static_init!(sys)
 
 # 4. Dynamic simulation setup
-address = build_dynamic_address(sys)
+address = build_dynamic_address(sys);
 mass_matrix = build_mass_matrix(sys, address)
-u0 = build_initial_conditions(sys, address)
+u0 = build_initial_conditions(sys, address);
 
 
 function run_simulation(u0, lambda, dt; 
@@ -52,22 +61,29 @@ end
 # Pre-fault simulation
 lambda=0.0
 dt0=5e-4
+# method=:Trap
 method=:Euler
-sol_pf=run_simulation(u0, lambda, dt0, t_end=0.01, method=method)
+sol_pf=run_simulation(u0, lambda, dt0, t_end=2*dt0, method=method);
 u1 = sol_pf.u[end]
 
 # fault-on simulation 3
+dt_list = [5e-3, 5e-4, 5e-5, 5e-6]
 # dt_list = [5e-4, 5e-5, 5e-6]
 # dt_list = [5e-4, 5e-5]
-# dt_list=[5e-4]
-dt_list = [1e-4, 1e-5]
+# dt_list = [5e-5, 5e-6]
+# dt_list=[5e-6]
+# dt_list = [1e-5, 1e-6]
+# dt_list = [1e-4, 1e-5]
+# dt_list = [1e-5, 5e-6]
+
 
 lambda = 1.0
 sol_list = []
 num_fails = 0
-method=:Euler
+# method=:Trap
 for iter in eachindex(dt_list)
-    ux = run_simulation(u1, lambda, dt_list[iter], t_end=0.01,method=method)
+    ux = run_simulation(u1, lambda, dt_list[iter], t_end=2*dt_list[iter],method=method)
+    # ux = run_simulation(u1, lambda, dt_list[iter], t_end=0.01,method=method)
     if ux.retcode == :MaxIter
         num_fails+=1
     end
@@ -77,12 +93,18 @@ end
 @show num_fails
 
 # fault-on flat initialization
-u2=copy(u1)
-u2[address["balance_d"]] .= 1.0
-u2[address["balance_q"]] .= 0.0 
-# dt_flat = 5e-4
-dt_flat = 1e-4
-sol_flat = run_simulation(u2, lambda, dt_flat)
+# u2=copy(u1)
+# u2[address["balance_d"]] .= 1.0
+# u2[address["balance_q"]] .= 0.0 
+# # dt_flat = 5e-4
+# dt_flat = 5e-5
+# # method=:Trap
+# sol_flat = run_simulation(u2, lambda, dt_flat, t_end=2*dt_flat, method=method)
+
+# vd_fault_idx = address["balance_d"][models.fault.bus[1]]
+# vq_fault_idx = address["balance_q"][models.fault.bus[1]]
+# vd_fault_idx = address["fault_id"][end]
+# vq_fault_idx = address["fault_iq"][end]
 
 
 # re-init
@@ -96,19 +118,46 @@ u0_new = copy(u1)
 u0_homotopy = copy(u1)
 u0_adapt_h = copy(u1)
 
-r1 = solve_newton!(u0_new, p_direct, address; max_iter=100, always_new=always_new)
-r2 = solve_homotopy!(u0_homotopy, p_base, address; λ_target=λ_target, Δλ=0.1, always_new=always_new)
-r3 = solve_adaptive_homotopy!(u0_adapt_h, p_base, address; λ_target=λ_target, always_new=always_new)
+solver_stats = true
+r1 = solve_newton!(u0_new, p_direct, address; max_iter=100, always_new=always_new, solver_stats=solver_stats)
+r2 = solve_homotopy!(u0_homotopy, 
+                    p_base, address; λ_target=λ_target, 
+                    Δλ=0.01, always_new=always_new,
+                    vd_idx=vd_fault_idx,
+                    vq_idx=vq_fault_idx,
+                    )
+r3 = solve_adaptive_homotopy!(u0_adapt_h, 
+                              p_base, 
+                              address; 
+                              λ_target=λ_target, 
+                              always_new=always_new,
+                              vd_idx=vd_fault_idx,
+                              vq_idx=vq_fault_idx,
+                              )
 
 
 
 # 5. post re-init simulation
+lambda = 1.0
+u3 = copy(u0_new)
+# u3= copy(u0_homotopy)
+# u3= copy(u1)
+dt_post = 5e-3
+# method=:Trap
+# sol_post = run_simulation(u3, lambda, dt_post, t_end=dt_post, method=method, always_new=true)
+sol_post = run_simulation(u3, lambda, dt_post, t_end=0.2, method=method)
+# sol_post = run_simulation(u3, lambda, dt_post, t_end=0.0095, method=method)
+
+# 5. post re-init simulation
 lambda = 0.0
 # u3 = copy(u0_new)
-u3= copy(u0_homotopy)
-# u3= copy(u1)
-dt_post = 5e-4
-sol_post = run_simulation(u3, lambda, dt_post, t_end=dt_post)
+# u3= copy(u0_homotopy)
+u4= copy(sol_post.u[end])
+dt_post = 5e-3
+# method=:Trap
+# sol_post = run_simulation(u3, lambda, dt_post, t_end=dt_post, method=method, always_new=true)
+sol_post = run_simulation(u3, lambda, dt_post, t_end=5.2, method=method)
+# sol_post = run_simulation(u3, lambda, dt_post, t_end=0.0095, method=method)
 
 
 using Plots
@@ -135,7 +184,7 @@ begin
     # -------------------------------
     e = 10
     e2 = length(sol_post.newton_log.residual_norm)
-    xmax_a = max(e, e2)
+    # xmax_a = max(e, e2)
 
 
 
@@ -166,26 +215,26 @@ begin
         )
     end
 
-    plot!(
-        pa,
-        1:e,
-        sol_flat.newton_log.residual_norm[1:e],
-        # color = :teal,
-        palette = :Dark2,
-        linestyle = :dash,
-        marker = :diamond,
-        label = "Flat re-init (h = $(trunc(Int, dt_flat/1e-6)) μs).",
-    )
+    # plot!(
+    #     pa,
+    #     1:e,
+    #     sol_flat.newton_log.residual_norm[1:e],
+    #     # color = :teal,
+    #     palette = :Dark2,
+    #     linestyle = :dash,
+    #     marker = :diamond,
+    #     label = "Flat re-init (h = $(trunc(Int, dt_flat/1e-6)) μs).",
+    # )
 
-    plot!(
-        pa,
-        1:e2,
-        sol_post.newton_log.residual_norm[1:e2],
-        color = :teal,
-        linestyle = :solid,
-        marker = :square,
-        label = "With re-init.",
-    )
+    # plot!(
+    #     pa,
+    #     1:e2,
+    #     sol_post.newton_log.residual_norm[1:e2],
+    #     color = :teal,
+    #     linestyle = :solid,
+    #     marker = :square,
+    #     label = "With re-init.",
+    # )
 
     hline!(
         pa,
@@ -206,9 +255,10 @@ begin
         minorgrid = false,
      #    legend = :topright,
         legend = (0.42,0.42),
+        # legend=false,
         title = "(a)",
         titlelocation = :left,
-        xlims = (0.7, xmax_a + 0.3),   # small padding on both sides
+        # xlims = (0.7, xmax_a + 0.3),   # small padding on both sides
         left_margin = 6Plots.mm,
         bottom_margin = 5Plots.mm,
     )
@@ -564,7 +614,8 @@ begin
         gridalpha = 0.1,
         minorgrid = false,
      #    legend = :topright,
-        legend = (0.5, 0.45),
+        # legend = (0.5, 0.45),
+        legend=false,
         xlims = (0.7, xmax_a + 0.3),
      #    left_margin = 1Plots.mm,
      #    right_margin = 1Plots.mm,

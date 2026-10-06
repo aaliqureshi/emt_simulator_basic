@@ -1,0 +1,2 @@
+LF 0.93: 184 clearing events, Dict("direct_low_only" => 2, "no_low" => 182)
+done: outputs/clearing_lowv/rms_power_dur_t0.15_lf0.93_20260929_223008

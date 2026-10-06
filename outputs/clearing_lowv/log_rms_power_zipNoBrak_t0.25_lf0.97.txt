@@ -1,0 +1,7 @@
+  [0.97] fault bus 20 xf=0.02 clear@0.25: Newton -> physical_lowV, stays_low; HV run failed; HV recovered by SubString{String}["hc", "flat"]
+  [0.97] fault bus 27 xf=0.005 clear@0.25: Newton -> physical_lowV, stays_low; HV run failed; HV recovered by SubString{String}["hc", "flat"]
+  [0.97] fault bus 3 xf=0.005 cleared by trip 3-4: Newton -> physical_lowV, stays_low; HV run failed; HV recovered by SubString{String}["hc", "flat"]
+  [0.97] fault bus 3 xf=0.005 cleared by trip 3-18: Newton -> physical_lowV, stays_low; HV run failed; HV recovered by SubString{String}["hc", "flat"]
+  [0.97] fault bus 9 xf=0.005 cleared by trip 9-39: Newton -> physical_lowV, recovers; HV run failed; HV recovered by SubString{String}["hc", "flat"]
+LF 0.97: 184 clearing events, Dict("newton_low(physical_lowV, recovers; HV run failed)" => 1, "direct_low_only" => 3, "no_low" => 49, "skipped" => 127, "newton_low(physical_lowV, stays_low; HV run failed)" => 4)
+done: outputs/clearing_lowv/rms_power_zipNoBrak_t0.25_lf0.97_20260929_213845

@@ -1,0 +1,48 @@
+event: fault bus 48 xf=0.001 cleared by trip 48-49  LF = 1.0000  loads = (zip = (0.7, 0.1, 0.2), low_voltage = true, pqbrak = 1.0e-6, characteristic = 1)  form = power  mode = rms
+inherited state: V48 = 0.0113, min V = 0.0113, angle spread = 96.4 deg, post-clearing algebraic residual |g|_inf = 1.035e+01
+
+[Newton re-init from inherited state]
+  k= 1  |g|=1.035e+01  |dy|=1.693e+01  V48=0.0113  minV=0.0113  maxV=1.027
+  k= 2  |g|=4.731e-02  |dy|=9.142e-02  V48=0.0181  minV=0.0181  maxV=1.039
+  k= 3  |g|=2.509e-04  |dy|=4.498e-04  V48=0.0137  minV=0.0137  maxV=1.039
+  k= 4  |g|=1.178e-08  |dy|=1.877e-08  V48=0.0138  minV=0.0138  maxV=1.039
+  k= 5  |g|=8.882e-16  |dy|=3.888e-15  V48=0.0138  minV=0.0138  maxV=1.039
+  converged at k=5
+  solve_newton!: converged=true iters=5 last residuals: 1.04e+01 4.73e-02 2.51e-04 1.18e-08 8.88e-16
+
+[Direct integration, first step from inherited state]
+  h=0.001: Success (t_end=0.02)
+    k= 1  |G|=1.586e+01  |dx|=1.693e+01  V48=0.0113  minV=0.0113  maxV=1.027
+    k= 2  |G|=7.394e-02  |dx|=9.168e-02  V48=0.0181  minV=0.0181  maxV=1.039
+    k= 3  |G|=3.714e-04  |dx|=4.540e-04  V48=0.0137  minV=0.0137  maxV=1.039
+    k= 4  |G|=1.434e-08  |dx|=1.887e-08  V48=0.0138  minV=0.0138  maxV=1.039
+    converged at k=4, V48 = 0.0138, KCL = 4.440892098500626e-15
+  h=0.0001: Success (t_end=0.002)
+    k= 1  |G|=1.586e+01  |dx|=1.693e+01  V48=0.0113  minV=0.0113  maxV=1.027
+    k= 2  |G|=7.202e-02  |dx|=9.143e-02  V48=0.0181  minV=0.0181  maxV=1.039
+    k= 3  |G|=3.638e-04  |dx|=4.502e-04  V48=0.0137  minV=0.0137  maxV=1.039
+    k= 4  |G|=1.422e-08  |dx|=1.878e-08  V48=0.0138  minV=0.0138  maxV=1.039
+    converged at k=4, V48 = 0.0138, KCL = 4.440892098500626e-15
+  h=1e-05: Success (t_end=0.0002)
+    k= 1  |G|=1.586e+01  |dx|=1.693e+01  V48=0.0113  minV=0.0113  maxV=1.027
+    k= 2  |G|=7.183e-02  |dx|=9.142e-02  V48=0.0181  minV=0.0181  maxV=1.039
+    k= 3  |G|=3.631e-04  |dx|=4.498e-04  V48=0.0137  minV=0.0137  maxV=1.039
+    k= 4  |G|=1.421e-08  |dx|=1.877e-08  V48=0.0138  minV=0.0138  maxV=1.039
+    converged at k=4, V48 = 0.0138, KCL = 4.440892098500626e-15
+
+[Homotopy re-init (clearing parameter 0 -> 1)]
+  converged=true total Newton iterations=240 lambda_failed=nothing
+  root: V48 = 0.9453, min V = 0.9238, KCL = 1.03e-15, |g|_inf = 8.48e-16
+  flat start Newton: converged=true iters=8, distance to homotopy root (alg states, inf) = 2.70e+00
+
+[Integration from the homotopy root]
+  h=0.01 T=3: Success, t_end=3.000
+  max angle spread = 98.5 deg, min V over run = 0.909, max KCL = 1.6e-14, V48(end) = 0.966
+
+Newton root: V48 = 0.0138, min V = 0.0138, KCL = 1.43e-15 (differs from homotopy root)
+
+[Integration from the Newton (low-voltage) root] h=0.01 T=3: Success, t_end=3.000
+  max angle spread = 99.8 deg, min V over run = 0.013, max KCL = 8.9e-15, V48(end) = 0.013
+
+flat-start root: V48 = 0.0138, min V = 0.0138, KCL = 1.44e-15 (differs from homotopy root)
+  identical to Newton's root

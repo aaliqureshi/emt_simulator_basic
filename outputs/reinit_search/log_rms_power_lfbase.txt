@@ -1,0 +1,21 @@
+mode=rms LF_max=NaN levels=Tuple{SubString{String}, Float64}[("base", 1.0)] -> outputs/reinit_search/rms_power_lfbase_20260929_191520
+LF base = 1.0000: 426 events, pre-event residual 1.0e-10
+  25/426 done Dict("A_direct_ok" => 25)
+  50/426 done Dict("A_direct_ok" => 50)
+  75/426 done Dict("A_direct_ok" => 75)
+  100/426 done Dict("A_direct_ok" => 100)
+  125/426 done Dict("A_direct_ok" => 125)
+  150/426 done Dict("A_direct_ok" => 150)
+  175/426 done Dict("A_direct_ok" => 175)
+  200/426 done Dict("A_direct_ok" => 200)
+  225/426 done Dict("A_direct_ok" => 225)
+  250/426 done Dict("A_direct_ok" => 250)
+  275/426 done Dict("A_direct_ok" => 275)
+  300/426 done Dict("A_direct_ok" => 300)
+  325/426 done Dict("A_direct_ok" => 325)
+  350/426 done Dict("A_direct_ok" => 350)
+  375/426 done Dict("A_direct_ok" => 375)
+  400/426 done Dict("A_direct_ok" => 400)
+  425/426 done Dict("A_direct_ok" => 425)
+LF base summary: Dict("A_direct_ok" => 426)
+done: outputs/reinit_search/rms_power_lfbase_20260929_191520

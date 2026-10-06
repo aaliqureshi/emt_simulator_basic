@@ -1,0 +1,4 @@
+data=cases/Fault_Cases/ieee39_fault.xlsx mode=emt method=Euler families=[:line, :gen, :line2, :topo, :load, :fault, :faultline]
+loads=(zip = (0.7, 0.1, 0.2), low_voltage = true, pqbrak = 0.7, characteristic = 1) xf=[0.001, 0.005, 0.02] tfault=0.1 loadsteps=[0.5, 1.0]
+h_direct=(0.0005, 5.0e-5, 5.0e-6) x 20 steps, h_post=((0.0005, 0.05), (5.0e-5, 0.01)), h_faulton=0.0005
+LF_max (power-flow continuation) = 2.3125; levels = Tuple{SubString{String}, Float64}[("0.99", 2.289375)]

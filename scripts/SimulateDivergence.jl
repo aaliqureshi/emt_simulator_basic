@@ -55,7 +55,7 @@ function _run_sim(u0, p, mass_matrix;
                   always_new=true,
                   tstops=[],
                   adaptive=false,
-                  t_end=0.1,
+                  t_end=0.01,
     )
     prob = MyDiffEq.ODEProblem(
                     solve_dynamic_sim!, 
@@ -90,6 +90,8 @@ function _reinit(u0, p, sys)
 
     d_idx = address["balance_d"][sys.models.fault.bus[1]]
     q_idx = address["balance_q"][sys.models.fault.bus[1]]
+    # d_idx = address["fault_iq"][1]
+    # q_idx = address["fault_iq"][1]
 
 
 
@@ -135,7 +137,7 @@ function run_simulation(; case_bus=14,
     run_static_init!(sys)
     _add_fault!(sys, case_bus)
     u0, p, mass_matrix = _create_dynamic_data(sys)
-    sol_pf = _run_sim(u0, p, mass_matrix, t_end=0.001)
+    sol_pf = _run_sim(u0, p, mass_matrix, t_end=0.005)
     println("steady state simulation done.")
     u_pf = sol_pf.u[end]
     println("entering dynamic simulation")
@@ -170,12 +172,14 @@ function run_simulation(; case_bus=14,
     # post-re-init simulation
     lambda = 1.0
     p = (p[1:end-1]..., lambda)
-    dt_post = 5e-4
+    dt_post = 5e-3
+    # dt_post = 5e-4
     u0_post = copy(reinit.u_newton)
     println("entering post re-init run")
+    method=:Euler
     # sol_post = _run_sim(u0_post, p, mass_matrix, dt=dt_post, method=method, t_end=dt_post)
-    # sol_post = _run_sim(u0_post, p, mass_matrix, dt=dt_post, method=method, t_end=0.1)
-    sol_post = _run_sim(u0_post, p, mass_matrix, dt=dt_post, method=method, t_end=0.0095)
+    sol_post = _run_sim(u0_post, p, mass_matrix, dt=dt_post, method=method, t_end=0.05)
+    # sol_post = _run_sim(u0_post, p, mass_matrix, dt=dt_post, method=method, t_end=0.0095)
 
 
     address = p[1]

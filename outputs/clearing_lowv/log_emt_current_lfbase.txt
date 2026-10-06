@@ -1,0 +1,2 @@
+LF base: 184 clearing events, Dict("direct_low_only" => 57, "no_low" => 127)
+done: outputs/clearing_lowv/emt_current_lfbase_20260929_195351

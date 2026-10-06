@@ -1,0 +1,190 @@
+event: fault bus 6 xf=0.002 clear@0.1  LF = 1.0000  loads = (zip = (0.7, 0.1, 0.2), low_voltage = true, pqbrak = 1.0e-6, characteristic = 1)  form = power  mode = rms
+inherited state: V6 = 0.0948, min V = 0.0948, angle spread = 28.0 deg, post-clearing algebraic residual |g|_inf = 4.713e+01
+
+[Newton re-init from inherited state]
+  k= 1  |g|=4.713e+01  |dy|=1.528e+02  V6=0.0948  minV=0.0948  maxV=0.963
+  k= 2  |g|=2.708e+02  |dy|=7.944e+01  V6=2.0085  minV=0.1364  maxV=2.604
+  k= 3  |g|=7.206e+01  |dy|=4.144e+01  V6=0.7999  minV=0.1466  maxV=1.158
+  k= 4  |g|=1.673e+01  |dy|=8.282e+01  V6=0.1468  minV=0.0055  maxV=0.961
+  k= 5  |g|=7.155e+01  |dy|=3.723e+01  V6=0.2274  minV=0.0656  maxV=0.864
+  k= 6  |g|=1.773e+01  |dy|=3.813e+01  V6=0.0261  minV=0.0261  maxV=0.874
+  k= 7  |g|=2.172e+01  |dy|=1.979e+01  V6=0.0522  minV=0.0388  maxV=0.924
+  k= 8  |g|=5.368e+00  |dy|=8.375e+00  V6=0.0407  minV=0.0301  maxV=0.919
+  k= 9  |g|=1.250e+00  |dy|=4.011e+00  V6=0.0881  minV=0.0264  maxV=0.924
+  k=10  |g|=2.748e-01  |dy|=1.299e+00  V6=0.0940  minV=0.0265  maxV=0.924
+  k=11  |g|=3.820e-02  |dy|=2.588e-01  V6=0.0968  minV=0.0261  maxV=0.925
+  k=12  |g|=1.497e-03  |dy|=1.093e-02  V6=0.0972  minV=0.0261  maxV=0.925
+  converged at k=14
+  solve_newton!: converged=true iters=14 last residuals: 2.75e-01 3.82e-02 1.50e-03 2.68e-06 8.64e-12
+
+[Direct integration, first step from inherited state]
+retcode: Success
+  h=0.001: Success (t_end=0.02)
+    k= 1  |G|=4.739e+01  |dx|=1.527e+02  V6=0.0948  minV=0.0948  maxV=0.963
+    k= 2  |G|=3.309e+02  |dx|=7.945e+01  V6=2.0083  minV=0.1356  maxV=2.604
+    k= 3  |G|=8.927e+01  |dx|=4.150e+01  V6=0.8005  minV=0.1464  maxV=1.158
+    k= 4  |G|=2.143e+01  |dx|=8.231e+01  V6=0.1479  minV=0.0068  maxV=0.961
+    k= 5  |G|=7.148e+01  |dx|=3.710e+01  V6=0.2251  minV=0.0644  maxV=0.865
+    k= 6  |G|=1.896e+01  |dx|=3.779e+01  V6=0.0254  minV=0.0254  maxV=0.875
+    k= 7  |G|=2.243e+01  |dx|=1.994e+01  V6=0.0513  minV=0.0384  maxV=0.922
+    k= 8  |G|=5.556e+00  |dx|=8.354e+00  V6=0.0383  minV=0.0282  maxV=0.918
+    k=10  |G|=2.808e-01  |dx|=1.314e+00  V6=0.0940  minV=0.0265  maxV=0.924
+    converged at k=14, V6 = 0.0971, KCL = 7.105427357601002e-15
+retcode: Success
+  h=0.0001: Success (t_end=0.002)
+    k= 1  |G|=4.739e+01  |dx|=1.528e+02  V6=0.0948  minV=0.0948  maxV=0.963
+    k= 2  |G|=3.310e+02  |dx|=7.944e+01  V6=2.0085  minV=0.1363  maxV=2.604
+    k= 3  |G|=8.924e+01  |dx|=4.145e+01  V6=0.7999  minV=0.1466  maxV=1.158
+    k= 4  |G|=2.140e+01  |dx|=8.277e+01  V6=0.1469  minV=0.0056  maxV=0.961
+    k= 5  |G|=7.258e+01  |dx|=3.721e+01  V6=0.2271  minV=0.0654  maxV=0.864
+    k= 6  |G|=1.915e+01  |dx|=3.809e+01  V6=0.0261  minV=0.0261  maxV=0.874
+    k= 7  |G|=2.236e+01  |dx|=1.980e+01  V6=0.0521  minV=0.0387  maxV=0.924
+    k= 8  |G|=5.518e+00  |dx|=8.371e+00  V6=0.0405  minV=0.0299  maxV=0.919
+    k=10  |G|=2.766e-01  |dx|=1.300e+00  V6=0.0940  minV=0.0265  maxV=0.924
+    converged at k=14, V6 = 0.0972, KCL = 1.8648277366750676e-15
+retcode: Success
+  h=1e-05: Success (t_end=0.0002)
+    k= 1  |G|=4.739e+01  |dx|=1.528e+02  V6=0.0948  minV=0.0948  maxV=0.963
+    k= 2  |G|=3.310e+02  |dx|=7.944e+01  V6=2.0085  minV=0.1364  maxV=2.604
+    k= 3  |G|=8.924e+01  |dx|=4.144e+01  V6=0.7999  minV=0.1466  maxV=1.158
+    k= 4  |G|=2.139e+01  |dx|=8.282e+01  V6=0.1469  minV=0.0055  maxV=0.961
+    k= 5  |G|=7.269e+01  |dx|=3.723e+01  V6=0.2273  minV=0.0656  maxV=0.864
+    k= 6  |G|=1.917e+01  |dx|=3.813e+01  V6=0.0261  minV=0.0261  maxV=0.874
+    k= 7  |G|=2.236e+01  |dx|=1.979e+01  V6=0.0522  minV=0.0388  maxV=0.924
+    k= 8  |G|=5.515e+00  |dx|=8.374e+00  V6=0.0407  minV=0.0301  maxV=0.919
+    k=10  |G|=2.762e-01  |dx|=1.299e+00  V6=0.0940  minV=0.0265  maxV=0.924
+    converged at k=14, V6 = 0.0972, KCL = 3.552713678800501e-15
+
+[Homotopy re-init (clearing parameter 0 -> 1)]
+converged in 1 iterations
+converged in 5 iterations
+converged in 9 iterations
+converged in 13 iterations
+converged in 17 iterations
+converged in 21 iterations
+converged in 25 iterations
+converged in 29 iterations
+converged in 33 iterations
+converged in 36 iterations
+converged in 39 iterations
+converged in 42 iterations
+converged in 45 iterations
+converged in 48 iterations
+converged in 51 iterations
+converged in 54 iterations
+converged in 57 iterations
+converged in 60 iterations
+converged in 63 iterations
+converged in 66 iterations
+converged in 69 iterations
+converged in 72 iterations
+converged in 75 iterations
+converged in 77 iterations
+converged in 79 iterations
+converged in 81 iterations
+converged in 83 iterations
+converged in 85 iterations
+converged in 87 iterations
+converged in 89 iterations
+converged in 91 iterations
+converged in 93 iterations
+converged in 95 iterations
+converged in 97 iterations
+converged in 99 iterations
+converged in 101 iterations
+converged in 103 iterations
+converged in 105 iterations
+converged in 107 iterations
+converged in 109 iterations
+converged in 111 iterations
+converged in 113 iterations
+converged in 115 iterations
+converged in 117 iterations
+converged in 119 iterations
+converged in 121 iterations
+converged in 123 iterations
+converged in 125 iterations
+converged in 127 iterations
+converged in 129 iterations
+converged in 131 iterations
+converged in 133 iterations
+converged in 135 iterations
+converged in 137 iterations
+converged in 139 iterations
+converged in 140 iterations
+converged in 141 iterations
+converged in 142 iterations
+converged in 143 iterations
+converged in 144 iterations
+converged in 145 iterations
+converged in 146 iterations
+converged in 147 iterations
+converged in 148 iterations
+converged in 149 iterations
+converged in 150 iterations
+converged in 151 iterations
+converged in 152 iterations
+converged in 153 iterations
+converged in 154 iterations
+converged in 155 iterations
+converged in 156 iterations
+converged in 157 iterations
+converged in 158 iterations
+converged in 159 iterations
+converged in 160 iterations
+converged in 161 iterations
+converged in 162 iterations
+converged in 163 iterations
+converged in 164 iterations
+converged in 165 iterations
+converged in 166 iterations
+converged in 167 iterations
+converged in 168 iterations
+converged in 169 iterations
+converged in 170 iterations
+converged in 171 iterations
+converged in 172 iterations
+converged in 173 iterations
+converged in 174 iterations
+converged in 175 iterations
+converged in 176 iterations
+converged in 177 iterations
+converged in 178 iterations
+converged in 179 iterations
+converged in 180 iterations
+converged in 181 iterations
+converged in 182 iterations
+converged in 183 iterations
+converged in 184 iterations
+converged in 185 iterations
+  converged=true total Newton iterations=185 lambda_failed=nothing
+  root: V6 = 1.0206, min V = 0.9786, KCL = 1.78e-15, |g|_inf = 1.78e-15
+  flat start Newton: converged=true iters=5, distance to homotopy root (alg states, inf) = 2.00e-15
+
+[Integration from the homotopy root]
+  h=0.001 T=0.5: Success, t_end=0.500
+  max angle spread = 46.8 deg, min V over run = 0.880, max KCL = 4.4e-15, V6(end) = 1.011
+
+[Direct integration, no re-init, h=0.001 for T=0.5]
+  MaxIter, t_end=0.160
+  V6(end) = 0.097, min V(end) = 0.027, KCL(end) = 2.9e-15
+
+[First DAE step from the homotopy root]
+  h=0.001: 3 iterations, residuals 6.1e-03 1.5e-04 6.9e-10 1.3e-14
+  h=0.0001: 2 iterations, residuals 6.1e-04 1.5e-06 7.0e-14
+  h=1e-05: 2 iterations, residuals 6.1e-05 1.5e-08 1.4e-14
+
+[First DAE step from the flat-start root]
+  h=0.001: 3 iterations, residuals 6.1e-03 1.5e-04 6.9e-10 1.3e-14
+  h=0.0001: 2 iterations, residuals 6.1e-04 1.5e-06 7.0e-14
+  h=1e-05: 2 iterations, residuals 6.1e-05 1.5e-08 1.4e-14
+
+Newton root: V6 = 0.0972, min V = 0.0260, KCL = 5.33e-15 (differs from homotopy root)
+
+[Integration from the Newton (low-voltage) root] h=0.001 T=0.5: MaxIter, t_end=0.160
+  max angle spread = 84.9 deg, min V over run = 0.026, max KCL = 2.2e-12, V6(end) = 0.097
+
+[Integration from the flat-start root] h=0.001 T=0.5: Success, t_end=0.500
+  max angle spread = 46.8 deg, min V over run = 0.880, max KCL = 4.4e-15, V6(end) = 1.011
+
+saved to outputs/clearing_lowv/divergence_fault_bus_6_xf_0_002_clear_0_1_lfbase_power_fig

@@ -1,0 +1,26 @@
+mode=emt LF_max=2.3125 levels=Tuple{SubString{String}, Float64}[("0.9", 2.0812500000000003)] -> outputs/reinit_search/emt_lf0.9_20260929_182942
+LF 0.9 = 2.0813: 426 events, pre-event residual 9.2e-10
+  25/426 done Dict("A_direct_ok" => 25)
+  [0.9] trip 4-5 + 4-14: reinit_recovers
+  50/426 done Dict("reinit_recovers" => 1, "A_direct_ok" => 46, "reinit_then_fails" => 3)
+  [0.9] trip 16-17 + 17-27: reinit_recovers
+  [0.9] bus 4: trip 2 lines, keep 3-4: reinit_recovers
+  75/426 done Dict("reinit_recovers" => 3, "A_direct_ok" => 69, "reinit_then_fails" => 3)
+  100/426 done Dict("reinit_recovers" => 3, "A_direct_ok" => 90, "reinit_then_fails" => 7)
+  125/426 done Dict("reinit_recovers" => 3, "A_direct_ok" => 115, "reinit_then_fails" => 7)
+  [0.9] fault bus 1 xf=0.001 clear@0.1: reinit_recovers
+  150/426 done Dict("reinit_recovers" => 4, "A_direct_ok" => 139, "reinit_then_fails" => 7)
+  175/426 done Dict("reinit_recovers" => 4, "A_direct_ok" => 164, "reinit_then_fails" => 7)
+  200/426 done Dict("reinit_recovers" => 4, "A_direct_ok" => 189, "reinit_then_fails" => 7)
+  225/426 done Dict("reinit_recovers" => 4, "A_direct_ok" => 214, "reinit_then_fails" => 7)
+  250/426 done Dict("reinit_recovers" => 4, "A_direct_ok" => 239, "reinit_then_fails" => 7)
+  275/426 done Dict("reinit_recovers" => 4, "A_direct_ok" => 264, "reinit_then_fails" => 7)
+  300/426 done Dict("reinit_recovers" => 4, "A_direct_ok" => 289, "reinit_then_fails" => 7)
+  325/426 done Dict("reinit_recovers" => 4, "A_direct_ok" => 314, "reinit_then_fails" => 7)
+  350/426 done Dict("reinit_recovers" => 4, "A_direct_ok" => 339, "reinit_then_fails" => 7)
+  [0.9] fault bus 1 xf=0.005 cleared by trip 1-39: reinit_recovers
+  375/426 done Dict("reinit_recovers" => 5, "A_direct_ok" => 363, "reinit_then_fails" => 7)
+  400/426 done Dict("reinit_recovers" => 5, "A_direct_ok" => 388, "reinit_then_fails" => 7)
+  425/426 done Dict("reinit_recovers" => 5, "A_direct_ok" => 413, "reinit_then_fails" => 7)
+LF 0.9 summary: Dict("reinit_recovers" => 5, "A_direct_ok" => 414, "reinit_then_fails" => 7)
+done: outputs/reinit_search/emt_lf0.9_20260929_182942

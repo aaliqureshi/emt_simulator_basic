@@ -1,0 +1,190 @@
+event: fault bus 32 xf=0.005 clear@0.1  LF = 1.0000  loads = (zip = (0.7, 0.1, 0.2), low_voltage = true, pqbrak = 1.0e-6, characteristic = 1)  form = power  mode = rms
+inherited state: V32 = 0.0792, min V = 0.0792, angle spread = 94.7 deg, post-clearing algebraic residual |g|_inf = 1.480e+01
+
+[Newton re-init from inherited state]
+  k= 1  |g|=1.480e+01  |dy|=4.024e+01  V32=0.0792  minV=0.0792  maxV=1.030
+  k= 2  |g|=1.985e+02  |dy|=2.314e+01  V32=3.0587  minV=0.3803  maxV=3.059
+  k= 3  |g|=6.334e+01  |dy|=1.124e+01  V32=1.5593  minV=0.0852  maxV=1.559
+  k= 4  |g|=1.509e+01  |dy|=5.377e+00  V32=0.6033  minV=0.1060  maxV=1.025
+  k= 5  |g|=3.464e+00  |dy|=7.365e+00  V32=0.1942  minV=0.0073  maxV=1.028
+  k= 6  |g|=2.607e+00  |dy|=5.620e+00  V32=0.0727  minV=0.0636  maxV=1.029
+  k= 7  |g|=1.698e+00  |dy|=3.049e+00  V32=0.0205  minV=0.0205  maxV=1.028
+  k= 8  |g|=2.782e-01  |dy|=6.385e+00  V32=0.0202  minV=0.0202  maxV=1.029
+  k= 9  |g|=1.677e+00  |dy|=4.661e+00  V32=0.0154  minV=0.0154  maxV=1.029
+  k=10  |g|=9.603e-01  |dy|=2.548e+00  V32=0.0152  minV=0.0152  maxV=1.029
+  k=11  |g|=2.863e-01  |dy|=3.110e+00  V32=0.0109  minV=0.0109  maxV=1.029
+  k=12  |g|=4.063e-01  |dy|=1.851e+00  V32=0.0104  minV=0.0104  maxV=1.029
+  k=15  |g|=1.583e-01  |dy|=5.395e+00  V32=0.0112  minV=0.0112  maxV=1.029
+  k=20  |g|=4.368e-01  |dy|=1.886e+00  V32=0.0120  minV=0.0120  maxV=1.029
+  k=25  |g|=1.845e-01  |dy|=2.527e+00  V32=0.0109  minV=0.0109  maxV=1.029
+  k=30  |g|=5.006e-01  |dy|=1.915e+00  V32=0.0122  minV=0.0122  maxV=1.029
+  k=35  |g|=1.555e-01  |dy|=6.101e+00  V32=0.0111  minV=0.0111  maxV=1.029
+  k=40  |g|=1.612e-01  |dy|=3.494e+00  V32=0.0111  minV=0.0111  maxV=1.029
+  k=45  |g|=5.060e-01  |dy|=2.252e+00  V32=0.0106  minV=0.0106  maxV=1.029
+  k=50  |g|=2.243e+00  |dy|=4.190e+00  V32=0.0104  minV=0.0104  maxV=1.029
+  solve_newton!: converged=false iters=50 last residuals: 1.35e-01 1.81e-01 1.06e-01 2.24e+00 6.12e-01
+
+[Direct integration, first step from inherited state]
+~~~~~~Newton failed to converge at t = 0.0 in 50 iterations with dt = 0.001~~~~~~~~~~~~~~~~~
+Try reducing the step size or increasing the tolerance.
+retcode: MaxIter
+  h=0.001: MaxIter (t_end=0)
+    k= 1  |G|=1.584e+01  |dx|=4.020e+01  V32=0.0792  minV=0.0792  maxV=1.030
+    k= 2  |G|=2.002e+02  |dx|=2.312e+01  V32=3.0552  minV=0.3792  maxV=3.055
+    k= 3  |G|=6.536e+01  |dx|=1.123e+01  V32=1.5581  minV=0.0850  maxV=1.558
+    k= 4  |G|=1.554e+01  |dx|=5.383e+00  V32=0.6034  minV=0.1064  maxV=1.025
+    k= 5  |G|=3.504e+00  |dx|=7.354e+00  V32=0.1941  minV=0.0072  maxV=1.028
+    k= 6  |G|=2.884e+00  |dx|=5.532e+00  V32=0.0730  minV=0.0634  maxV=1.029
+    k= 7  |G|=1.811e+00  |dx|=3.015e+00  V32=0.0204  minV=0.0204  maxV=1.028
+    k= 8  |G|=4.342e-01  |dx|=6.754e+00  V32=0.0198  minV=0.0198  maxV=1.029
+    k=10  |G|=1.093e+00  |dx|=2.602e+00  V32=0.0153  minV=0.0153  maxV=1.029
+    k=20  |G|=1.090e+02  |dx|=2.385e+01  V32=0.0361  minV=0.0048  maxV=2.192
+    k=30  |G|=1.113e+02  |dx|=2.410e+01  V32=0.0369  minV=0.0061  maxV=2.199
+    k=40  |G|=1.844e-01  |dx|=3.448e+00  V32=0.0110  minV=0.0110  maxV=1.029
+    k=50  |G|=1.720e-01  |dx|=3.961e+01  V32=0.0112  minV=0.0112  maxV=1.029
+~~~~~~Newton failed to converge at t = 0.0 in 50 iterations with dt = 0.0001~~~~~~~~~~~~~~~~~
+Try reducing the step size or increasing the tolerance.
+retcode: MaxIter
+  h=0.0001: MaxIter (t_end=0)
+    k= 1  |G|=1.584e+01  |dx|=4.024e+01  V32=0.0792  minV=0.0792  maxV=1.030
+    k= 2  |G|=2.006e+02  |dx|=2.314e+01  V32=3.0584  minV=0.3802  maxV=3.058
+    k= 3  |G|=6.545e+01  |dx|=1.124e+01  V32=1.5593  minV=0.0852  maxV=1.559
+    k= 4  |G|=1.556e+01  |dx|=5.378e+00  V32=0.6033  minV=0.1061  maxV=1.025
+    k= 5  |G|=3.506e+00  |dx|=7.364e+00  V32=0.1942  minV=0.0073  maxV=1.028
+    k= 6  |G|=2.905e+00  |dx|=5.611e+00  V32=0.0728  minV=0.0636  maxV=1.029
+    k= 7  |G|=1.881e+00  |dx|=3.045e+00  V32=0.0205  minV=0.0205  maxV=1.028
+    k= 8  |G|=4.577e-01  |dx|=6.431e+00  V32=0.0202  minV=0.0202  maxV=1.029
+    k=10  |G|=1.039e+00  |dx|=2.556e+00  V32=0.0152  minV=0.0152  maxV=1.029
+    k=20  |G|=1.736e-01  |dx|=4.101e+00  V32=0.0110  minV=0.0110  maxV=1.029
+    k=30  |G|=2.507e+00  |dx|=3.791e+00  V32=0.0102  minV=0.0102  maxV=1.029
+    k=40  |G|=1.713e-01  |dx|=3.830e+00  V32=0.0113  minV=0.0113  maxV=1.029
+    k=50  |G|=1.246e+00  |dx|=3.217e+00  V32=0.0123  minV=0.0123  maxV=1.029
+~~~~~~Newton failed to converge at t = 0.0 in 50 iterations with dt = 1.0e-5~~~~~~~~~~~~~~~~~
+Try reducing the step size or increasing the tolerance.
+retcode: MaxIter
+  h=1e-05: MaxIter (t_end=0)
+    k= 1  |G|=1.584e+01  |dx|=4.024e+01  V32=0.0792  minV=0.0792  maxV=1.030
+    k= 2  |G|=2.007e+02  |dx|=2.314e+01  V32=3.0587  minV=0.3803  maxV=3.059
+    k= 3  |G|=6.546e+01  |dx|=1.124e+01  V32=1.5593  minV=0.0852  maxV=1.559
+    k= 4  |G|=1.556e+01  |dx|=5.377e+00  V32=0.6033  minV=0.1060  maxV=1.025
+    k= 5  |G|=3.506e+00  |dx|=7.365e+00  V32=0.1942  minV=0.0073  maxV=1.028
+    k= 6  |G|=2.907e+00  |dx|=5.619e+00  V32=0.0727  minV=0.0636  maxV=1.029
+    k= 7  |G|=1.888e+00  |dx|=3.048e+00  V32=0.0205  minV=0.0205  maxV=1.028
+    k= 8  |G|=4.602e-01  |dx|=6.389e+00  V32=0.0202  minV=0.0202  maxV=1.029
+    k=10  |G|=1.031e+00  |dx|=2.549e+00  V32=0.0152  minV=0.0152  maxV=1.029
+    k=20  |G|=1.115e+01  |dx|=7.668e+00  V32=0.0174  minV=0.0107  maxV=1.029
+    k=30  |G|=1.265e+00  |dx|=2.782e+00  V32=0.0127  minV=0.0127  maxV=1.029
+    k=40  |G|=1.884e-01  |dx|=3.254e+00  V32=0.0110  minV=0.0110  maxV=1.029
+    k=50  |G|=4.073e+00  |dx|=4.680e+00  V32=0.0147  minV=0.0133  maxV=1.029
+
+[Homotopy re-init (clearing parameter 0 -> 1)]
+converged in 1 iterations
+converged in 5 iterations
+converged in 9 iterations
+converged in 13 iterations
+converged in 17 iterations
+converged in 21 iterations
+converged in 25 iterations
+converged in 28 iterations
+converged in 31 iterations
+converged in 34 iterations
+converged in 37 iterations
+converged in 40 iterations
+converged in 43 iterations
+converged in 46 iterations
+converged in 49 iterations
+converged in 52 iterations
+converged in 55 iterations
+converged in 58 iterations
+converged in 61 iterations
+converged in 64 iterations
+converged in 67 iterations
+converged in 69 iterations
+converged in 71 iterations
+converged in 73 iterations
+converged in 75 iterations
+converged in 77 iterations
+converged in 79 iterations
+converged in 81 iterations
+converged in 83 iterations
+converged in 85 iterations
+converged in 87 iterations
+converged in 89 iterations
+converged in 91 iterations
+converged in 93 iterations
+converged in 95 iterations
+converged in 97 iterations
+converged in 99 iterations
+converged in 101 iterations
+converged in 103 iterations
+converged in 105 iterations
+converged in 107 iterations
+converged in 109 iterations
+converged in 111 iterations
+converged in 113 iterations
+converged in 115 iterations
+converged in 117 iterations
+converged in 119 iterations
+converged in 121 iterations
+converged in 123 iterations
+converged in 125 iterations
+converged in 127 iterations
+converged in 129 iterations
+converged in 131 iterations
+converged in 132 iterations
+converged in 133 iterations
+converged in 134 iterations
+converged in 135 iterations
+converged in 136 iterations
+converged in 137 iterations
+converged in 138 iterations
+converged in 139 iterations
+converged in 140 iterations
+converged in 141 iterations
+converged in 142 iterations
+converged in 143 iterations
+converged in 144 iterations
+converged in 145 iterations
+converged in 146 iterations
+converged in 147 iterations
+converged in 148 iterations
+converged in 149 iterations
+converged in 150 iterations
+converged in 151 iterations
+converged in 152 iterations
+converged in 153 iterations
+converged in 154 iterations
+converged in 155 iterations
+converged in 156 iterations
+converged in 157 iterations
+converged in 158 iterations
+converged in 159 iterations
+converged in 160 iterations
+converged in 161 iterations
+converged in 162 iterations
+converged in 163 iterations
+converged in 164 iterations
+converged in 165 iterations
+converged in 166 iterations
+converged in 167 iterations
+converged in 168 iterations
+converged in 169 iterations
+converged in 170 iterations
+converged in 171 iterations
+converged in 172 iterations
+converged in 173 iterations
+converged in 174 iterations
+converged in 175 iterations
+converged in 176 iterations
+converged in 177 iterations
+converged in 178 iterations
+converged in 179 iterations
+  converged=true total Newton iterations=179 lambda_failed=nothing
+  root: V32 = 0.9207, min V = 0.9155, KCL = 1.11e-15, |g|_inf = 1.19e-15
+  flat start Newton: converged=true iters=6, distance to homotopy root (alg states, inf) = 8.88e-16
+
+[Integration from the homotopy root]
+  h=0.01 T=2: Success, t_end=2.000
+  max angle spread = 25208.2 deg, min V over run = 0.000, max KCL = 1.6e+01, V32(end) = 0.382
+
+saved to outputs/clearing_lowv/divergence_fault_bus_32_xf_0_005_clear_0_1_lfbase_power

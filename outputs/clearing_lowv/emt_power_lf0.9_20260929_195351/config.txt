@@ -1,0 +1,2 @@
+mode=emt form=power loads=(zip = (0.7, 0.1, 0.2), low_voltage = true, pqbrak = 0.7, characteristic = 1) xf=[0.001, 0.005, 0.02] tfault=0.1 kcl_tol=0.001 dv_low=0.05
+h_direct=(0.0005, 5.0e-5, 5.0e-6), hold=0.05 s at h=0.0005, LF_max=2.3125, lf=SubString{String}["0.9"]

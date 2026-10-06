@@ -1,0 +1,27 @@
+mode=emt LF_max=NaN levels=Tuple{SubString{String}, Float64}[("base", 1.0)] -> outputs/reinit_search/emt_lfbase_20260929_182942
+LF base = 1.0000: 426 events, pre-event residual 1.0e-10
+  25/426 done Dict("A_direct_ok" => 25)
+  [base] trip 28-29: reinit_recovers
+  [base] trip 5-6 + 6-7: reinit_recovers
+  50/426 done Dict("reinit_recovers" => 2, "A_direct_ok" => 47, "reinit_then_fails" => 1)
+  [base] trip 10-13 + 13-14: reinit_recovers
+  75/426 done Dict("reinit_recovers" => 3, "A_direct_ok" => 71, "reinit_then_fails" => 1)
+  [base] trip gen at bus 35: reinit_recovers
+  [base] trip gen at bus 36: reinit_recovers
+  [base] trip gen at bus 37: reinit_recovers
+  100/426 done Dict("reinit_recovers" => 6, "A_direct_ok" => 91, "reinit_then_fails" => 3)
+  125/426 done Dict("reinit_recovers" => 6, "A_direct_ok" => 116, "reinit_then_fails" => 3)
+  150/426 done Dict("reinit_recovers" => 6, "A_direct_ok" => 141, "reinit_then_fails" => 3)
+  175/426 done Dict("reinit_recovers" => 6, "A_direct_ok" => 166, "reinit_then_fails" => 3)
+  200/426 done Dict("reinit_recovers" => 6, "A_direct_ok" => 191, "reinit_then_fails" => 3)
+  225/426 done Dict("reinit_recovers" => 6, "A_direct_ok" => 216, "reinit_then_fails" => 3)
+  250/426 done Dict("reinit_recovers" => 6, "A_direct_ok" => 241, "reinit_then_fails" => 3)
+  275/426 done Dict("reinit_recovers" => 6, "A_direct_ok" => 266, "reinit_then_fails" => 3)
+  300/426 done Dict("reinit_recovers" => 6, "A_direct_ok" => 291, "reinit_then_fails" => 3)
+  325/426 done Dict("reinit_recovers" => 6, "A_direct_ok" => 316, "reinit_then_fails" => 3)
+  350/426 done Dict("reinit_recovers" => 6, "A_direct_ok" => 341, "reinit_then_fails" => 3)
+  375/426 done Dict("reinit_recovers" => 6, "A_direct_ok" => 366, "reinit_then_fails" => 3)
+  400/426 done Dict("reinit_recovers" => 6, "A_direct_ok" => 391, "reinit_then_fails" => 3)
+  425/426 done Dict("reinit_recovers" => 6, "A_direct_ok" => 416, "reinit_then_fails" => 3)
+LF base summary: Dict("reinit_recovers" => 6, "A_direct_ok" => 417, "reinit_then_fails" => 3)
+done: outputs/reinit_search/emt_lfbase_20260929_182942

@@ -1,0 +1,13 @@
+zf,combo,status,v1_pre_clear,v1_post_clear,vmin_post_clear,vmin_end
+0.0100,dynHE_appHE_clrNR,error: Unable to find file or directory '/Users/aali27/Work/repos/powersas.m/20260929T122042_dyn.mat'.,NaN,NaN,NaN,NaN
+0.0100,dynHE_appNR_clrHE,normal,0.3656,1.0612,0.9468,0.9685
+0.0100,dynNR_appHE_clrHE,normal,0.3656,1.0612,0.9468,0.9685
+0.0100,dynHE_appHE_clrHE,normal,0.3656,1.0612,0.9468,0.9685
+0.0150,dynHE_appHE_clrNR,lowvoltage,0.4720,0.0000,0.0000,0.0000
+0.0150,dynHE_appNR_clrHE,error: Unable to find file or directory '/Users/aali27/Work/repos/powersas.m/20260929T122113_dyn.mat'.,NaN,NaN,NaN,NaN
+0.0150,dynNR_appHE_clrHE,normal,0.4720,1.0708,0.9521,0.9703
+0.0150,dynHE_appHE_clrHE,normal,0.4720,1.0708,0.9521,0.9703
+0.0190,dynHE_appHE_clrNR,lowvoltage,0.5378,0.0000,0.0000,0.0000
+0.0190,dynHE_appNR_clrHE,normal,0.5378,1.0765,0.9551,0.9714
+0.0190,dynNR_appHE_clrHE,normal,0.5378,1.0765,0.9551,0.9714
+0.0190,dynHE_appHE_clrHE,normal,0.5378,1.0765,0.9551,0.9714

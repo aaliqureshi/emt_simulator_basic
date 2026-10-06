@@ -1,0 +1,2 @@
+LF 0.9: 184 clearing events, Dict("no_low" => 184)
+done: outputs/clearing_lowv/rms_current_lf0.9_20260929_195351

@@ -1,0 +1,29 @@
+mode=emt LF_max=2.3125 levels=Tuple{SubString{String}, Float64}[("0.99", 2.289375)] -> outputs/reinit_search/emt_lf0.99_20260929_182942
+LF 0.99 = 2.2894: 426 events, pre-event residual 6.2e-06
+  [0.99] trip 17-18: reinit_recovers
+  25/426 done Dict("reinit_recovers" => 1, "A_direct_ok" => 24)
+  [0.99] trip 28-29: reinit_recovers
+  50/426 done Dict("reinit_recovers" => 2, "A_direct_ok" => 45, "reinit_then_fails" => 3)
+  [0.99] trip 6-7 + 6-11: reinit_recovers
+  [0.99] trip 16-17 + 17-18: reinit_recovers
+  [0.99] trip 16-17 + 17-27: reinit_recovers
+  [0.99] trip 17-18 + 17-27: reinit_recovers
+  75/426 done Dict("reinit_recovers" => 6, "A_direct_ok" => 65, "reinit_then_fails" => 4)
+  [0.99] bus 17: trip 2 lines, keep 16-17: reinit_recovers
+  100/426 done Dict("reinit_recovers" => 7, "A_direct_ok" => 86, "reinit_then_fails" => 7)
+  125/426 done Dict("reinit_recovers" => 7, "A_direct_ok" => 111, "reinit_then_fails" => 7)
+  150/426 done Dict("reinit_recovers" => 7, "A_direct_ok" => 136, "reinit_then_fails" => 7)
+  175/426 done Dict("reinit_recovers" => 7, "A_direct_ok" => 161, "reinit_then_fails" => 7)
+  200/426 done Dict("reinit_recovers" => 7, "A_direct_ok" => 186, "reinit_then_fails" => 7)
+  225/426 done Dict("reinit_recovers" => 7, "A_direct_ok" => 211, "reinit_then_fails" => 7)
+  250/426 done Dict("reinit_recovers" => 7, "A_direct_ok" => 236, "reinit_then_fails" => 7)
+  275/426 done Dict("reinit_recovers" => 7, "A_direct_ok" => 261, "reinit_then_fails" => 7)
+  300/426 done Dict("reinit_recovers" => 7, "A_direct_ok" => 286, "reinit_then_fails" => 7)
+  325/426 done Dict("reinit_recovers" => 7, "A_direct_ok" => 311, "reinit_then_fails" => 7)
+  350/426 done Dict("reinit_recovers" => 7, "A_direct_ok" => 336, "reinit_then_fails" => 7)
+  [0.99] fault bus 1 xf=0.001 cleared by trip 1-39: reinit_recovers
+  375/426 done Dict("reinit_recovers" => 8, "A_direct_ok" => 360, "reinit_then_fails" => 7)
+  400/426 done Dict("reinit_recovers" => 8, "A_direct_ok" => 385, "reinit_then_fails" => 7)
+  425/426 done Dict("reinit_recovers" => 8, "A_direct_ok" => 410, "reinit_then_fails" => 7)
+LF 0.99 summary: Dict("reinit_recovers" => 8, "A_direct_ok" => 411, "reinit_then_fails" => 7)
+done: outputs/reinit_search/emt_lf0.99_20260929_182942

@@ -5,7 +5,7 @@ using Barq
 using MyDiffEq
 
 """Run one non-adaptive simulation phase, returning the solution or the thrown exception."""
-function _solve_phase(u0, address, mass_matrix, sys, lambda, t_end; dt=5e-4, method=:Euler)
+function _solve_phase(u0, address, mass_matrix, sys, lambda, t_end; dt=5e-5, method=:Euler)
     p = (address, sys.models, sys.incidence_matrix, sys.C_eq, sys.non_slack_buses, lambda)
     prob = MyDiffEq.ODEProblem(solve_dynamic_sim!, u0, (0.0, t_end), p, mass_matrix)
     try
@@ -28,6 +28,7 @@ function main()
     # data_file = "cases/Fault_Cases/ieee14_fault_barq_no_shunt.xlsx"
     data_file = "cases/Fault_Cases/ieee39_fault.xlsx"
     # data_file = "cases/Fault_Cases/SMIB_RL_Line_DrCui.xlsx"
+    # data_file = "cases/Fault_Cases/case118_gc.xlsx"
     x_fault_sweep = range(0.01, 0.05, step=0.001)
 
     models = load_data(data_file)
@@ -38,6 +39,8 @@ function main()
     other_fails = Tuple{Int,Float64,Symbol}[]
     test_count = 0
     success_count = 0
+
+    models.load.p[:] .*= 1.8
 
     for bus in non_slack_buses
         println("================================================")
@@ -53,7 +56,7 @@ function main()
         u0 = build_initial_conditions(sys, address)
 
         # pre-fault (lambda = 0 => fault removed) does not depend on x_fault, so solve it once per bus
-        sol0 = _solve_phase(u0, address, mass_matrix, sys, 0.0, 0.01)
+        sol0 = _solve_phase(u0, address, mass_matrix, sys, 0.0, 10e-5)
         if _retcode(sol0) != :Success
             println("Pre-fault failed for bus $bus (retcode = $(_retcode(sol0))) -- skipping this bus")
             continue
@@ -62,12 +65,12 @@ function main()
 
         for x_fault in x_fault_sweep
             models.fault.x_fault[1] = x_fault
-            sol1 = _solve_phase(u1, address, mass_matrix, sys, 1.0, 0.1)
+            sol1 = _solve_phase(u1, address, mass_matrix, sys, 1.0, 10e-5)
             test_count += 1
             retcode = _retcode(sol1)
             if retcode == :Success
                 success_count += 1
-            elseif retcode == :MaxIter
+            elseif retcode == :MaxIter && sol1.time[end] == 0.0
                 push!(maxiter_hits, (bus, x_fault))
                 println(">>> MaxIter failure: bus = $bus, x_fault = $x_fault")
             else

@@ -1,24 +1,44 @@
 using ForwardDiff, LinearAlgebra
 
+
+mutable struct SolverLog
+    kappa::Vector{Float64}
+    e_start::Float64
+    SolverLog() = new(Float64[], 0.0)
+end
+
 # ── Shared helpers ──
+
+function _update_slog(slog, Jac)
+    push!(slog.kappa, cond(Jac))
+end
 
 function _setup_alg(u, address)
     n = length(u)
     n_mech = length(address["delta"]) + length(address["omega"])
     # n_mech = length(address["delta"]) + length(address["omega"]) + length(address["line_id"]) + length(address["line_iq"])
+    # n_mech = length(address["delta"]) + 
+    #             length(address["omega"]) + 
+    #             length(address["line_id"]) + 
+    #             length(address["line_iq"]) +
+    #             length(address["balance_d"]) + 
+    #             length(address["balance_q"])
     alg_idx = n_mech+1:n
     return n, alg_idx
 end
 
-function _eval_g(u, p, n, alg_idx)
-    du = zeros(n)
-    solve_dynamic_sim!(du, u, p, 30.0)
+# `model!` is the residual function with signature model!(du, u, p, t). It defaults to
+# the network model so every existing call site is unchanged; the converter tutorial
+# case passes its own residual instead.
+function _eval_g(u, p, n, alg_idx, model! = solve_dynamic_sim!)
+    du = zeros(eltype(u), n)
+    model!(du, u, p, 30.0)
     return du[alg_idx]
 end
 
-function _eval_g_jac(u, p, n, alg_idx)
-    du = zeros(n)
-    solve_dynamic_sim!(du, u, p, 30.0)
+function _eval_g_jac(u, p, n, alg_idx, model! = solve_dynamic_sim!)
+    du = zeros(eltype(u), n)
+    model!(du, u, p, 30.0)
     g = du[alg_idx]
 
     jac = ForwardDiff.jacobian(y -> begin
@@ -26,7 +46,7 @@ function _eval_g_jac(u, p, n, alg_idx)
         u_tmp = Vector{T}(u)
         u_tmp[alg_idx] .= y
         du_tmp = similar(u_tmp)
-        solve_dynamic_sim!(du_tmp, u_tmp, p, 30.0)
+        model!(du_tmp, u_tmp, p, 30.0)
         du_tmp[alg_idx]
     end, u[alg_idx])
 
@@ -35,53 +55,69 @@ end
 
 # ── 1. Standard Newton-Raphson ──
 
-function solve_newton!(u, p, address; tol=1e-6, max_iter=100, always_new=false)
+function solve_newton!(u, p, address; tol=1e-12, max_iter=100, always_new=false, solver_stats=false,
+                       model! = solve_dynamic_sim!)
     n, alg_idx = _setup_alg(u, address)
-    hist = Float64[]
+    residuals = Float64[]
     re_eval_count = 0
     jac_updates = 0
-    # if !always_new
-    #     _, J = _eval_g_jac(u, p, n, alg_idx)
-    # end
-    # jac_updates += 1
     correction_norm = Float64[]
+    
     local J
+    
+    converged = false
+    iters = max_iter
+
+    slog = SolverLog()
+
     for k in 1:max_iter
         if always_new || k == 1
-            g, J = _eval_g_jac(u, p, n, alg_idx)
+            g, J = _eval_g_jac(u, p, n, alg_idx, model!)
             jac_updates += 1
         else
-            g, _ = _eval_g_jac(u, p, n, alg_idx)
+            g, _ = _eval_g_jac(u, p, n, alg_idx, model!)
         end
-        # g, J = _eval_g_jac(u, p, n, alg_idx)
-        push!(hist, norm(g, Inf))
-        any(!isfinite, g) && return (converged=false, iters=k, residuals=hist, jac_updates=jac_updates)
 
-        # if k == 30 || k == 60
-        #     _, J = _eval_g_jac(u, p, n, alg_idx)
-        #     jac_updates += 1
-        # end
+        solver_stats && _update_slog(slog, J)
+
+        push!(residuals, norm(g, Inf))
+        if any(!isfinite, g) || any(!isfinite, J)
+            iters = k
+            break
+        end
+        # any(!isfinite, g) && return (converged=false, iters=k, residuals=hist, jac_updates=jac_updates)
 
         Δy = J \ (-g)
         push!(correction_norm, norm(Δy))
-        any(!isfinite, Δy) && return (converged=false, iters=k, residuals=hist, jac_updates=jac_updates, correction_norm=correction_norm)
+        if any(!isfinite, Δy)
+            iters = k
+            break
+        end
+        # any(!isfinite, Δy) && return (converged=false, iters=k, residuals=hist, jac_updates=jac_updates, correction_norm=correction_norm)
         u[alg_idx] .+= Δy
 
-        norm(Δy) < tol * (1 + norm(u[alg_idx])) &&
-            return (converged=true, iters=k, residuals=hist, jac_updates=jac_updates, correction_norm=correction_norm)
+        if norm(Δy) < tol * (1 + norm(u[alg_idx]))
+            converged = true
+            iters = k
+            break
+            # return (converged=true, iters=k, residuals=hist, jac_updates=jac_updates, correction_norm=correction_norm)
+        end
     end
-    push!(hist, norm(_eval_g(u, p, n, alg_idx), Inf))
-    return (converged=false, iters=max_iter, residuals=hist, jac_updates=jac_updates, correction_norm=correction_norm)
+    if !converged && iters == max_iter
+        push!(residuals, norm(_eval_g(u, p, n, alg_idx, model!), Inf))
+    end
+    return (; converged, iters, residuals, jac_updates, correction_norm, slog)
 end
 
 # ── 2. Damped Newton (fixed α) ──
 
-function solve_damped_newton!(u, p, address; α=0.5, tol=1e-6, max_iter=100)
+function solve_damped_newton!(u, p, address; α=0.5, tol=1e-6, max_iter=100,
+                              model! = solve_dynamic_sim!)
     n, alg_idx = _setup_alg(u, address)
     hist = Float64[]
 
     for k in 1:max_iter
-        g, J = _eval_g_jac(u, p, n, alg_idx)
+        g, J = _eval_g_jac(u, p, n, alg_idx, model!)
         push!(hist, norm(g, Inf))
         any(!isfinite, g) && return (converged=false, iters=k, residuals=hist)
 
@@ -92,18 +128,19 @@ function solve_damped_newton!(u, p, address; α=0.5, tol=1e-6, max_iter=100)
         norm(α * Δy) < tol * (1 + norm(u[alg_idx])) &&
             return (converged=true, iters=k, residuals=hist)
     end
-    push!(hist, norm(_eval_g(u, p, n, alg_idx), Inf))
+    push!(hist, norm(_eval_g(u, p, n, alg_idx, model!), Inf))
     return (converged=false, iters=max_iter, residuals=hist)
 end
 
 # ── 3. Newton with Armijo backtracking line search ──
 
-function solve_backtracking_newton!(u, p, address; tol=1e-6, max_iter=100, c₁=1e-4, ρ=0.5)
+function solve_backtracking_newton!(u, p, address; tol=1e-6, max_iter=100, c₁=1e-4, ρ=0.5,
+                                    model! = solve_dynamic_sim!)
     n, alg_idx = _setup_alg(u, address)
     hist = Float64[]
 
     for k in 1:max_iter
-        g, J = _eval_g_jac(u, p, n, alg_idx)
+        g, J = _eval_g_jac(u, p, n, alg_idx, model!)
         push!(hist, norm(g, Inf))
         any(!isfinite, g) && return (converged=false, iters=k, residuals=hist)
 
@@ -118,7 +155,7 @@ function solve_backtracking_newton!(u, p, address; tol=1e-6, max_iter=100, c₁=
         for _ in 1:30
             u_trial = copy(u)
             u_trial[alg_idx] .+= α * Δy
-            g_trial = _eval_g(u_trial, p, n, alg_idx)
+            g_trial = _eval_g(u_trial, p, n, alg_idx, model!)
             any(!isfinite, g_trial) && (α *= ρ; continue)
 
             0.5 * norm(g_trial)^2 ≤ φ₀ + c₁ * α * dφ₀ && break
@@ -131,19 +168,20 @@ function solve_backtracking_newton!(u, p, address; tol=1e-6, max_iter=100, c₁=
         norm(α * Δy) < tol * (1 + norm(u[alg_idx])) &&
             return (converged=true, iters=k, residuals=hist)
     end
-    push!(hist, norm(_eval_g(u, p, n, alg_idx), Inf))
+    push!(hist, norm(_eval_g(u, p, n, alg_idx, model!), Inf))
     return (converged=false, iters=max_iter, residuals=hist)
 end
 
 # ── 4. Levenberg-Marquardt (adaptive damping) ──
 
-function solve_levenberg_marquardt!(u, p, address; tol=1e-6, max_iter=100, μ₀=1e-3)
+function solve_levenberg_marquardt!(u, p, address; tol=1e-6, max_iter=100, μ₀=1e-3,
+                                    model! = solve_dynamic_sim!)
     n, alg_idx = _setup_alg(u, address)
     hist = Float64[]
     μ = μ₀
 
     for k in 1:max_iter
-        g, J = _eval_g_jac(u, p, n, alg_idx)
+        g, J = _eval_g_jac(u, p, n, alg_idx, model!)
         push!(hist, norm(g, Inf))
         any(!isfinite, g) && return (converged=false, iters=k, residuals=hist)
 
@@ -154,7 +192,7 @@ function solve_levenberg_marquardt!(u, p, address; tol=1e-6, max_iter=100, μ₀
         # Evaluate trial point
         u_trial = copy(u)
         u_trial[alg_idx] .+= Δy
-        g_trial = _eval_g(u_trial, p, n, alg_idx)
+        g_trial = _eval_g(u_trial, p, n, alg_idx, model!)
 
         # Gain ratio: actual vs predicted reduction
         actual    = norm(g)^2 - norm(g_trial)^2
@@ -174,7 +212,7 @@ function solve_levenberg_marquardt!(u, p, address; tol=1e-6, max_iter=100, μ₀
             return (converged=true, iters=k, residuals=hist)
         end
     end
-    push!(hist, norm(_eval_g(u, p, n, alg_idx), Inf))
+    push!(hist, norm(_eval_g(u, p, n, alg_idx, model!), Inf))
     return (converged=false, iters=max_iter, residuals=hist)
 end
 
@@ -184,32 +222,47 @@ function solve_homotopy!(u, p_base, address;
                          tol=1e-6, 
                          max_iter=100, 
                          Δλ=0.01, 
+                         λ_start=0.0,
                          λ_target=1.0,
-                         always_new=false)
+                         always_new=false,
+                         vd_idx=1,
+                         vq_idx=1,
+                         model! = solve_dynamic_sim!,
+                         )
     n, alg_idx = _setup_alg(u, address)
-    hist = Float64[]
+    residuals = Float64[]
     total_iters = 0
     jac_updates = 0
     correction_norm = Float64[]
+    vd_hist = Float64[]
+    vq_hist = Float64[]
+    λ_hist = Float64[]
+    stage_iters = Int[]          # Newton iterations spent on each lambda stage
     # p = (p_base..., 0.0)
+    converged = false
+    λ_failed = nothing
 
-    for λ in 0.0:Δλ:λ_target
+    # sweep λ_start -> λ_target in either direction (0 -> 1 fault application,
+    # 1 -> 0 fault clearing), landing exactly on λ_target
+    n_stages = max(1, ceil(Int, abs(λ_target - λ_start) / Δλ - 1e-9))
+    for λ in range(λ_start, λ_target; length=n_stages + 1)
         p = (p_base..., λ)
+        iters_at_stage_start = total_iters
         local J
         for k in 1:max_iter
             # local J
             if always_new || k == 1
-                g, J = _eval_g_jac(u, p, n, alg_idx)
+                g, J = _eval_g_jac(u, p, n, alg_idx, model!)
                 jac_updates += 1
             else
-                g, _ = _eval_g_jac(u, p, n, alg_idx)
+                g, _ = _eval_g_jac(u, p, n, alg_idx, model!)
             end
-            # g, _ = _eval_g_jac(u, p, n, alg_idx)
-            # g, J = _eval_g_jac(u, p, n, alg_idx)
-            push!(hist, norm(g, Inf))
+            # g, _ = _eval_g_jac(u, p, n, alg_idx, model!)
+            # g, J = _eval_g_jac(u, p, n, alg_idx, model!)
+            push!(residuals, norm(g, Inf))
 
             # if k == 30 || k == 60
-            #     _, J = _eval_g_jac(u, p, n, alg_idx)
+            #     _, J = _eval_g_jac(u, p, n, alg_idx, model!)
             #     jac_updates += 1
             # end
 
@@ -220,41 +273,39 @@ function solve_homotopy!(u, p_base, address;
             push!(correction_norm, norm(Δy, 2))
 
             if norm(Δy) < tol * (1 + norm(u[alg_idx]))
+                converged = true
                 break
             end
 
             if k == max_iter
-                return (converged=false, iters=total_iters, residuals=hist, correction_norm=correction_norm, λ_failed=λ, jac_updates=jac_updates)
+                converged = false
+                λ_failed = λ
+                # return (converged=false, iters=total_iters, residuals=residuals, correction_norm=correction_norm, λ_failed=λ, jac_updates=jac_updates)
             end
         end
-        println("converged in $(total_iters) iterations")
+        push!(vd_hist, u[vd_idx])
+        push!(vq_hist, u[vq_idx])
+        push!(λ_hist, λ)
+        push!(stage_iters, total_iters - iters_at_stage_start)
+        if converged
+            println("converged in $(total_iters) iterations")
+        else
+            break
+        end
     end
 
-    return (converged=true, iters=total_iters, residuals=hist, correction_norm=correction_norm, λ_failed=nothing, jac_updates=jac_updates)
+    # return (converged=true, iters=total_iters, residuals=residuals, correction_norm=correction_norm, λ_failed=nothing, jac_updates=jac_updates)
+    return (; converged, total_iters, residuals, correction_norm, λ_failed, jac_updates,
+              vd_hist, vq_hist, λ_hist, stage_iters)
 end
 
-# function solve_homotopy2!(u, p_base, address; tol=1e-6, max_iter=1000, Δλ=0.001, λ_target=1.0)
-#     n, alg_idx = _setup_alg(u, address)
-#     hist = Float64[]
-#     total_iters = 0
-
-#     for λ in 0.0:Δλ:λ_target
-#         p = (p_base..., λ)
-
-#         for k in 1:max_iter
-#             r = solve_levenberg_marquardt!(u, p_base, address)
-
-#         end
-#     end
-
-#     return (converged=true, iters=total_iters, residuals=hist, λ_failed=nothing)
-# end
 
 # ── 6. Adaptive LM-Homotopy hybrid (proposed method) ──
 
 function solve_homotopy_lm!(u, p_base, address;
                             tol=1e-6, max_iter=100, μ₀=1e-3,
-                            Δλ_init=0.01, Δλ_min=1e-6, Δλ_max=0.2, λ_target=1.0)
+                            Δλ_init=0.01, Δλ_min=1e-6, Δλ_max=0.2, λ_target=1.0,
+                            model! = solve_dynamic_sim!)
     n, alg_idx = _setup_alg(u, address)
     hist = Float64[]
     λ_hist = Float64[]
@@ -264,7 +315,7 @@ function solve_homotopy_lm!(u, p_base, address;
     Δλ = Δλ_init
 
     p = (p_base..., 0.0)
-    # _, J = _eval_g_jac(u, p, n, alg_idx)
+    # _, J = _eval_g_jac(u, p, n, alg_idx, model!)
 
     while λ < λ_target
         Δλ = min(Δλ, λ_target - λ)   # don't overshoot target
@@ -279,8 +330,8 @@ function solve_homotopy_lm!(u, p_base, address;
         step_converged = false
 
         for k in 1:max_iter
-            g, J = _eval_g_jac(u, p, n, alg_idx)
-            # g, _ = _eval_g_jac(u, p, n, alg_idx)
+            g, J = _eval_g_jac(u, p, n, alg_idx, model!)
+            # g, _ = _eval_g_jac(u, p, n, alg_idx, model!)
             total_iters += 1
             step_iters = k
             push!(hist, norm(g, Inf))
@@ -293,7 +344,7 @@ function solve_homotopy_lm!(u, p_base, address;
             # Trial evaluation
             u_trial = copy(u)
             u_trial[alg_idx] .+= Δy
-            g_trial = _eval_g(u_trial, p, n, alg_idx)
+            g_trial = _eval_g(u_trial, p, n, alg_idx, model!)
 
             # Gain ratio
             actual    = norm(g)^2 - norm(g_trial)^2
@@ -360,9 +411,10 @@ end
 #   log(Δλ_{k+1}/Δλ_k) = k_p * (e_k - e_{k-1}) + k_i * e_k
 # where e_k = -log(d_k) (positive when step is easy, negative when hard).
 
-function _newton_corrector!(u, p, n, alg_idx; tol=1e-6, max_iter=50, always_new=false)
+function _newton_corrector!(u, p, n, alg_idx; tol=1e-6, max_iter=50, always_new=false,
+                            model! = solve_dynamic_sim!)
     converged = false
-    n_iters = 0
+    iters = 0
     first_residual = NaN
     contraction = NaN
     prev_corr_norm = NaN
@@ -371,18 +423,18 @@ function _newton_corrector!(u, p, n, alg_idx; tol=1e-6, max_iter=50, always_new=
     local J
     for k in 1:max_iter
         if always_new || k == 1
-            g, J = _eval_g_jac(u, p, n, alg_idx)
+            g, J = _eval_g_jac(u, p, n, alg_idx, model!)
             jac_updates += 1
         else
-            g, _ = _eval_g_jac(u, p, n, alg_idx)
+            g, _ = _eval_g_jac(u, p, n, alg_idx, model!)
         end
-        # g, J = _eval_g_jac(u, p, n, alg_idx)
+        # g, J = _eval_g_jac(u, p, n, alg_idx, model!)
         res_norm = norm(g, Inf)
 
         if k == 1
             first_residual = res_norm
         end
-        any(!isfinite, g) && break
+        (any(!isfinite, g) || any(!isfinite, J)) && break
 
         Δy = J \ (-g)
         any(!isfinite, Δy) && break
@@ -394,7 +446,7 @@ function _newton_corrector!(u, p, n, alg_idx; tol=1e-6, max_iter=50, always_new=
         prev_corr_norm = corr_norm
 
         u[alg_idx] .+= Δy
-        n_iters = k
+        iters = k
 
         if corr_norm < tol * (1 + norm(u[alg_idx]))
             converged = true
@@ -402,81 +454,107 @@ function _newton_corrector!(u, p, n, alg_idx; tol=1e-6, max_iter=50, always_new=
         end
     end
 
-    return (converged=converged, iters=n_iters,
-            first_residual=first_residual, contraction=contraction)
+    # return (converged=converged, iters=n_iters,
+    #         first_residual=first_residual, contraction=contraction)
+    return (; converged, iters, first_residual, contraction)
 end
 
 function solve_adaptive_homotopy!(u, p_base, address;
                                    tol=1e-6, max_iter=50, max_steps=500,
-                                   Δλ_init=0.05, Δλ_min=1e-10, Δλ_max=0.5,
-                                   λ_target=1.0, n_target=4,
+                                   Δλ_init=0.05, Δλ_min=1e-10, Δλ_max=0.25,
+                                   λ_start=0.0, λ_target=1.0, n_target=4,
                                    k_p=0.7, k_i=0.4,
-                                   always_new=false)
+                                   always_new=false,
+                                   vd_idx=1,
+                                   vq_idx=1,
+                                   model! = solve_dynamic_sim!)
 
     n, alg_idx = _setup_alg(u, address)
     n_alg = length(alg_idx)
 
-    # History arrays
-    λ_hist    = Float64[]
+    # main homotopy loop variables
+    λ_hist = Float64[]
     iter_hist = Int[]
-    Δλ_hist   = Float64[]
+    Δλ_hist = Float64[]
+    vd_hist = Float64[]
+    vq_hist = Float64[]
     total_newton_iters = 0
-    total_jac_evals    = 0
+    total_jac_evals = 0
+    converged = false
+    λ_failed = nothing
+    k = max_steps
+    σ = λ_target >= λ_start ? 1.0 : -1.0   # +1: fault application (0 -> 1), -1: clearing (1 -> 0)
 
-    # ── Bootstrap point 1: solve at λ = 0 ──
-    λ_prev = 0.0
+
+    # ── Bootstrap point 1: solve at λ = λ_start ──
+    λ_prev = λ_start
     p = (p_base..., λ_prev)
-    r = _newton_corrector!(u, p, n, alg_idx; tol=tol, max_iter=max_iter, always_new=always_new)
+    r = _newton_corrector!(u, p, n, alg_idx; tol=tol, max_iter=max_iter, always_new=always_new, model! = model!)
     total_newton_iters += r.iters
     total_jac_evals    += r.iters
     if !r.converged
-        println("Homotopy bootstrap failed at λ=0")
-        return (converged=false, λ_hist=λ_hist, iter_hist=iter_hist,
-                Δλ_hist=Δλ_hist, total_newton_iters=total_newton_iters,
-                total_jac_evals=total_jac_evals, λ_failed=0.0)
+        println("Homotopy bootstrap failed at λ=$λ_start")
+        converged = false
+        λ_failed = λ_start
+        return (; converged, λ_hist, iter_hist, Δλ_hist, 
+                total_newton_iters, total_jac_evals, λ_failed)
     end
-    if λ_target == 0.0
+    if λ_target == λ_start
         push!(λ_hist, λ_prev)
-        return (converged=true, λ_hist=λ_hist, iter_hist=iter_hist,
-        Δλ_hist=Δλ_hist, total_newton_iters=total_newton_iters,
-        total_jac_evals=total_jac_evals, λ_failed=nothing)
+        converged = true
+        return (; converged, λ_hist, iter_hist, Δλ_hist,
+                total_newton_iters, total_jac_evals, λ_failed)
     end
     y_prev = copy(u[alg_idx])
     push!(λ_hist, λ_prev)
+    push!(vd_hist, u[vd_idx])
+    push!(vq_hist, u[vq_idx])
 
     # ── Bootstrap point 2: first small step ──
     Δλ = Δλ_init
-    λ_curr = Δλ
+    λ_curr = abs(λ_target - λ_start) <= Δλ ? λ_target : λ_start + σ * Δλ
     p = (p_base..., λ_curr)
-    r = _newton_corrector!(u, p, n, alg_idx; tol=tol, max_iter=max_iter, always_new=always_new)
+    r = _newton_corrector!(u, p, n, alg_idx; tol=tol, max_iter=max_iter, always_new=always_new, model! = model!)
     total_newton_iters += r.iters
     total_jac_evals    += r.iters
     if !r.converged
         println("Homotopy bootstrap failed at λ=$λ_curr")
-        return (converged=false, λ_hist=λ_hist, iter_hist=iter_hist,
-                Δλ_hist=Δλ_hist, total_newton_iters=total_newton_iters,
-                total_jac_evals=total_jac_evals, λ_failed=λ_curr)
+        converged = false
+        λ_failed = λ_curr
+        return (; converged, λ_hist, iter_hist, Δλ_hist, 
+                total_newton_iters, total_jac_evals, λ_failed)
     end
     y_curr = copy(u[alg_idx])
     push!(λ_hist, λ_curr)
     push!(iter_hist, r.iters)
     push!(Δλ_hist, Δλ)
+    push!(vd_hist, u[vd_idx])
+    push!(vq_hist, u[vq_idx])
 
     # PI controller state
     e_prev = 0.0
 
     # ── Main continuation loop ──
     for step in 1:max_steps
+        if λ_curr == λ_target   # bootstrap step already reached the target
+            converged = true
+            break
+        end
         # Don't overshoot target
-        Δλ_step = min(Δλ, λ_target - λ_curr)
-        Δλ_step <= 0 && break
-        λ_next = λ_curr + Δλ_step
+        Δλ_step = min(Δλ, σ * (λ_target - λ_curr))
+        if Δλ_step <= 0
+            println("Homotopy: max steps ($max_steps) reached at λ=$(round(λ_curr, digits=6))")
+            λ_failed = λ_curr
+            break
+        end
+        # Δλ_step <= 0 && break
+        λ_next = Δλ_step == σ * (λ_target - λ_curr) ? λ_target : λ_curr + σ * Δλ_step
 
         # ── Predictor: secant extrapolation ──
         dλ = λ_curr - λ_prev
-        if dλ > 0
+        if dλ != 0
             slope = (y_curr - y_prev) / dλ
-            y_pred = y_curr + slope * Δλ_step
+            y_pred = y_curr + slope * (λ_next - λ_curr)
         else
             y_pred = copy(y_curr)
         end
@@ -487,7 +565,7 @@ function solve_adaptive_homotopy!(u, p_base, address;
 
         # ── Corrector: Newton-Raphson from predicted initial guess ──
         p = (p_base..., λ_next)
-        r = _newton_corrector!(u, p, n, alg_idx; tol=tol, max_iter=max_iter, always_new=always_new)
+        r = _newton_corrector!(u, p, n, alg_idx; tol=tol, max_iter=max_iter, always_new=always_new, model! = model!)
         total_newton_iters += r.iters
         total_jac_evals    += r.iters
 
@@ -497,9 +575,11 @@ function solve_adaptive_homotopy!(u, p_base, address;
             Δλ = Δλ * 0.25
             if Δλ < Δλ_min
                 println("Homotopy failed: Δλ below minimum at λ=$(round(λ_curr, digits=8))")
-                return (converged=false, λ_hist=λ_hist, iter_hist=iter_hist,
-                        Δλ_hist=Δλ_hist, total_newton_iters=total_newton_iters,
-                        total_jac_evals=total_jac_evals, λ_failed=λ_next)
+                λ_failed=λ_next
+                break
+                # return (converged=false, λ_hist=λ_hist, iter_hist=iter_hist,
+                        # Δλ_hist=Δλ_hist, total_newton_iters=total_newton_iters,
+                        # total_jac_evals=total_jac_evals, λ_failed=λ_next)
             end
             println("  Step $step: corrector failed at λ=$(round(λ_next, digits=6)), shrinking Δλ → $(round(Δλ, sigdigits=3))")
             continue
@@ -514,6 +594,8 @@ function solve_adaptive_homotopy!(u, p_base, address;
         push!(λ_hist, λ_curr)
         push!(iter_hist, r.iters)
         push!(Δλ_hist, Δλ_step)
+        push!(vd_hist, u[vd_idx])
+        push!(vq_hist, u[vq_idx])
 
         # ── PI step size control ──
         # Newton difficulty: ratio of iterations taken to target iterations
@@ -536,17 +618,47 @@ function solve_adaptive_homotopy!(u, p_base, address;
                 "contraction=$(isnan(r.contraction) ? "N/A" : string(round(r.contraction, digits=3))), " *
                 "Δλ_next=$(round(Δλ, sigdigits=3))")
 
-        if λ_curr >= λ_target
+        if λ_curr == λ_target
             println("Homotopy converged to λ=$λ_target in $step steps, " *
                     "$(total_newton_iters) total Newton iterations")
-            return (converged=true, λ_hist=λ_hist, iter_hist=iter_hist,
-                    Δλ_hist=Δλ_hist, total_newton_iters=total_newton_iters,
-                    total_jac_evals=total_jac_evals, λ_failed=nothing)
+            converged = true
+            break
+            # return (converged=true, λ_hist=λ_hist, iter_hist=iter_hist,
+            #         Δλ_hist=Δλ_hist, total_newton_iters=total_newton_iters,
+            #         total_jac_evals=total_jac_evals, λ_failed=nothing)
         end
     end
 
-    println("Homotopy: max steps ($max_steps) reached at λ=$(round(λ_curr, digits=6))")
-    return (converged=false, λ_hist=λ_hist, iter_hist=iter_hist,
-            Δλ_hist=Δλ_hist, total_newton_iters=total_newton_iters,
-            total_jac_evals=total_jac_evals, λ_failed=λ_curr)
+    total_iters = total_newton_iters
+
+    return (; converged, λ_hist, iter_hist, Δλ_hist, total_iters,
+            total_jac_evals, λ_failed, vd_hist, vq_hist)
+end
+
+
+# ── 8. Residual (Newton) homotopy ──
+#
+# H(y, lam) = g(y) - (1 - lam) * g(y0), with g the residual at the fixed target
+# parameters. y0 solves H = 0 at lam = 0 by construction and the original system is
+# recovered at lam = 1. The Jacobian of H equals that of g, independent of lam.
+# The returned closure has the model!(du, u, p, t) signature and reads lam from
+# p[end], so it plugs into solve_homotopy! / solve_adaptive_homotopy! through the
+# `model!` keyword without touching the physical models.
+
+"""
+    build_residual_homotopy(u0, p_direct, address; model! = solve_dynamic_sim!)
+
+Return a residual function `H!(du, u, p, t)` implementing the Newton homotopy
+`g(u) - (1 - p[end]) * g(u0)` on the algebraic rows, where `g` is `model!`
+evaluated with the fixed target parameters `p_direct`.
+"""
+function build_residual_homotopy(u0, p_direct, address; model! = solve_dynamic_sim!)
+    n, alg_idx = _setup_alg(u0, address)
+    g0 = zeros(n)
+    model!(g0, u0, p_direct, 30.0)
+    return (du, u, p, t) -> begin
+        model!(du, u, p_direct, t)
+        du[alg_idx] .-= (1 - p[end]) .* g0[alg_idx]
+        return nothing
+    end
 end

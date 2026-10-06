@@ -1,0 +1,3 @@
+  [base] fault bus 44 xf=0.02 cleared by trip 44-45: Newton -> physical_lowV, stays_low; HV recovered by SubString{String}["hc", "flat"]  <-- CLEAN
+LF base: 291 clearing events, Dict("direct_low_only" => 27, "no_low" => 263, "newton_low(physical_lowV, stays_low)" => 1)
+done: outputs/clearing_lowv/rms_power_c118_xf0.02_20261001_111010

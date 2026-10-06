@@ -1,0 +1,3 @@
+  [0.93] fault bus 28 xf=0.001 cleared by trip 28-29: Newton -> spurious, recovers; HV run failed; HV recovered by SubString{String}["hc", "flat"]
+LF 0.93: 184 clearing events, Dict("newton_low(spurious, recovers; HV run failed)" => 1, "direct_low_only" => 40, "no_low" => 143)
+done: outputs/clearing_lowv/rms_power_dur_t0.2_lf0.93_20260929_223008

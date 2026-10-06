@@ -1,0 +1,2 @@
+mode=rms form=power loads=(zip = (0.7, 0.1, 0.2), low_voltage = true, pqbrak = 0.7, characteristic = 1) xf=[0.001, 0.003, 0.005] tfault=0.15 kcl_tol=0.001 dv_low=0.05 starts=SubString{String}["hc", "flat"]
+h_direct=(0.01, 0.001, 0.0001), hold=2.0 s at h=0.01, LF_max=2.3125, lf=SubString{String}["0.95"]

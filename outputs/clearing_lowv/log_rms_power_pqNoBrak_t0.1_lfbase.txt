@@ -1,0 +1,6 @@
+  [base] fault bus 21 xf=0.02 clear@0.1: Newton -> physical_lowV, stays_low; HV recovered by SubString{String}["hc", "flat"]
+  [base] fault bus 28 xf=0.02 clear@0.1: Newton -> physical_lowV, stays_low; HV recovered by SubString{String}["hc", "flat"]
+  [base] fault bus 29 xf=0.02 clear@0.1: Newton -> physical_lowV, stays_low; HV recovered by SubString{String}["hc", "flat"]
+  [base] fault bus 34 xf=0.02 clear@0.1: Newton -> physical_lowV, stays_low; HV recovered by SubString{String}["hc", "flat"]
+LF base: 184 clearing events, Dict("direct_low_only" => 1, "no_low" => 25, "skipped" => 154, "newton_low(physical_lowV, stays_low)" => 4)
+done: outputs/clearing_lowv/rms_power_pqNoBrak_t0.1_lfbase_20260929_213845

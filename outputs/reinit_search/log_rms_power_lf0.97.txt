@@ -1,0 +1,21 @@
+mode=rms LF_max=2.3125 levels=Tuple{SubString{String}, Float64}[("0.97", 2.243125)] -> outputs/reinit_search/rms_power_lf0.97_20260929_191520
+LF 0.97 = 2.2431: 426 events, pre-event residual 7.5e-11
+  25/426 done Dict("A_direct_ok" => 25)
+  50/426 done Dict("A_direct_ok" => 50)
+  75/426 done Dict("A_direct_ok" => 75)
+  100/426 done Dict("A_direct_ok" => 100)
+  125/426 done Dict("A_direct_ok" => 125)
+  150/426 done Dict("A_direct_ok" => 150)
+  175/426 done Dict("A_direct_ok" => 174, "reinit_then_fails" => 1)
+  200/426 done Dict("A_direct_ok" => 199, "reinit_then_fails" => 1)
+  225/426 done Dict("A_direct_ok" => 223, "reinit_then_fails" => 2)
+  250/426 done Dict("A_direct_ok" => 248, "reinit_then_fails" => 2)
+  275/426 done Dict("A_direct_ok" => 273, "reinit_then_fails" => 2)
+  300/426 done Dict("A_direct_ok" => 298, "reinit_then_fails" => 2)
+  325/426 done Dict("A_direct_ok" => 323, "reinit_then_fails" => 2)
+  350/426 done Dict("A_direct_ok" => 348, "reinit_then_fails" => 2)
+  375/426 done Dict("A_direct_ok" => 372, "reinit_then_fails" => 3)
+  400/426 done Dict("A_direct_ok" => 395, "reinit_then_fails" => 5)
+  425/426 done Dict("A_direct_ok" => 420, "reinit_then_fails" => 5)
+LF 0.97 summary: Dict("A_direct_ok" => 421, "reinit_then_fails" => 5)
+done: outputs/reinit_search/rms_power_lf0.97_20260929_191520
