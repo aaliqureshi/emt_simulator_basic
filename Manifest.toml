@@ -1620,7 +1620,7 @@ uuid = "46d2c3a1-f734-5fdb-9937-b9b9aeba4221"
 version = "0.2.7"
 
 [[deps.MyDiffEq]]
-deps = ["ForwardDiff", "LinearAlgebra", "LinearSolve", "NLsolve"]
+deps = ["ForwardDiff", "LinearAlgebra", "LinearSolve", "NLsolve", "SparseArrays"]
 path = "/Users/aali27/Work/Research/DAE_Reinitialization/DAEReinitialization/MyDiffEq/MyDiffEq"
 uuid = "7fbaa32c-5b5b-4592-ae82-14217a6f808f"
 version = "0.1.0"
